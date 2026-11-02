@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bfha74dbpgnmp"]
+
+[ext_resource type="PackedScene" uid="uid://bqwcb1th8wedg" path="res://assets/characters/kaze/kaze.glb" id="1_ovfmh"]
+
+[node name="KazeFighter" type="Node3D" unique_id=1294622368]
+
+[node name="ModelPivot" type="Node3D" parent="." unique_id=886322180]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Model" parent="ModelPivot" unique_id=60550460 instance=ExtResource("1_ovfmh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.13617301, 0)
+
+[node name="socket_root" type="Marker3D" parent="." unique_id=742390658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+
+[node name="socket_chest" type="Marker3D" parent="." unique_id=1661666301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.25)
+
+[node name="socket_hand_l" type="Marker3D" parent="." unique_id=2012804844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.15, -0.45)
+
+[node name="socket_hand_r" type="Marker3D" parent="." unique_id=1007435623]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.15, -0.45)
+
+[node name="socket_foot_r" type="Marker3D" parent="." unique_id=1567221015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.25, -0.45)
+
+[node name="socket_muzzle" type="Marker3D" parent="." unique_id=65212758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.1, -0.85)

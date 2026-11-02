@@ -1,0 +1,99 @@
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_ix4jw"]
+
+[resource]
+script = ExtResource("1_ix4jw")
+fighter_id = "kaze"
+display_name = "Kaze"
+subtitle = "Monge do Vento Jade"
+element_label = "VENTO"
+scene_path = "res://scenes/fighters/kaze.tscn"
+glb_path = "res://assets/characters/kaze/kaze.glb"
+material_path = "res://materials/characters/kaze.tres"
+portrait_path = "res://assets/ui/portraits/kaze.png"
+albedo_path = "res://assets/characters/kaze/textures/albedo.png"
+mask_path = "res://assets/characters/kaze/textures/mask.png"
+normal_path = "res://assets/characters/kaze/textures/normal.png"
+palettes = [{
+"accent": "#4AD69D",
+"name": "Jade Monástico",
+"primary": "#28654F",
+"secondary": "#84A98C"
+}, {
+"accent": "#FB7185",
+"name": "Tempestade Carmesim",
+"primary": "#9F1239",
+"secondary": "#E2E8F0"
+}, {
+"accent": "#38BDF8",
+"name": "Vento Noturno",
+"primary": "#1E3A5F",
+"secondary": "#94A3B8"
+}, {
+"accent": "#FACC15",
+"name": "Zéfiro Dourado",
+"primary": "#854D0E",
+"secondary": "#FEF08A"
+}]
+attack_icons = {
+"elemental": "res://assets/ui/icons/kaze_elemental.png",
+"heavy": "res://assets/ui/icons/kaze_heavy.png",
+"light": "res://assets/ui/icons/kaze_light.png",
+"ultimate": "res://assets/ui/icons/kaze_ultimate.png"
+}
+gdd_moves = {
+"elemental": {
+"behavior": "Onda de vento com deslocamento visível que arremessa objetos da arena.",
+"counter": "Pular a onda ou bloquear; aproximar na recuperação.",
+"name": "Rajada de Vento",
+"sequence": "Reúne ar entre as mãos; lança ambas as palmas em onda horizontal."
+},
+"heavy": {
+"behavior": "Arco médio à frente. Impacto único com empurrão forte.",
+"counter": "Recuar na preparação e punir a recuperação.",
+"name": "Chute do Vendaval",
+"sequence": "Recolhe a perna com giro do quadril; chute lateral amplo com arco jade."
+},
+"light": {
+"behavior": "Curto alcance. Três golpes encadeados; J3 afasta o alvo.",
+"counter": "Bloquear a sequência ou punir o chute se errar.",
+"name": "Palma de Jade",
+"sequence": "J1 palma frontal; J2 duas palmas verticais; J3 chute frontal."
+},
+"ultimate": {
+"behavior": "Área fixa adiante com vórtice ascendente e expulsão final.",
+"counter": "Sair da área sinalizada antes da formação do tornado.",
+"name": "Tufão Celestial",
+"sequence": "Abaixa a base; ergue os braços em espiral; tornado vertical explode à frente."
+}
+}
+clips = {
+"air_punch": "air_punch",
+"breaker": "breaker",
+"crouch": "crouch",
+"dash": "dash",
+"down_punch": "down_punch",
+"elemental": "elemental",
+"get_up": "get_up",
+"guard_high": "guard_high",
+"guard_low": "guard_low",
+"heavy": "heavy",
+"hit": "hit",
+"idle": "idle",
+"jump_air": "jump_air",
+"jump_land": "jump_land",
+"jump_start": "jump_start",
+"knockdown": "knockdown",
+"ko": "ko",
+"light_1": "light_1",
+"light_2": "light_2",
+"light_3": "light_3",
+"parry": "parry",
+"select": "select",
+"sweep": "sweep",
+"ultimate": "ultimate",
+"victory": "victory",
+"walk_back": "walk_back",
+"walk_forward": "walk_forward"
+}

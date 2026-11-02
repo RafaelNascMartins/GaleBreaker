@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_ye23w"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ye23w")
+shader_parameter/base_color = Color(0.8862745, 0.9098039, 0.9411765, 1)
+shader_parameter/glow = null
+shader_parameter/use_textures = null
+shader_parameter/palette_primary = null
+shader_parameter/palette_secondary = null
+shader_parameter/palette_accent = null
+shader_parameter/flash_amount = null

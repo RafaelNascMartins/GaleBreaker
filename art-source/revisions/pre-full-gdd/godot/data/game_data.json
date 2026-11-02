@@ -1,0 +1,1694 @@
+{
+  "fighters": {
+    "kaze": {
+      "id": "kaze",
+      "name": "Kaze Hayabusa",
+      "title": "Shoto Wind Shinobi",
+      "element": "wind",
+      "martialStyle": "Karate Shoto & Kenpo",
+      "stats": {
+        "speed": 4,
+        "range": 4,
+        "power": 3,
+        "defense": 3
+      },
+      "archetype": "SHOTO • Balanced Spacing, Gust Zoning & Rising Launcher",
+      "appearanceSummary": "Signature Emerald Green shinobi vest, crimson headband, silver ponytail, and emerald wind aura.",
+      "primaryColor": "#10b981",
+      "secondaryColor": "#d1fae5",
+      "accentColor": "#34d399",
+      "hairColor": "#e2e8f0",
+      "outfitColor": "#059669",
+      "baseHp": 1000,
+      "walkSpeed": 7.2,
+      "dashSpeed": 15.5,
+      "jumpVelocity": 12,
+      "passiveName": "Slipstream Shoto",
+      "passiveDesc": "Balanced 3-step wind punch chain, reliable Low Launcher, and long-range Gale Burst.",
+      "moves": {
+        "light": {
+          "id": "kaze_light",
+          "name": "Zephyr 3-Step Combo",
+          "type": "light",
+          "hitHeight": "mid",
+          "startupFrames": 4,
+          "activeFrames": 3,
+          "recoveryFrames": 7,
+          "hitstunFrames": 13,
+          "blockstunFrames": 8,
+          "hitstopMs": 38,
+          "damage": 44,
+          "chipDamage": 6,
+          "meterGain": 8,
+          "meterCost": 0,
+          "range": 2.5,
+          "hitbox": {
+            "offsetX": 1.18,
+            "offsetY": 1.35,
+            "width": 1.88,
+            "height": 0.85
+          },
+          "knockback": 1.8,
+          "blockPushback": 2.2,
+          "launchY": 0,
+          "gustForce": 4.5,
+          "animStyle": "jab",
+          "description": "3-Step Chain: Jab (Left) -> Cross (Right) -> Palm Finisher with Pushback."
+        },
+        "down_punch": {
+          "id": "kaze_down_punch",
+          "name": "Updraft Low Launcher ▲",
+          "type": "down_punch",
+          "hitHeight": "low",
+          "startupFrames": 5,
+          "activeFrames": 4,
+          "recoveryFrames": 11,
+          "hitstunFrames": 20,
+          "blockstunFrames": 10,
+          "hitstopMs": 50,
+          "damage": 58,
+          "chipDamage": 9,
+          "meterGain": 11,
+          "meterCost": 0,
+          "range": 2.65,
+          "hitbox": {
+            "offsetX": 1.25,
+            "offsetY": 0.65,
+            "width": 2,
+            "height": 0.95
+          },
+          "knockback": 1.1,
+          "blockPushback": 2.4,
+          "launchY": 8.6,
+          "airDribblePopY": 7,
+          "gustForce": 6.5,
+          "animStyle": "low_punch",
+          "description": "LOW LAUNCHER ▲ Beats Standing Guard and launches enemies high into the air!"
+        },
+        "air_punch": {
+          "id": "kaze_air_punch",
+          "name": "Sky Dribble Strike",
+          "type": "air_punch",
+          "hitHeight": "overhead",
+          "startupFrames": 4,
+          "activeFrames": 5,
+          "recoveryFrames": 7,
+          "hitstunFrames": 19,
+          "blockstunFrames": 9,
+          "hitstopMs": 45,
+          "damage": 50,
+          "chipDamage": 8,
+          "meterGain": 12,
+          "meterCost": 0,
+          "range": 2.6,
+          "hitbox": {
+            "offsetX": 1.18,
+            "offsetY": 1.1,
+            "width": 1.98,
+            "height": 1.2
+          },
+          "knockback": 1.4,
+          "blockPushback": 2,
+          "launchY": 4.5,
+          "airDribblePopY": 7.2,
+          "gustForce": 6,
+          "animStyle": "air_spike",
+          "description": "Aerial Overhead & Air Dribble strike (subject to Juggle Gravity)."
+        },
+        "heavy": {
+          "id": "kaze_heavy",
+          "name": "Hurricane Overhead ▼",
+          "type": "heavy",
+          "hitHeight": "overhead",
+          "startupFrames": 9,
+          "activeFrames": 5,
+          "recoveryFrames": 14,
+          "hitstunFrames": 22,
+          "blockstunFrames": 12,
+          "hitstopMs": 66,
+          "damage": 96,
+          "chipDamage": 16,
+          "meterGain": 15,
+          "meterCost": 0,
+          "range": 3.15,
+          "hitbox": {
+            "offsetX": 1.38,
+            "offsetY": 1.35,
+            "width": 2.38,
+            "height": 1.3
+          },
+          "knockback": 4.2,
+          "blockPushback": 3.6,
+          "launchY": 6.4,
+          "airDribblePopY": 7.2,
+          "gustForce": 9.5,
+          "animStyle": "spin_kick",
+          "description": "OVERHEAD ▼ Crushes Crouching Guard and launches foes."
+        },
+        "elemental": {
+          "id": "kaze_elemental",
+          "name": "Gale Burst Wave",
+          "type": "elemental",
+          "hitHeight": "mid",
+          "startupFrames": 10,
+          "activeFrames": 6,
+          "recoveryFrames": 13,
+          "hitstunFrames": 25,
+          "blockstunFrames": 15,
+          "hitstopMs": 72,
+          "damage": 85,
+          "chipDamage": 18,
+          "meterGain": 20,
+          "meterCost": 0,
+          "range": 5.8,
+          "hitbox": {
+            "offsetX": 2.4,
+            "offsetY": 1.3,
+            "width": 4.4,
+            "height": 1.45
+          },
+          "knockback": 6.5,
+          "blockPushback": 4.8,
+          "launchY": 4.2,
+          "airDribblePopY": 6.5,
+          "gustForce": 18.5,
+          "animStyle": "palm_blast",
+          "description": "Emerald wind wave that hurls stage hazards across the arena."
+        },
+        "ultimate": {
+          "id": "kaze_ultimate",
+          "name": "Heavenly Typhoon",
+          "type": "ultimate",
+          "hitHeight": "mid",
+          "startupFrames": 8,
+          "activeFrames": 10,
+          "recoveryFrames": 18,
+          "hitstunFrames": 36,
+          "blockstunFrames": 20,
+          "hitstopMs": 88,
+          "damage": 230,
+          "chipDamage": 45,
+          "meterGain": 0,
+          "meterCost": 50,
+          "range": 6.8,
+          "hitbox": {
+            "offsetX": 2.6,
+            "offsetY": 1.5,
+            "width": 5.2,
+            "height": 2.4
+          },
+          "knockback": 9.2,
+          "blockPushback": 6.5,
+          "launchY": 9.4,
+          "airDribblePopY": 9.5,
+          "gustForce": 26,
+          "animStyle": "super_flurry",
+          "description": "Super Art: Ascending emerald cyclone vortex."
+        }
+      },
+      "skillTree": [
+        {
+          "id": "kaze_combo_1",
+          "name": "Swift Knuckles",
+          "branch": "combo",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "light",
+          "statTag": "-1F STARTUP",
+          "description": "Faster Punch, Launcher & Air Punch startup.",
+          "effect": {
+            "startupReductionFrames": 1
+          }
+        },
+        {
+          "id": "kaze_combo_2",
+          "name": "Sky Dribble Mastery",
+          "branch": "combo",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "air_punch",
+          "statTag": "+15% COMBO DMG",
+          "description": "Boosts Air Punch & Launcher juggle damage.",
+          "effect": {
+            "damageMultiplier": 1.15
+          }
+        },
+        {
+          "id": "kaze_elem_1",
+          "name": "Jetstream Force",
+          "branch": "elemental",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "elemental",
+          "statTag": "+45% GUST FORCE",
+          "description": "Hurls stage hazards 45% faster across the screen.",
+          "effect": {
+            "gustForceBonus": 0.45
+          }
+        },
+        {
+          "id": "kaze_elem_2",
+          "name": "Typhoon Core",
+          "branch": "elemental",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "ultimate",
+          "statTag": "+35% METER",
+          "description": "Charges Ultimate meter 35% faster on every hit.",
+          "effect": {
+            "meterGainMultiplier": 1.35
+          }
+        },
+        {
+          "id": "kaze_def_1",
+          "name": "Cloud Armor",
+          "branch": "defense",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "down_punch",
+          "statTag": "+120 MAX HP",
+          "description": "Increases maximum vitality by +120 HP.",
+          "effect": {
+            "maxHpBonus": 120
+          }
+        },
+        {
+          "id": "kaze_def_2",
+          "name": "Vacuum Crush",
+          "branch": "defense",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "heavy",
+          "statTag": "+10 CHIP DMG",
+          "description": "Shreds opponent guard with +10 bonus chip damage.",
+          "effect": {
+            "chipDamageBonus": 10
+          }
+        }
+      ]
+    },
+    "ignis": {
+      "id": "ignis",
+      "name": "Ignis Vulcana",
+      "title": "Crimson Power Brawler",
+      "element": "fire",
+      "martialStyle": "Muay Thai & Heavy Boxing",
+      "stats": {
+        "speed": 2,
+        "range": 3,
+        "power": 5,
+        "defense": 5
+      },
+      "archetype": "BRAWLER • High Vitality, Super Armor & Volcanic Launcher",
+      "appearanceSummary": "Signature Crimson Red brawler armor, blazing flame hair, and molten orange piston gauntlets.",
+      "primaryColor": "#ef4444",
+      "secondaryColor": "#fecaca",
+      "accentColor": "#f97316",
+      "hairColor": "#ef4444",
+      "outfitColor": "#b91c1c",
+      "baseHp": 1200,
+      "walkSpeed": 5.6,
+      "dashSpeed": 13.2,
+      "jumpVelocity": 11,
+      "passiveName": "Molten Juggernaut",
+      "passiveDesc": "1200 Base HP; Heavy Overhead has 1 hit of Super Armor and massive pushback.",
+      "moves": {
+        "light": {
+          "id": "ignis_light",
+          "name": "Cinder 3-Hit Brawling",
+          "type": "light",
+          "hitHeight": "mid",
+          "startupFrames": 5,
+          "activeFrames": 3,
+          "recoveryFrames": 8,
+          "hitstunFrames": 15,
+          "blockstunFrames": 9,
+          "hitstopMs": 46,
+          "damage": 58,
+          "chipDamage": 11,
+          "meterGain": 9,
+          "meterCost": 0,
+          "range": 2.5,
+          "hitbox": {
+            "offsetX": 1.18,
+            "offsetY": 1.35,
+            "width": 1.95,
+            "height": 0.92
+          },
+          "knockback": 2.1,
+          "blockPushback": 2.6,
+          "launchY": 0,
+          "gustForce": 5,
+          "animStyle": "jab",
+          "description": "3-Step Brawler Chain: Piston Jab -> Heavy Hook -> Volcanic Haymaker."
+        },
+        "down_punch": {
+          "id": "ignis_down_punch",
+          "name": "Magma Hook Launcher ▲",
+          "type": "down_punch",
+          "hitHeight": "low",
+          "startupFrames": 6,
+          "activeFrames": 4,
+          "recoveryFrames": 11,
+          "hitstunFrames": 21,
+          "blockstunFrames": 11,
+          "hitstopMs": 56,
+          "damage": 72,
+          "chipDamage": 14,
+          "meterGain": 12,
+          "meterCost": 0,
+          "range": 2.6,
+          "hitbox": {
+            "offsetX": 1.25,
+            "offsetY": 0.65,
+            "width": 2.05,
+            "height": 1
+          },
+          "knockback": 1.2,
+          "blockPushback": 2.6,
+          "launchY": 9.2,
+          "airDribblePopY": 7.3,
+          "gustForce": 8,
+          "animStyle": "low_punch",
+          "description": "LOW LAUNCHER ▲ Volcanic low upper-hook that launches foes sky-high!"
+        },
+        "air_punch": {
+          "id": "ignis_air_punch",
+          "name": "Meteor Air Knuckle",
+          "type": "air_punch",
+          "hitHeight": "overhead",
+          "startupFrames": 5,
+          "activeFrames": 5,
+          "recoveryFrames": 8,
+          "hitstunFrames": 20,
+          "blockstunFrames": 10,
+          "hitstopMs": 52,
+          "damage": 66,
+          "chipDamage": 12,
+          "meterGain": 13,
+          "meterCost": 0,
+          "range": 2.6,
+          "hitbox": {
+            "offsetX": 1.18,
+            "offsetY": 1.1,
+            "width": 2.02,
+            "height": 1.25
+          },
+          "knockback": 1.6,
+          "blockPushback": 2.2,
+          "launchY": 4.8,
+          "airDribblePopY": 7.2,
+          "gustForce": 7,
+          "animStyle": "air_spike",
+          "description": "Flaming aerial gauntlet smash for heavy mid-air dribbles."
+        },
+        "heavy": {
+          "id": "ignis_heavy",
+          "name": "Armored Magma Crush ▼",
+          "type": "heavy",
+          "hitHeight": "overhead",
+          "armorHits": 1,
+          "startupFrames": 11,
+          "activeFrames": 5,
+          "recoveryFrames": 15,
+          "hitstunFrames": 26,
+          "blockstunFrames": 16,
+          "hitstopMs": 78,
+          "damage": 130,
+          "chipDamage": 28,
+          "meterGain": 18,
+          "meterCost": 0,
+          "range": 3.1,
+          "hitbox": {
+            "offsetX": 1.4,
+            "offsetY": 1.3,
+            "width": 2.42,
+            "height": 1.35
+          },
+          "knockback": 5.4,
+          "blockPushback": 4.4,
+          "launchY": 6,
+          "airDribblePopY": 7.4,
+          "gustForce": 12.5,
+          "animStyle": "axe_kick",
+          "description": "SUPER ARMOR + OVERHEAD ▼ Absorbs 1 hit and crushes Crouching Guard!"
+        },
+        "elemental": {
+          "id": "ignis_elemental",
+          "name": "Dragon Pyre Uppercut",
+          "type": "elemental",
+          "hitHeight": "mid",
+          "startupFrames": 8,
+          "activeFrames": 6,
+          "recoveryFrames": 15,
+          "hitstunFrames": 28,
+          "blockstunFrames": 16,
+          "hitstopMs": 80,
+          "damage": 115,
+          "chipDamage": 24,
+          "meterGain": 22,
+          "meterCost": 0,
+          "range": 3.8,
+          "hitbox": {
+            "offsetX": 1.5,
+            "offsetY": 1.55,
+            "width": 2.6,
+            "height": 1.95
+          },
+          "knockback": 4.8,
+          "blockPushback": 4,
+          "launchY": 8.8,
+          "airDribblePopY": 8.2,
+          "gustForce": 14.5,
+          "animStyle": "uppercut",
+          "description": "Rising crimson flame uppercut that launches opponents skyward."
+        },
+        "ultimate": {
+          "id": "ignis_ultimate",
+          "name": "Solar Cataclysm",
+          "type": "ultimate",
+          "hitHeight": "mid",
+          "armorHits": 1,
+          "startupFrames": 9,
+          "activeFrames": 10,
+          "recoveryFrames": 19,
+          "hitstunFrames": 38,
+          "blockstunFrames": 24,
+          "hitstopMs": 90,
+          "damage": 270,
+          "chipDamage": 62,
+          "meterGain": 0,
+          "meterCost": 50,
+          "range": 6,
+          "hitbox": {
+            "offsetX": 2.3,
+            "offsetY": 1.5,
+            "width": 4.8,
+            "height": 2.4
+          },
+          "knockback": 10.2,
+          "blockPushback": 7,
+          "launchY": 9.6,
+          "airDribblePopY": 9.6,
+          "gustForce": 22,
+          "animStyle": "super_flurry",
+          "description": "Super Art: Volcanic gauntlet barrage ending in a crimson solar eruption."
+        }
+      },
+      "skillTree": [
+        {
+          "id": "ignis_combo_1",
+          "name": "Flash Ignition",
+          "branch": "combo",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "light",
+          "statTag": "-1F STARTUP",
+          "description": "Shaves 1 startup frame off all fiery punches.",
+          "effect": {
+            "startupReductionFrames": 1
+          }
+        },
+        {
+          "id": "ignis_combo_2",
+          "name": "Meteor Juggler",
+          "branch": "combo",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "air_punch",
+          "statTag": "+18% DMG",
+          "description": "Increases Air Punch & combo strike damage by +18%.",
+          "effect": {
+            "damageMultiplier": 1.18
+          }
+        },
+        {
+          "id": "ignis_elem_1",
+          "name": "Blast Wave",
+          "branch": "elemental",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "elemental",
+          "statTag": "+40% BLAST",
+          "description": "Boosts hazard blast propulsion by +40%.",
+          "effect": {
+            "gustForceBonus": 0.4
+          }
+        },
+        {
+          "id": "ignis_elem_2",
+          "name": "Furnace Core",
+          "branch": "elemental",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "ultimate",
+          "statTag": "+35% METER",
+          "description": "Builds Ultimate meter 35% faster.",
+          "effect": {
+            "meterGainMultiplier": 1.35
+          }
+        },
+        {
+          "id": "ignis_def_1",
+          "name": "Obsidian Plate",
+          "branch": "defense",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "down_punch",
+          "statTag": "+150 MAX HP",
+          "description": "Adds +150 Maximum Vitality.",
+          "effect": {
+            "maxHpBonus": 150
+          }
+        },
+        {
+          "id": "ignis_def_2",
+          "name": "Searing Crush",
+          "branch": "defense",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "heavy",
+          "statTag": "+14 CHIP DMG",
+          "description": "Deals +14 bonus chip damage against guard.",
+          "effect": {
+            "chipDamageBonus": 14
+          }
+        }
+      ]
+    },
+    "tophia": {
+      "id": "tophia",
+      "name": "Tophia Stoneheart",
+      "title": "Golden Terra Zoner",
+      "element": "earth",
+      "martialStyle": "Hung Gar Iron Palm",
+      "stats": {
+        "speed": 2,
+        "range": 5,
+        "power": 4,
+        "defense": 4
+      },
+      "archetype": "ZONER • Extended Hitbox Reach, Monolith Barriers & Seismic Control",
+      "appearanceSummary": "Signature Imperial Gold & Amber armored robes, obsidian twin buns, and orbiting golden monolith rings.",
+      "primaryColor": "#f59e0b",
+      "secondaryColor": "#fef08a",
+      "accentColor": "#fde047",
+      "hairColor": "#1e293b",
+      "outfitColor": "#d97706",
+      "baseHp": 1160,
+      "walkSpeed": 5.8,
+      "dashSpeed": 13,
+      "jumpVelocity": 10.8,
+      "passiveName": "Golden Bastion Zoning",
+      "passiveDesc": "+25% longer hitbox reach on all stone strikes and spawns destructible monoliths.",
+      "moves": {
+        "light": {
+          "id": "tophia_light",
+          "name": "Golden 3-Step Palm",
+          "type": "light",
+          "hitHeight": "mid",
+          "startupFrames": 5,
+          "activeFrames": 4,
+          "recoveryFrames": 8,
+          "hitstunFrames": 14,
+          "blockstunFrames": 9,
+          "hitstopMs": 45,
+          "damage": 52,
+          "chipDamage": 10,
+          "meterGain": 8,
+          "meterCost": 0,
+          "range": 3.1,
+          "hitbox": {
+            "offsetX": 1.45,
+            "offsetY": 1.35,
+            "width": 2.35,
+            "height": 0.92
+          },
+          "knockback": 2.4,
+          "blockPushback": 3,
+          "launchY": 0,
+          "gustForce": 5.5,
+          "animStyle": "jab",
+          "description": "Long-range 3-Step Hung-Gar iron palm chain that pushes foes back."
+        },
+        "down_punch": {
+          "id": "tophia_down_punch",
+          "name": "Quake Low Launcher ▲",
+          "type": "down_punch",
+          "hitHeight": "low",
+          "startupFrames": 6,
+          "activeFrames": 4,
+          "recoveryFrames": 11,
+          "hitstunFrames": 20,
+          "blockstunFrames": 10,
+          "hitstopMs": 52,
+          "damage": 64,
+          "chipDamage": 11,
+          "meterGain": 11,
+          "meterCost": 0,
+          "range": 3.1,
+          "hitbox": {
+            "offsetX": 1.48,
+            "offsetY": 0.65,
+            "width": 2.4,
+            "height": 0.98
+          },
+          "knockback": 1.2,
+          "blockPushback": 2.8,
+          "launchY": 8.7,
+          "airDribblePopY": 7,
+          "gustForce": 8,
+          "animStyle": "low_punch",
+          "description": "LOW LAUNCHER ▲ Ground-erupting golden spike that launches opponents!"
+        },
+        "air_punch": {
+          "id": "tophia_air_punch",
+          "name": "Boulder Air Fist",
+          "type": "air_punch",
+          "hitHeight": "overhead",
+          "startupFrames": 5,
+          "activeFrames": 5,
+          "recoveryFrames": 8,
+          "hitstunFrames": 20,
+          "blockstunFrames": 10,
+          "hitstopMs": 48,
+          "damage": 60,
+          "chipDamage": 10,
+          "meterGain": 12,
+          "meterCost": 0,
+          "range": 2.9,
+          "hitbox": {
+            "offsetX": 1.32,
+            "offsetY": 1.1,
+            "width": 2.25,
+            "height": 1.25
+          },
+          "knockback": 1.5,
+          "blockPushback": 2.4,
+          "launchY": 4.8,
+          "airDribblePopY": 7.2,
+          "gustForce": 7.5,
+          "animStyle": "air_spike",
+          "description": "Golden gauntlet aerial strike for mid-air juggle control."
+        },
+        "heavy": {
+          "id": "tophia_heavy",
+          "name": "Tectonic Overhead ▼",
+          "type": "heavy",
+          "hitHeight": "overhead",
+          "startupFrames": 11,
+          "activeFrames": 5,
+          "recoveryFrames": 14,
+          "hitstunFrames": 25,
+          "blockstunFrames": 16,
+          "hitstopMs": 76,
+          "damage": 115,
+          "chipDamage": 22,
+          "meterGain": 16,
+          "meterCost": 0,
+          "range": 3.6,
+          "hitbox": {
+            "offsetX": 1.62,
+            "offsetY": 1.35,
+            "width": 2.75,
+            "height": 1.38
+          },
+          "knockback": 5.2,
+          "blockPushback": 4.5,
+          "launchY": 5.8,
+          "airDribblePopY": 7.4,
+          "gustForce": 13,
+          "animStyle": "axe_kick",
+          "description": "OVERHEAD ▼ Long-reach heel drop that shatters Crouching Guard."
+        },
+        "elemental": {
+          "id": "tophia_elemental",
+          "name": "Monolith Upheaval",
+          "type": "elemental",
+          "hitHeight": "mid",
+          "startupFrames": 10,
+          "activeFrames": 6,
+          "recoveryFrames": 14,
+          "hitstunFrames": 24,
+          "blockstunFrames": 15,
+          "hitstopMs": 70,
+          "damage": 94,
+          "chipDamage": 20,
+          "meterGain": 20,
+          "meterCost": 0,
+          "range": 5.6,
+          "hitbox": {
+            "offsetX": 2.4,
+            "offsetY": 1.3,
+            "width": 4.3,
+            "height": 1.55
+          },
+          "knockback": 6.4,
+          "blockPushback": 5.2,
+          "launchY": 6.2,
+          "airDribblePopY": 7,
+          "gustForce": 15.5,
+          "spawnsHazard": true,
+          "animStyle": "palm_blast",
+          "description": "Erupts a golden stone pillar from the floor and blasts foes away."
+        },
+        "ultimate": {
+          "id": "tophia_ultimate",
+          "name": "Continental Sundering",
+          "type": "ultimate",
+          "hitHeight": "mid",
+          "startupFrames": 10,
+          "activeFrames": 11,
+          "recoveryFrames": 19,
+          "hitstunFrames": 40,
+          "blockstunFrames": 25,
+          "hitstopMs": 88,
+          "damage": 250,
+          "chipDamage": 55,
+          "meterGain": 0,
+          "meterCost": 50,
+          "range": 6.8,
+          "hitbox": {
+            "offsetX": 2.6,
+            "offsetY": 1.5,
+            "width": 5.2,
+            "height": 2.4
+          },
+          "knockback": 10.5,
+          "blockPushback": 7.2,
+          "launchY": 9.2,
+          "airDribblePopY": 9.5,
+          "gustForce": 24,
+          "spawnsHazard": true,
+          "animStyle": "super_flurry",
+          "description": "Super Art: Golden seismic cataclysm across the entire stage."
+        }
+      },
+      "skillTree": [
+        {
+          "id": "tophia_combo_1",
+          "name": "Quartz Reflex",
+          "branch": "combo",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "light",
+          "statTag": "-1F STARTUP",
+          "description": "Reduces startup by 1 frame across all punches.",
+          "effect": {
+            "startupReductionFrames": 1
+          }
+        },
+        {
+          "id": "tophia_combo_2",
+          "name": "Bedrock Dribble",
+          "branch": "combo",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "air_punch",
+          "statTag": "+16% DMG",
+          "description": "Boosts Air Punch & combo strike damage by +16%.",
+          "effect": {
+            "damageMultiplier": 1.16
+          }
+        },
+        {
+          "id": "tophia_elem_1",
+          "name": "Faultline Launch",
+          "branch": "elemental",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "elemental",
+          "statTag": "+45% FORCE",
+          "description": "Increases boulder & pillar launch force by +45%.",
+          "effect": {
+            "gustForceBonus": 0.45
+          }
+        },
+        {
+          "id": "tophia_elem_2",
+          "name": "Geode Dynamo",
+          "branch": "elemental",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "ultimate",
+          "statTag": "+35% METER",
+          "description": "Increases Elemental Gauge gain by +35%.",
+          "effect": {
+            "meterGainMultiplier": 1.35
+          }
+        },
+        {
+          "id": "tophia_def_1",
+          "name": "Mountain Bastion",
+          "branch": "defense",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "down_punch",
+          "statTag": "+180 MAX HP",
+          "description": "Grants +180 Maximum Vitality.",
+          "effect": {
+            "maxHpBonus": 180
+          }
+        },
+        {
+          "id": "tophia_def_2",
+          "name": "Tremor Chip",
+          "branch": "defense",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "heavy",
+          "statTag": "+12 CHIP DMG",
+          "description": "Adds +12 chip damage to all blocked strikes.",
+          "effect": {
+            "chipDamageBonus": 12
+          }
+        }
+      ]
+    },
+    "volt": {
+      "id": "volt",
+      "name": "Volt Raiden",
+      "title": "Cyan Tempest Rushdown",
+      "element": "lightning",
+      "martialStyle": "Acrobatic Taekwondo & Tonfa",
+      "stats": {
+        "speed": 5,
+        "range": 3,
+        "power": 3,
+        "defense": 2
+      },
+      "archetype": "RUSHDOWN • Hyper-Speed Walk/Dash, 3-Frame Tonfa & Fast Air Dribble",
+      "appearanceSummary": "Signature Electric Cyan trench coat & visor, lightning-yellow spikes, and twin cyan plasma tonfas.",
+      "primaryColor": "#06b6d4",
+      "secondaryColor": "#cffafe",
+      "accentColor": "#38bdf8",
+      "hairColor": "#facc15",
+      "outfitColor": "#0891b2",
+      "baseHp": 920,
+      "walkSpeed": 8.4,
+      "dashSpeed": 17.5,
+      "jumpVelocity": 12.5,
+      "passiveName": "Overclocked Rushdown",
+      "passiveDesc": "Fastest movement & startup in the roster; excels at rapid mix-ups and Air Dribbles.",
+      "moves": {
+        "light": {
+          "id": "volt_light",
+          "name": "Plasma 3-Step Slash",
+          "type": "light",
+          "hitHeight": "mid",
+          "startupFrames": 4,
+          "activeFrames": 3,
+          "recoveryFrames": 6,
+          "hitstunFrames": 13,
+          "blockstunFrames": 8,
+          "hitstopMs": 35,
+          "damage": 40,
+          "chipDamage": 7,
+          "meterGain": 10,
+          "meterCost": 0,
+          "range": 2.65,
+          "hitbox": {
+            "offsetX": 1.2,
+            "offsetY": 1.35,
+            "width": 2,
+            "height": 0.85
+          },
+          "knockback": 1.6,
+          "blockPushback": 2,
+          "launchY": 0,
+          "gustForce": 4.5,
+          "animStyle": "tonfa_slash",
+          "description": "3-Step Tonfa Chain: Left Tonfa -> Spinning Right Tonfa -> Twin Shock Finisher."
+        },
+        "down_punch": {
+          "id": "volt_down_punch",
+          "name": "Spark Low Launcher ▲",
+          "type": "down_punch",
+          "hitHeight": "low",
+          "startupFrames": 5,
+          "activeFrames": 4,
+          "recoveryFrames": 10,
+          "hitstunFrames": 19,
+          "blockstunFrames": 9,
+          "hitstopMs": 44,
+          "damage": 54,
+          "chipDamage": 9,
+          "meterGain": 12,
+          "meterCost": 0,
+          "range": 2.7,
+          "hitbox": {
+            "offsetX": 1.25,
+            "offsetY": 0.65,
+            "width": 2.05,
+            "height": 0.92
+          },
+          "knockback": 1,
+          "blockPushback": 2.2,
+          "launchY": 8.6,
+          "airDribblePopY": 7.1,
+          "gustForce": 6.5,
+          "animStyle": "low_punch",
+          "description": "LOW LAUNCHER ▲ High-speed crouching electric uppercut that launches foes!"
+        },
+        "air_punch": {
+          "id": "volt_air_punch",
+          "name": "Plasma Air Dribble",
+          "type": "air_punch",
+          "hitHeight": "overhead",
+          "startupFrames": 4,
+          "activeFrames": 5,
+          "recoveryFrames": 6,
+          "hitstunFrames": 19,
+          "blockstunFrames": 9,
+          "hitstopMs": 42,
+          "damage": 48,
+          "chipDamage": 8,
+          "meterGain": 13,
+          "meterCost": 0,
+          "range": 2.7,
+          "hitbox": {
+            "offsetX": 1.2,
+            "offsetY": 1.1,
+            "width": 2.05,
+            "height": 1.25
+          },
+          "knockback": 1.2,
+          "blockPushback": 1.9,
+          "launchY": 4.6,
+          "airDribblePopY": 7.4,
+          "gustForce": 6.5,
+          "animStyle": "air_spike",
+          "description": "Fastest aerial tonfa strike for stylish mid-air dribble combos."
+        },
+        "heavy": {
+          "id": "volt_heavy",
+          "name": "Thunder Overhead ▼",
+          "type": "heavy",
+          "hitHeight": "overhead",
+          "startupFrames": 8,
+          "activeFrames": 4,
+          "recoveryFrames": 13,
+          "hitstunFrames": 21,
+          "blockstunFrames": 12,
+          "hitstopMs": 62,
+          "damage": 88,
+          "chipDamage": 16,
+          "meterGain": 16,
+          "meterCost": 0,
+          "range": 3.4,
+          "hitbox": {
+            "offsetX": 1.45,
+            "offsetY": 1.35,
+            "width": 2.45,
+            "height": 1.28
+          },
+          "knockback": 3.8,
+          "blockPushback": 3.4,
+          "launchY": 6.2,
+          "airDribblePopY": 7.3,
+          "gustForce": 9.5,
+          "animStyle": "spin_kick",
+          "description": "OVERHEAD ▼ Acrobatic cyan plasma somersault kick that beats Crouching Guard."
+        },
+        "elemental": {
+          "id": "volt_elemental",
+          "name": "Railgun Surge",
+          "type": "elemental",
+          "hitHeight": "mid",
+          "startupFrames": 9,
+          "activeFrames": 5,
+          "recoveryFrames": 13,
+          "hitstunFrames": 24,
+          "blockstunFrames": 14,
+          "hitstopMs": 70,
+          "damage": 88,
+          "chipDamage": 18,
+          "meterGain": 22,
+          "meterCost": 0,
+          "range": 6,
+          "hitbox": {
+            "offsetX": 2.5,
+            "offsetY": 1.3,
+            "width": 4.6,
+            "height": 1.4
+          },
+          "knockback": 6.2,
+          "blockPushback": 4.6,
+          "launchY": 4.5,
+          "airDribblePopY": 6.8,
+          "gustForce": 16.5,
+          "animStyle": "palm_blast",
+          "description": "Cyan electromagnetic beam that rockets hazards across the stage."
+        },
+        "ultimate": {
+          "id": "volt_ultimate",
+          "name": "Kirin Overdrive",
+          "type": "ultimate",
+          "hitHeight": "mid",
+          "startupFrames": 7,
+          "activeFrames": 9,
+          "recoveryFrames": 17,
+          "hitstunFrames": 36,
+          "blockstunFrames": 20,
+          "hitstopMs": 86,
+          "damage": 225,
+          "chipDamage": 48,
+          "meterGain": 0,
+          "meterCost": 50,
+          "range": 6.8,
+          "hitbox": {
+            "offsetX": 2.6,
+            "offsetY": 1.5,
+            "width": 5.2,
+            "height": 2.4
+          },
+          "knockback": 9.5,
+          "blockPushback": 6.4,
+          "launchY": 9,
+          "airDribblePopY": 9.4,
+          "gustForce": 24,
+          "animStyle": "super_flurry",
+          "description": "Super Art: High-voltage cyan plasma storm."
+        }
+      },
+      "skillTree": [
+        {
+          "id": "volt_combo_1",
+          "name": "Overclocked Synapse",
+          "branch": "combo",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "light",
+          "statTag": "3F STARTUP",
+          "description": "Unlocks 3-frame ultra-fast Punch & Air Punch startup.",
+          "effect": {
+            "startupReductionFrames": 1
+          }
+        },
+        {
+          "id": "volt_combo_2",
+          "name": "Plasma Air Dribbler",
+          "branch": "combo",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "air_punch",
+          "statTag": "+15% DMG",
+          "description": "Increases Air Dribble & combo strike damage by +15%.",
+          "effect": {
+            "damageMultiplier": 1.15
+          }
+        },
+        {
+          "id": "volt_elem_1",
+          "name": "Lorentz Rail",
+          "branch": "elemental",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "elemental",
+          "statTag": "+45% RAIL FORCE",
+          "description": "Increases electromagnetic hazard launch speed by +45%.",
+          "effect": {
+            "gustForceBonus": 0.45
+          }
+        },
+        {
+          "id": "volt_elem_2",
+          "name": "Capacitor Dynamo",
+          "branch": "elemental",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "ultimate",
+          "statTag": "+40% METER",
+          "description": "Boosts Elemental Gauge gain by +40%.",
+          "effect": {
+            "meterGainMultiplier": 1.4
+          }
+        },
+        {
+          "id": "volt_def_1",
+          "name": "Static Shielding",
+          "branch": "defense",
+          "tier": 1,
+          "cost": 1,
+          "previewMove": "down_punch",
+          "statTag": "+110 MAX HP",
+          "description": "Grants +110 Maximum Vitality.",
+          "effect": {
+            "maxHpBonus": 110
+          }
+        },
+        {
+          "id": "volt_def_2",
+          "name": "Arc Discharge",
+          "branch": "defense",
+          "tier": 2,
+          "cost": 2,
+          "previewMove": "heavy",
+          "statTag": "+11 CHIP DMG",
+          "description": "Adds +11 chip damage on blocked strikes.",
+          "effect": {
+            "chipDamageBonus": 11
+          }
+        }
+      ]
+    }
+  },
+  "stages": {
+    "zephyr_dojo": {
+      "id": "zephyr_dojo",
+      "name": "Zephyr Peak Sanctuary",
+      "subtitle": "Alpine Pagoda Sanctuary, Cherry Trees & Bright Blue Mountain Sky",
+      "skyColor": "#38bdf8",
+      "fogColor": "#7dd3fc",
+      "groundColor": "#e2e8f0",
+      "accentColor": "#0284c7",
+      "hazardCount": 6,
+      "spectatorDescription": "Mountain monks cheering beneath the pagoda eaves and bright blue sky",
+      "climaxEventName": "Alpine Gale — Mountain Winds & Sanctuary Banners Awakened!"
+    },
+    "molten_forge": {
+      "id": "molten_forge",
+      "name": "Crimson Anvil",
+      "subtitle": "Chained Giant Anvil in a Lava Lake Under a Blood-Red Sun",
+      "skyColor": "#090505",
+      "fogColor": "#1a0707",
+      "groundColor": "#1c1917",
+      "accentColor": "#ef4444",
+      "hazardCount": 6,
+      "spectatorDescription": "Master smiths roaring around the chained colossal anvil and lava sea",
+      "climaxEventName": "Eclipse Eruption — Lava Lake Surge & Red Sun Flare!"
+    },
+    "storm_market": {
+      "id": "storm_market",
+      "name": "Golden Arabic Bazaar",
+      "subtitle": "Vaulted Grand Souk, Hanging Brass Chandeliers & Golden Carpets",
+      "skyColor": "#f59e0b",
+      "fogColor": "#d97706",
+      "groundColor": "#b45309",
+      "accentColor": "#fde047",
+      "hazardCount": 7,
+      "spectatorDescription": "Bazaar merchants cheering under golden vaulted arches and chandeliers",
+      "climaxEventName": "Golden Souk Festival — Brass Chandeliers & Spice Crates Unleashed!"
+    }
+  },
+  "palettes": {
+    "kaze": [
+      {
+        "id": "kaze_default",
+        "name": "Emerald Gale",
+        "swatch": [
+          "#10b981",
+          "#059669",
+          "#e2e8f0"
+        ],
+        "remap": {}
+      },
+      {
+        "id": "kaze_crimson",
+        "name": "Crimson Tempest",
+        "swatch": [
+          "#f43f5e",
+          "#9f1239",
+          "#0f172a"
+        ],
+        "remap": {
+          "#10b981": "#f43f5e",
+          "#34d399": "#fb7185",
+          "#059669": "#9f1239",
+          "#e2e8f0": "#1e293b",
+          "#f8fafc": "#334155"
+        }
+      },
+      {
+        "id": "kaze_midnight",
+        "name": "Midnight Shinobi",
+        "swatch": [
+          "#38bdf8",
+          "#1e1b4b",
+          "#facc15"
+        ],
+        "remap": {
+          "#10b981": "#38bdf8",
+          "#34d399": "#7dd3fc",
+          "#059669": "#1e1b4b",
+          "#ef4444": "#facc15",
+          "#e2e8f0": "#cbd5e1"
+        }
+      },
+      {
+        "id": "kaze_golden",
+        "name": "Celestial Zephyr",
+        "swatch": [
+          "#facc15",
+          "#b45309",
+          "#ffffff"
+        ],
+        "remap": {
+          "#10b981": "#facc15",
+          "#34d399": "#fde047",
+          "#059669": "#b45309",
+          "#ef4444": "#06b6d4",
+          "#e2e8f0": "#ffffff"
+        }
+      }
+    ],
+    "ignis": [
+      {
+        "id": "ignis_default",
+        "name": "Volcanic Magma",
+        "swatch": [
+          "#ef4444",
+          "#b91c1c",
+          "#f97316"
+        ],
+        "remap": {}
+      },
+      {
+        "id": "ignis_azure",
+        "name": "Blue Prominence",
+        "swatch": [
+          "#06b6d4",
+          "#1d4ed8",
+          "#38bdf8"
+        ],
+        "remap": {
+          "#ef4444": "#06b6d4",
+          "#b91c1c": "#1d4ed8",
+          "#f97316": "#38bdf8",
+          "#facc15": "#e0f2fe"
+        }
+      },
+      {
+        "id": "ignis_obsidian",
+        "name": "Obsidian Ash",
+        "swatch": [
+          "#a855f7",
+          "#18181b",
+          "#c084fc"
+        ],
+        "remap": {
+          "#ef4444": "#a855f7",
+          "#b91c1c": "#18181b",
+          "#f97316": "#c084fc",
+          "#facc15": "#f43f5e"
+        }
+      },
+      {
+        "id": "ignis_solar",
+        "name": "White Supernova",
+        "swatch": [
+          "#facc15",
+          "#f8fafc",
+          "#fb923c"
+        ],
+        "remap": {
+          "#ef4444": "#facc15",
+          "#b91c1c": "#f8fafc",
+          "#f97316": "#fb923c",
+          "#1e293b": "#78350f"
+        }
+      }
+    ],
+    "tophia": [
+      {
+        "id": "tophia_default",
+        "name": "Imperial Jade & Gold",
+        "swatch": [
+          "#f59e0b",
+          "#d97706",
+          "#10b981"
+        ],
+        "remap": {}
+      },
+      {
+        "id": "tophia_amethyst",
+        "name": "Amethyst Geode",
+        "swatch": [
+          "#c084fc",
+          "#6b21a8",
+          "#38bdf8"
+        ],
+        "remap": {
+          "#f59e0b": "#c084fc",
+          "#d97706": "#6b21a8",
+          "#fde047": "#e9d5ff",
+          "#10b981": "#38bdf8",
+          "#78350f": "#1e1b4b"
+        }
+      },
+      {
+        "id": "tophia_ruby",
+        "name": "Blood Diamond",
+        "swatch": [
+          "#f43f5e",
+          "#881337",
+          "#fde047"
+        ],
+        "remap": {
+          "#f59e0b": "#f43f5e",
+          "#d97706": "#881337",
+          "#10b981": "#fde047",
+          "#78350f": "#27272a"
+        }
+      },
+      {
+        "id": "tophia_platinum",
+        "name": "Marble Monolith",
+        "swatch": [
+          "#e2e8f0",
+          "#475569",
+          "#10b981"
+        ],
+        "remap": {
+          "#f59e0b": "#e2e8f0",
+          "#d97706": "#475569",
+          "#fde047": "#ffffff",
+          "#78350f": "#0f172a"
+        }
+      }
+    ],
+    "volt": [
+      {
+        "id": "volt_default",
+        "name": "Cyber Cyan Surge",
+        "swatch": [
+          "#06b6d4",
+          "#0891b2",
+          "#facc15"
+        ],
+        "remap": {}
+      },
+      {
+        "id": "volt_neon_pink",
+        "name": "Synthwave Overdrive",
+        "swatch": [
+          "#ec4899",
+          "#831843",
+          "#38bdf8"
+        ],
+        "remap": {
+          "#06b6d4": "#ec4899",
+          "#0891b2": "#831843",
+          "#38bdf8": "#f472b6",
+          "#facc15": "#38bdf8"
+        }
+      },
+      {
+        "id": "volt_redline",
+        "name": "Crimson Blackout",
+        "swatch": [
+          "#ef4444",
+          "#18181b",
+          "#fde047"
+        ],
+        "remap": {
+          "#06b6d4": "#ef4444",
+          "#0891b2": "#18181b",
+          "#38bdf8": "#f87171",
+          "#facc15": "#fde047"
+        }
+      },
+      {
+        "id": "volt_toxic",
+        "name": "Plasma Viper",
+        "swatch": [
+          "#22c55e",
+          "#14532d",
+          "#facc15"
+        ],
+        "remap": {
+          "#06b6d4": "#22c55e",
+          "#0891b2": "#14532d",
+          "#38bdf8": "#4ade80",
+          "#facc15": "#e2e8f0"
+        }
+      }
+    ]
+  },
+  "arcade": {
+    "kaze": [
+      {
+        "stageIndex": 1,
+        "title": "STAGE 1 • ELEMENTAL VANGUARD",
+        "opponentId": "tophia",
+        "stageId": "storm_market",
+        "aiArchetype": "zoner",
+        "aiTempo": 1.05,
+        "opponentPalette": 0,
+        "isBoss": false,
+        "rivalryBanner": "WIND VS MONOLITH — ERODE THE GOLDEN FORTRESS!",
+        "unlockedSkills": [
+          "tophia_combo_1"
+        ]
+      },
+      {
+        "stageIndex": 2,
+        "title": "STAGE 2 • SANCTUARY GUARDIAN",
+        "opponentId": "ignis",
+        "stageId": "molten_forge",
+        "aiArchetype": "counter",
+        "aiTempo": 0.92,
+        "opponentPalette": 1,
+        "isBoss": false,
+        "rivalryBanner": "GALE VS MAGMA — DISPERSE THE VOLCANIC ASH!",
+        "unlockedSkills": [
+          "ignis_combo_1",
+          "ignis_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 3,
+        "title": "STAGE 3 • DESTINED RIVAL",
+        "opponentId": "volt",
+        "stageId": "storm_market",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.82,
+        "opponentPalette": 2,
+        "isBoss": false,
+        "rivalryBanner": "RIVAL CLASH — WIND SHINOBI VS THUNDER ASSASSIN!",
+        "unlockedSkills": [
+          "volt_combo_1",
+          "volt_combo_2",
+          "volt_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 4,
+        "title": "FINAL STAGE • OVERCHARGED IGNIS VULCANA",
+        "opponentId": "ignis",
+        "stageId": "molten_forge",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.72,
+        "opponentPalette": 3,
+        "isBoss": true,
+        "rivalryBanner": "FINAL BOSS — OVERCHARGED IGNIS VULCANA AWAKENS!",
+        "unlockedSkills": [
+          "ignis_combo_1",
+          "ignis_combo_2",
+          "ignis_elem_1",
+          "ignis_elem_2",
+          "ignis_def_1",
+          "ignis_def_2"
+        ]
+      }
+    ],
+    "ignis": [
+      {
+        "stageIndex": 1,
+        "title": "STAGE 1 • ELEMENTAL VANGUARD",
+        "opponentId": "kaze",
+        "stageId": "zephyr_dojo",
+        "aiArchetype": "zoner",
+        "aiTempo": 1.05,
+        "opponentPalette": 0,
+        "isBoss": false,
+        "rivalryBanner": "SCORCH THE SKY — BURN THROUGH THE HURRICANE!",
+        "unlockedSkills": [
+          "kaze_combo_1"
+        ]
+      },
+      {
+        "stageIndex": 2,
+        "title": "STAGE 2 • SANCTUARY GUARDIAN",
+        "opponentId": "volt",
+        "stageId": "storm_market",
+        "aiArchetype": "counter",
+        "aiTempo": 0.92,
+        "opponentPalette": 1,
+        "isBoss": false,
+        "rivalryBanner": "PLASMA & PYRE — OUTPACE THE LIGHTNING FLASH!",
+        "unlockedSkills": [
+          "volt_combo_1",
+          "volt_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 3,
+        "title": "STAGE 3 • DESTINED RIVAL",
+        "opponentId": "tophia",
+        "stageId": "storm_market",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.82,
+        "opponentPalette": 2,
+        "isBoss": false,
+        "rivalryBanner": "RIVAL CLASH — VOLCANIC FIST VS UNBREAKABLE EARTH!",
+        "unlockedSkills": [
+          "tophia_combo_1",
+          "tophia_combo_2",
+          "tophia_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 4,
+        "title": "FINAL STAGE • OVERCHARGED VOLT RAIDEN",
+        "opponentId": "volt",
+        "stageId": "storm_market",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.72,
+        "opponentPalette": 3,
+        "isBoss": true,
+        "rivalryBanner": "FINAL BOSS — OVERCHARGED VOLT RAIDEN AWAKENS!",
+        "unlockedSkills": [
+          "volt_combo_1",
+          "volt_combo_2",
+          "volt_elem_1",
+          "volt_elem_2",
+          "volt_def_1",
+          "volt_def_2"
+        ]
+      }
+    ],
+    "tophia": [
+      {
+        "stageIndex": 1,
+        "title": "STAGE 1 • ELEMENTAL VANGUARD",
+        "opponentId": "volt",
+        "stageId": "storm_market",
+        "aiArchetype": "zoner",
+        "aiTempo": 1.05,
+        "opponentPalette": 0,
+        "isBoss": false,
+        "rivalryBanner": "GROUND THE STORM — SHATTER THE CYBER BLITZ!",
+        "unlockedSkills": [
+          "volt_combo_1"
+        ]
+      },
+      {
+        "stageIndex": 2,
+        "title": "STAGE 2 • SANCTUARY GUARDIAN",
+        "opponentId": "kaze",
+        "stageId": "zephyr_dojo",
+        "aiArchetype": "counter",
+        "aiTempo": 0.92,
+        "opponentPalette": 1,
+        "isBoss": false,
+        "rivalryBanner": "SILENCE THE GALE — ANCHOR THE MOUNTAIN PEAK!",
+        "unlockedSkills": [
+          "kaze_combo_1",
+          "kaze_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 3,
+        "title": "STAGE 3 • DESTINED RIVAL",
+        "opponentId": "ignis",
+        "stageId": "molten_forge",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.82,
+        "opponentPalette": 2,
+        "isBoss": false,
+        "rivalryBanner": "RIVAL CLASH — IMPERIAL MONOLITH VS MOLTEN FURY!",
+        "unlockedSkills": [
+          "ignis_combo_1",
+          "ignis_combo_2",
+          "ignis_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 4,
+        "title": "FINAL STAGE • OVERCHARGED KAZE HAYABUSA",
+        "opponentId": "kaze",
+        "stageId": "zephyr_dojo",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.72,
+        "opponentPalette": 3,
+        "isBoss": true,
+        "rivalryBanner": "FINAL BOSS — OVERCHARGED KAZE HAYABUSA AWAKENS!",
+        "unlockedSkills": [
+          "kaze_combo_1",
+          "kaze_combo_2",
+          "kaze_elem_1",
+          "kaze_elem_2",
+          "kaze_def_1",
+          "kaze_def_2"
+        ]
+      }
+    ],
+    "volt": [
+      {
+        "stageIndex": 1,
+        "title": "STAGE 1 • ELEMENTAL VANGUARD",
+        "opponentId": "ignis",
+        "stageId": "molten_forge",
+        "aiArchetype": "zoner",
+        "aiTempo": 1.05,
+        "opponentPalette": 0,
+        "isBoss": false,
+        "rivalryBanner": "HIGH-VOLTAGE OVERLOAD — CRUSH THE IRON ANVIL!",
+        "unlockedSkills": [
+          "ignis_combo_1"
+        ]
+      },
+      {
+        "stageIndex": 2,
+        "title": "STAGE 2 • SANCTUARY GUARDIAN",
+        "opponentId": "tophia",
+        "stageId": "storm_market",
+        "aiArchetype": "counter",
+        "aiTempo": 0.92,
+        "opponentPalette": 1,
+        "isBoss": false,
+        "rivalryBanner": "PIERCE THE MONOLITH — SHATTER GOLD WITH LIGHTNING!",
+        "unlockedSkills": [
+          "tophia_combo_1",
+          "tophia_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 3,
+        "title": "STAGE 3 • DESTINED RIVAL",
+        "opponentId": "kaze",
+        "stageId": "zephyr_dojo",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.82,
+        "opponentPalette": 2,
+        "isBoss": false,
+        "rivalryBanner": "RIVAL CLASH — SUPERSONIC SPARK VS RAZOR WIND!",
+        "unlockedSkills": [
+          "kaze_combo_1",
+          "kaze_combo_2",
+          "kaze_elem_1"
+        ]
+      },
+      {
+        "stageIndex": 4,
+        "title": "FINAL STAGE • OVERCHARGED TOPHIA STONEHEART",
+        "opponentId": "tophia",
+        "stageId": "storm_market",
+        "aiArchetype": "rushdown",
+        "aiTempo": 0.72,
+        "opponentPalette": 3,
+        "isBoss": true,
+        "rivalryBanner": "FINAL BOSS — OVERCHARGED TOPHIA STONEHEART AWAKENS!",
+        "unlockedSkills": [
+          "tophia_combo_1",
+          "tophia_combo_2",
+          "tophia_elem_1",
+          "tophia_elem_2",
+          "tophia_def_1",
+          "tophia_def_2"
+        ]
+      }
+    ]
+  }
+}

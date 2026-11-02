@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_7mvpy"]
+
+[resource]
+script = ExtResource("1_7mvpy")
+fighter_id = "tophia"
+display_name = "Tophia"
+subtitle = "Cavaleira de Arenito"
+element_label = "TERRA"
+accent_color = Color(0.59607846, 0.3254902, 0.12156863, 1)
+scene_path = "res://scenes/fighters/tophia.tscn"
+glb_path = "res://assets/characters/tophia/tophia.glb"
+material_path = "res://materials/characters/tophia.tres"
+portrait_path = "res://assets/ui/portraits/tophia.png"
+albedo_path = "res://assets/characters/tophia/textures/albedo.png"
+mask_path = "res://assets/characters/tophia/textures/mask.png"
+normal_path = "res://assets/characters/tophia/textures/normal.png"
+palettes = [{
+"accent": "#FFA834",
+"name": "Arenito Laranja",
+"primary": "#C86428",
+"secondary": "#8C421A"
+}, {
+"accent": "#38BDF8",
+"name": "Geodo Ametista",
+"primary": "#7E22CE",
+"secondary": "#4C1D95"
+}, {
+"accent": "#FDE047",
+"name": "Rocha Rubi",
+"primary": "#BE123C",
+"secondary": "#4C0519"
+}, {
+"accent": "#10B981",
+"name": "Monólito de Mármore",
+"primary": "#CBD5E1",
+"secondary": "#475569"
+}]
+attack_icons = {
+"elemental": "res://assets/ui/icons/tophia_elemental.png",
+"heavy": "res://assets/ui/icons/tophia_heavy.png",
+"light": "res://assets/ui/icons/tophia_light.png",
+"ultimate": "res://assets/ui/icons/tophia_ultimate.png"
+}
+gdd_moves = {
+"elemental": {
+"behavior": "Faixa frontal fixa com aviso no piso e arremesso de objetos.",
+"counter": "Saltar a sequência ou sair da faixa anunciada.",
+"name": "Erupção Rochosa",
+"sequence": "Encosta a manopla no chão; fissura laranja avança; três espinhos surgem."
+},
+"heavy": {
+"behavior": "Golpe único em arco pesado. Armadura é visual, sem invencibilidade automática.",
+"counter": "Recuar ou punir o arco quando errar.",
+"name": "Martelo de Pedra",
+"sequence": "Recolhe o punho no ombro; gira o tronco; golpeia de cima para baixo."
+},
+"light": {
+"behavior": "Três entradas; pisão final gera poeira e empurrão curto.",
+"counter": "Bloquear os socos; recuar para fazer o pisão errar.",
+"name": "Punho de Arenito",
+"sequence": "J1 soco reto direito; J2 cruzado esquerdo; J3 pisão frontal com bota de pedra."
+},
+"ultimate": {
+"behavior": "Ataque amplo frontal de grande alcance com punho de pedra projetado.",
+"counter": "Sair da frente durante a formação; punir a recuperação.",
+"name": "Colosso de Terra",
+"sequence": "Finca os pés e cruza os braços; placas flutuam; projeta punho colossal à frente."
+}
+}
+clips = {
+"air_punch": "air_punch",
+"breaker": "breaker",
+"crouch": "crouch",
+"dash": "dash",
+"down_punch": "down_punch",
+"elemental": "elemental",
+"get_up": "get_up",
+"guard_high": "guard_high",
+"guard_low": "guard_low",
+"heavy": "heavy",
+"hit": "hit",
+"idle": "idle",
+"jump_air": "jump_air",
+"jump_land": "jump_land",
+"jump_start": "jump_start",
+"knockdown": "knockdown",
+"ko": "ko",
+"light_1": "light_1",
+"light_2": "light_2",
+"light_3": "light_3",
+"parry": "parry",
+"select": "select",
+"sweep": "sweep",
+"ultimate": "ultimate",
+"victory": "victory",
+"walk_back": "walk_back",
+"walk_forward": "walk_forward"
+}

@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_umqw4"]
+
+[resource]
+script = ExtResource("1_umqw4")
+fighter_id = "volt"
+display_name = "Volt"
+subtitle = "Inventor da Sucata Elétrica"
+element_label = "RAIO"
+accent_color = Color(0.1254902, 0.41568628, 0.4862745, 1)
+scene_path = "res://scenes/fighters/volt.tscn"
+glb_path = "res://assets/characters/volt/volt.glb"
+material_path = "res://materials/characters/volt.tres"
+portrait_path = "res://assets/ui/portraits/volt.png"
+albedo_path = "res://assets/characters/volt/textures/albedo.png"
+mask_path = "res://assets/characters/volt/textures/mask.png"
+normal_path = "res://assets/characters/volt/textures/normal.png"
+palettes = [{
+"accent": "#22E4FF",
+"name": "Sucata Ciano",
+"primary": "#D49B38",
+"secondary": "#435C6E"
+}, {
+"accent": "#38BDF8",
+"name": "Sobrecarga Neon",
+"primary": "#DB2777",
+"secondary": "#31102F"
+}, {
+"accent": "#FDE047",
+"name": "Curto Carmesim",
+"primary": "#DC2626",
+"secondary": "#18181B"
+}, {
+"accent": "#FACC15",
+"name": "Bateria Tóxica",
+"primary": "#16A34A",
+"secondary": "#14532D"
+}]
+attack_icons = {
+"elemental": "res://assets/ui/icons/volt_elemental.png",
+"heavy": "res://assets/ui/icons/volt_heavy.png",
+"light": "res://assets/ui/icons/volt_light.png",
+"ultimate": "res://assets/ui/icons/volt_ultimate.png"
+}
+gdd_moves = {
+"elemental": {
+"behavior": "Área curta ao redor que interrompe aproximação e arremessa objetos.",
+"counter": "Recuar diante do aviso elétrico; atacar após o pulso.",
+"name": "Curto-Circuito",
+"sequence": "Abaixa o canhão e aciona a bateria no peito; pulso elétrico circular expande."
+},
+"heavy": {
+"behavior": "Carga fixa e projétil grande de maior impacto, sem carga infinita.",
+"counter": "Pressionar durante a carga ou saltar o projétil.",
+"name": "Disparo Carregado",
+"sequence": "Firma o canhão com as duas mãos; acumula esfera ciano; dispara com recuo."
+},
+"light": {
+"behavior": "Três tiros visíveis; J2 muda a altura do disparo. Sem munição ou calor.",
+"counter": "Bloquear ou saltar conforme a altura; aproximar entre disparos.",
+"name": "Tiro de Sucata",
+"sequence": "J1 tiro em pé; J2 tiro agachado baixo; J3 disparo curto com as duas mãos."
+},
+"ultimate": {
+"behavior": "Feixe frontal em linha fixa com recuo extremo.",
+"counter": "Saltar antes do feixe ou sair da linha durante o aviso.",
+"name": "Sobrecarga Total",
+"sequence": "Ancora os pés e conecta a bateria ao canhão; dispara feixe horizontal enorme."
+}
+}
+clips = {
+"air_punch": "air_punch",
+"breaker": "breaker",
+"crouch": "crouch",
+"dash": "dash",
+"down_punch": "down_punch",
+"elemental": "elemental",
+"get_up": "get_up",
+"guard_high": "guard_high",
+"guard_low": "guard_low",
+"heavy": "heavy",
+"hit": "hit",
+"idle": "idle",
+"jump_air": "jump_air",
+"jump_land": "jump_land",
+"jump_start": "jump_start",
+"knockdown": "knockdown",
+"ko": "ko",
+"light_1": "light_1",
+"light_2": "light_2",
+"light_3": "light_3",
+"parry": "parry",
+"select": "select",
+"sweep": "sweep",
+"ultimate": "ultimate",
+"victory": "victory",
+"walk_back": "walk_back",
+"walk_forward": "walk_forward"
+}

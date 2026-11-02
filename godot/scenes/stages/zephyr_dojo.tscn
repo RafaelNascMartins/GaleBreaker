@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://duq0tkw870wqt"]
+
+[ext_resource type="PackedScene" uid="uid://17w75uemk2u4" path="res://assets/environments/zephyr_dojo/stage.glb" id="1_m0i2x"]
+
+[node name="ZephyrDojoStage" type="Node3D" unique_id=1914276591]
+
+[node name="Environment" parent="." unique_id=583676598 instance=ExtResource("1_m0i2x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.019799054, -0.10098028, 0.05239296)
+
+[node name="Props" type="Node3D" parent="." unique_id=2048255355]

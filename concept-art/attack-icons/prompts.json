@@ -1,0 +1,140 @@
+{
+  "tool": "image_gen built-in",
+  "transparent_background": true,
+  "actions": [
+    "light",
+    "heavy",
+    "elemental",
+    "ultimate"
+  ],
+  "icons": [
+    {
+      "id": "kaze_light",
+      "fighter": "kaze",
+      "action": "light",
+      "name": "Palma de Jade",
+      "filename": "kaze_light.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: An open bare monk hand viewed three-quarter, fingers together in a forward palm strike, jade-green cloth wrist wrap, one compact emerald wind spiral circling the palm. Warm natural skin, jade cloth, mint highlight. No armored glove. Readable open-hand silhouette."
+    },
+    {
+      "id": "kaze_heavy",
+      "fighter": "kaze",
+      "action": "heavy",
+      "name": "Chute do Vendaval",
+      "filename": "kaze_heavy.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A single BARE FOOT with exposed toes and a simple jade-green monk trouser cuff, delivering a sweeping diagonal kick. One strong crescent-shaped emerald wind slash follows the heel. It must clearly read as a bare-foot kick, not a punch and not a boot. Warm skin, deep jade, pale mint."
+    },
+    {
+      "id": "kaze_elemental",
+      "fighter": "kaze",
+      "action": "elemental",
+      "name": "Rajada de Vento",
+      "filename": "kaze_elemental.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A concentrated horizontal JADE-GREEN WIND WAVE traveling right, three large clean curved wind ribbons forming one arrowlike sweep with a bright mint leading edge. Air and motion only; no hand, no weapon, no character. Emerald and mint with dark jade outline."
+    },
+    {
+      "id": "kaze_ultimate",
+      "fighter": "kaze",
+      "action": "ultimate",
+      "name": "Tufão Celestial",
+      "filename": "kaze_ultimate.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A towering compact emerald TORNADO / TYPHOON emblem, wide spiral crown tapering to a point, three thick ribbon bands winding vertically around a bright mint core. One subtle jade circular halo behind the top. Powerful and majestic, clearly vertical cyclone, not a horizontal wave. No character or text."
+    },
+    {
+      "id": "ignis_light",
+      "fighter": "ignis",
+      "action": "light",
+      "name": "Soco de Roça",
+      "filename": "ignis_light.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One massive BARE SUNBURNED RED male fist punching forward, coarse farmer bruiser proportions, simple natural knuckles, absolutely no gauntlet or armor. A small warm orange impact wedge behind the fist. Distinct red sunburned skin and dark red shadows; no blood and no injury."
+    },
+    {
+      "id": "ignis_heavy",
+      "fighter": "ignis",
+      "action": "heavy",
+      "name": "Marreta Caipira",
+      "filename": "ignis_heavy.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: Two huge BARE SUNBURNED RED hands clasped together in a DOUBLE-FIST DOWNWARD HAMMER BLOW, with one thick orange downward impact chevron. Bare fists and forearms only, no tool, no actual hammer, no metal armor. Bold crimson skin and amber-orange impact; muscular country bruiser attack."
+    },
+    {
+      "id": "ignis_elemental",
+      "fighter": "ignis",
+      "action": "elemental",
+      "name": "Pisada da Fornalha",
+      "filename": "ignis_elemental.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One scuffed brown COWBOY BOOT stomping down, squared heel and broad toe, blue denim cuff above, one chunky orange-red fire-and-dust shock ring exploding at the sole. Simple clear stomp emblem. No bare foot, no sci-fi boot. Brown leather, denim blue, fiery amber and red."
+    },
+    {
+      "id": "ignis_ultimate",
+      "fighter": "ignis",
+      "action": "ultimate",
+      "name": "Fúria do Meio-Dia",
+      "filename": "ignis_ultimate.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A weathered broad-brimmed brown COWBOY HAT silhouette in front of a blazing CRIMSON SUN with four broad flame-like orange rays. The hat is the iconic focal silhouette of a sunburned country bruiser's ultimate. Hat plus powerful hot sun, no face, no skull, no lettering. Dark brown, crimson, burnt orange, small pale hot core."
+    },
+    {
+      "id": "tophia_light",
+      "fighter": "tophia",
+      "action": "light",
+      "name": "Punho de Arenito",
+      "filename": "tophia_light.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One large clenched KNIGHT GAUNTLET MADE OF BURNT-ORANGE STONE punching forward. All fingers fully encased in overlapping rock segments. Matte orange sandstone, a few chunky facets and dark rust seams, one small orange stone-chip impact wedge. No exposed flesh, no gray stone, no metallic gold."
+    },
+    {
+      "id": "tophia_heavy",
+      "fighter": "tophia",
+      "action": "heavy",
+      "name": "Martelo de Pedra",
+      "filename": "tophia_heavy.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One immense blocky burnt-orange STONE ARMORED FIST descending vertically like a hammer, forearm as thick overlapping knight stone plates, a wide angular impact burst of three large rock chunks below. Distinguish from a forward punch by the clear downward composition and heavy squared mass. No actual metal hammer, no flesh, no lava; matte orange natural stone."
+    },
+    {
+      "id": "tophia_elemental",
+      "fighter": "tophia",
+      "action": "elemental",
+      "name": "Erupção Rochosa",
+      "filename": "tophia_elemental.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: Three dramatic angular BURNT-ORANGE SANDSTONE SPIRES erupting upward from one compact broken stone base, center spire tallest, big readable triangular silhouettes. A few large separated fragments, not many tiny debris dots. Orange natural stone, dark rust edges, warm ochre highlights. No lava, no flames, no metallic gold."
+    },
+    {
+      "id": "tophia_ultimate",
+      "fighter": "tophia",
+      "action": "ultimate",
+      "name": "Colosso de Terra",
+      "filename": "tophia_ultimate.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A monumental KNIGHT ARMOR BUST MADE ENTIRELY OF ORANGE ROCK emerging above two massive geometric orange stone shoulder slabs, the small exposed head indicated only as a tiny dark short-hair silhouette at the top. Heroic full stone gorget and chest, a broad circular amber earth-power halo behind the shoulders. Iconic compact colossus silhouette, not a detailed portrait. Matte burnt-orange sandstone, deep rust shadows, tiny amber highlights. No exposed skin below head, no helmet, no gray rock or molten lava."
+    },
+    {
+      "id": "volt_light",
+      "fighter": "volt",
+      "action": "light",
+      "name": "Tiro de Sucata",
+      "filename": "volt_light.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One SHORT-BARRELED HAND CANNON made of mismatched scratched mustard and faded-blue scrap plates, chunky round muzzle, compact cyan-lit energy chamber, shown side-on pointing RIGHT and firing ONE small sharp cyan bolt. Clear improvised junk blaster silhouette, not a realistic firearm, not a rifle, no hands. No internal schematic or lettering."
+    },
+    {
+      "id": "volt_heavy",
+      "fighter": "volt",
+      "action": "heavy",
+      "name": "Disparo Carregado",
+      "filename": "volt_heavy.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: A compact improvised JUNK HAND CANNON tilted diagonally upward, battered mustard scrap shell and cyan chamber, projecting ONE large concentrated cyan energy orb from the round muzzle with a short thick recoil flare behind. Focus on a large charged shot and diagonal composition, distinct from the small horizontal basic bolt. Fantastical blaster, not a realistic firearm, no technical schematic."
+    },
+    {
+      "id": "volt_elemental",
+      "fighter": "volt",
+      "action": "elemental",
+      "name": "Curto-Circuito",
+      "filename": "volt_elemental.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One battered SALVAGED BATTERY made of rusted scrap metal with a faded mustard casing, a bright CYAN ENERGY CORE and ONE large forked cyan lightning arc bridging two crude terminals. One simple black cable loop. Handmade junk technology, clearly battery and electrical surge, not a polished sci-fi jewel or factory-perfect armor."
+    },
+    {
+      "id": "volt_ultimate",
+      "fighter": "volt",
+      "action": "ultimate",
+      "name": "Sobrecarga Total",
+      "filename": "volt_ultimate.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE standalone square ability icon for original elemental fighting game GALE BREAKER. True transparent background with alpha. No text, no letters, no numbers, no watermark, no frame, no badge border, no background scenery, no cast shadow rectangle. Single centered bold emblem that remains readable at 64 pixels: 1 dominant subject, 2-3 supporting effect shapes at most, clear silhouette, generous 12% transparent padding on all sides, everything fully within the square. Cohesive premium hand-painted cel-shaded fantasy game UI icon style, crisp clean dark-ink outer contour of medium thickness, hard two-tone shading with a small restrained highlight, slightly exaggerated simplified forms rather than photorealism. The subject is an attack pictogram, not a detailed character illustration or a concept sheet. Strong local colors and clean polished shapes; no clouds of tiny sparks or clutter. All skin, stone, junk and equipment should respect the redesign described.\nAttack: One oversized improvised SCRAP HAND CANNON viewed three-quarter side-on, short battered mustard-and-blue canister shell, cyan power core OVERCHARGED into one massive broad cyan-white beam cone sweeping diagonally toward the upper right. One bold broken cyan lightning ring around the rear energy chamber. Strong final attack emblem, distinguish the broad beam from a small bolt and energy orb. Fantastical game weapon, no realistic weapon engineering, no text, no tiny wiring clutter."
+    }
+  ]
+}

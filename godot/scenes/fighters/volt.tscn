@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/volt/volt.glb" id="1_k1v0o"]
+
+[node name="VoltFighter" type="Node3D" unique_id=8330842]
+
+[node name="ModelPivot" type="Node3D" parent="." unique_id=160264739]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Model" type="Node3D" parent="ModelPivot" unique_id=935060322 instance=ExtResource("1_k1v0o")]
+
+[node name="socket_root" type="Marker3D" parent="." unique_id=2121073611]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+
+[node name="socket_chest" type="Marker3D" parent="." unique_id=2078790902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.25)
+
+[node name="socket_hand_l" type="Marker3D" parent="." unique_id=236102623]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.15, -0.45)
+
+[node name="socket_hand_r" type="Marker3D" parent="." unique_id=1833066626]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.15, -0.45)
+
+[node name="socket_foot_r" type="Marker3D" parent="." unique_id=1819872685]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.25, -0.45)
+
+[node name="socket_muzzle" type="Marker3D" parent="." unique_id=466505374]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.1, -0.85)

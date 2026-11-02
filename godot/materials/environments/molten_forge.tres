@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_ary7u"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ary7u")
+shader_parameter/base_color = Color(0.10980392, 0.09803922, 0.09019608, 1)
+shader_parameter/glow = null
+shader_parameter/use_textures = null
+shader_parameter/palette_primary = null
+shader_parameter/palette_secondary = null
+shader_parameter/palette_accent = null
+shader_parameter/flash_amount = null

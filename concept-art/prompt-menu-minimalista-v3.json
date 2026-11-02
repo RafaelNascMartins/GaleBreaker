@@ -1,0 +1,7 @@
+{
+  "tool": "ImageGen nativo",
+  "mode": "edit",
+  "reference": "menu-principal-v2.png",
+  "output": "menu-principal-v3.png",
+  "prompt": "Edit the provided main menu concept. Make ONLY these requested changes: remove the entire subtitle ELEMENTAL CLASH beneath GALE BREAKER, leaving the main title GALE BREAKER as the only game name; completely remove Kaze, the bald monk standing on the right, including his entire body, green clothing and feet. Seamlessly reconstruct the empty stone terrace, stairs, mountain mist and sanctuary landscape where he stood. No people or characters anywhere. Preserve the original 16:9 composition, elegant minimal typography, main title position, thin gold divider, jade Arcade selection marker, Portuguese menu text ARCADE / VERSUS LOCAL / TREINO / HABILIDADES / OPÇÕES / SAIR, bottom navigation hints, sunset mountain sanctuary, torii gate, distant temple, cherry blossoms, lanterns, lighting and painterly style. Empty scenic right side, no replacement figure, no added logos or text."
+}

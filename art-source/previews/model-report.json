@@ -1,0 +1,26 @@
+[
+  {
+    "fighter": "kaze",
+    "triangles": 5180,
+    "animations": 27,
+    "bytes": 1058252
+  },
+  {
+    "fighter": "ignis",
+    "triangles": 5444,
+    "animations": 27,
+    "bytes": 1092068
+  },
+  {
+    "fighter": "tophia",
+    "triangles": 4656,
+    "animations": 27,
+    "bytes": 1085080
+  },
+  {
+    "fighter": "volt",
+    "triangles": 4636,
+    "animations": 27,
+    "bytes": 1090328
+  }
+]

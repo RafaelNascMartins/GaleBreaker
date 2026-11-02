@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/tophia/tophia.glb" id="1_boir7"]
+
+[node name="TophiaFighter" type="Node3D" unique_id=747966441]
+
+[node name="ModelPivot" type="Node3D" parent="." unique_id=524590710]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Model" type="Node3D" parent="ModelPivot" unique_id=1949720784 instance=ExtResource("1_boir7")]
+
+[node name="socket_root" type="Marker3D" parent="." unique_id=1175616220]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+
+[node name="socket_chest" type="Marker3D" parent="." unique_id=1992391271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.25)
+
+[node name="socket_hand_l" type="Marker3D" parent="." unique_id=739682786]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.15, -0.45)
+
+[node name="socket_hand_r" type="Marker3D" parent="." unique_id=182335846]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.15, -0.45)
+
+[node name="socket_foot_r" type="Marker3D" parent="." unique_id=2017913697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.25, -0.45)
+
+[node name="socket_muzzle" type="Marker3D" parent="." unique_id=902634088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 1.1, -0.85)

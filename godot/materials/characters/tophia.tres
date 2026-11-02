@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_dnw4q"]
+[ext_resource type="Texture2D" path="res://assets/characters/tophia/textures/albedo.png" id="2_2yovq"]
+[ext_resource type="Texture2D" path="res://assets/characters/tophia/textures/mask.png" id="3_bp3ld"]
+[ext_resource type="Texture2D" path="res://assets/characters/tophia/textures/normal.png" id="4_uwuku"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dnw4q")
+shader_parameter/base_color = null
+shader_parameter/glow = null
+shader_parameter/use_textures = true
+shader_parameter/albedo_tex = ExtResource("2_2yovq")
+shader_parameter/mask_tex = ExtResource("3_bp3ld")
+shader_parameter/normal_tex = ExtResource("4_uwuku")
+shader_parameter/palette_primary = Color(0.78431374, 0.39215687, 0.15686275, 1)
+shader_parameter/palette_secondary = Color(0.54901963, 0.25882354, 0.101960786, 1)
+shader_parameter/palette_accent = Color(1, 0.65882355, 0.20392157, 1)
+shader_parameter/flash_amount = null

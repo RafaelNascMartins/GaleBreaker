@@ -1,0 +1,194 @@
+[
+  {
+    "hp1": 0.0,
+    "hp2": 113.4,
+    "p1": "kaze",
+    "p2": "kaze",
+    "ticks": 6641,
+    "winner": 2,
+    "wins": [
+      1,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 155.0,
+    "p1": "kaze",
+    "p2": "ignis",
+    "ticks": 3534,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 230.0,
+    "p1": "kaze",
+    "p2": "tophia",
+    "ticks": 3092,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 239.0,
+    "p1": "kaze",
+    "p2": "volt",
+    "ticks": 4059,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 263.6,
+    "hp2": 0.0,
+    "p1": "ignis",
+    "p2": "kaze",
+    "ticks": 2875,
+    "winner": 1,
+    "wins": [
+      2,
+      0
+    ]
+  },
+  {
+    "hp1": 68.0,
+    "hp2": 0.0,
+    "p1": "ignis",
+    "p2": "ignis",
+    "ticks": 4253,
+    "winner": 1,
+    "wins": [
+      2,
+      0
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 548.0,
+    "p1": "ignis",
+    "p2": "tophia",
+    "ticks": 3492,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 517.0,
+    "p1": "ignis",
+    "p2": "volt",
+    "ticks": 3668,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 427.0,
+    "hp2": 0.0,
+    "p1": "tophia",
+    "p2": "kaze",
+    "ticks": 5240,
+    "winner": 1,
+    "wins": [
+      2,
+      1
+    ]
+  },
+  {
+    "hp1": 491.0,
+    "hp2": 0.0,
+    "p1": "tophia",
+    "p2": "ignis",
+    "ticks": 5476,
+    "winner": 1,
+    "wins": [
+      2,
+      1
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 316.0,
+    "p1": "tophia",
+    "p2": "tophia",
+    "ticks": 5235,
+    "winner": 2,
+    "wins": [
+      1,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 1.0,
+    "p1": "tophia",
+    "p2": "volt",
+    "ticks": 4880,
+    "winner": 2,
+    "wins": [
+      1,
+      2
+    ]
+  },
+  {
+    "hp1": 196.0,
+    "hp2": 0.0,
+    "p1": "volt",
+    "p2": "kaze",
+    "ticks": 6396,
+    "winner": 1,
+    "wins": [
+      2,
+      1
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 364.2,
+    "p1": "volt",
+    "p2": "ignis",
+    "ticks": 1966,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 262.0,
+    "p1": "volt",
+    "p2": "tophia",
+    "ticks": 5230,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  },
+  {
+    "hp1": 0.0,
+    "hp2": 365.2,
+    "p1": "volt",
+    "p2": "volt",
+    "ticks": 2926,
+    "winner": 2,
+    "wins": [
+      0,
+      2
+    ]
+  }
+]

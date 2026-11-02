@@ -1,0 +1,124 @@
+{
+  "tool": "image_gen built-in",
+  "version": 1,
+  "actions": [
+    "light",
+    "heavy",
+    "elemental",
+    "ultimate"
+  ],
+  "icons": [
+    {
+      "id": "kaze_light",
+      "fighter": "kaze",
+      "action": "light",
+      "name": "Palma de Jade",
+      "filename": "kaze_light.png"
+    },
+    {
+      "id": "kaze_heavy",
+      "fighter": "kaze",
+      "action": "heavy",
+      "name": "Chute do Vendaval",
+      "filename": "kaze_heavy.png"
+    },
+    {
+      "id": "kaze_elemental",
+      "fighter": "kaze",
+      "action": "elemental",
+      "name": "Rajada de Vento",
+      "filename": "kaze_elemental.png"
+    },
+    {
+      "id": "kaze_ultimate",
+      "fighter": "kaze",
+      "action": "ultimate",
+      "name": "Tufão Celestial",
+      "filename": "kaze_ultimate.png"
+    },
+    {
+      "id": "ignis_light",
+      "fighter": "ignis",
+      "action": "light",
+      "name": "Soco de Roça",
+      "filename": "ignis_light.png"
+    },
+    {
+      "id": "ignis_heavy",
+      "fighter": "ignis",
+      "action": "heavy",
+      "name": "Marreta Caipira",
+      "filename": "ignis_heavy.png"
+    },
+    {
+      "id": "ignis_elemental",
+      "fighter": "ignis",
+      "action": "elemental",
+      "name": "Pisada da Fornalha",
+      "filename": "ignis_elemental.png"
+    },
+    {
+      "id": "ignis_ultimate",
+      "fighter": "ignis",
+      "action": "ultimate",
+      "name": "Fúria do Meio-Dia",
+      "filename": "ignis_ultimate.png"
+    },
+    {
+      "id": "tophia_light",
+      "fighter": "tophia",
+      "action": "light",
+      "name": "Punho de Arenito",
+      "filename": "tophia_light.png"
+    },
+    {
+      "id": "tophia_heavy",
+      "fighter": "tophia",
+      "action": "heavy",
+      "name": "Martelo de Pedra",
+      "filename": "tophia_heavy.png"
+    },
+    {
+      "id": "tophia_elemental",
+      "fighter": "tophia",
+      "action": "elemental",
+      "name": "Erupção Rochosa",
+      "filename": "tophia_elemental.png"
+    },
+    {
+      "id": "tophia_ultimate",
+      "fighter": "tophia",
+      "action": "ultimate",
+      "name": "Colosso de Terra",
+      "filename": "tophia_ultimate.png"
+    },
+    {
+      "id": "volt_light",
+      "fighter": "volt",
+      "action": "light",
+      "name": "Tiro de Sucata",
+      "filename": "volt_light.png"
+    },
+    {
+      "id": "volt_heavy",
+      "fighter": "volt",
+      "action": "heavy",
+      "name": "Disparo Carregado",
+      "filename": "volt_heavy.png"
+    },
+    {
+      "id": "volt_elemental",
+      "fighter": "volt",
+      "action": "elemental",
+      "name": "Curto-Circuito",
+      "filename": "volt_elemental.png"
+    },
+    {
+      "id": "volt_ultimate",
+      "fighter": "volt",
+      "action": "ultimate",
+      "name": "Sobrecarga Total",
+      "filename": "volt_ultimate.png"
+    }
+  ]
+}

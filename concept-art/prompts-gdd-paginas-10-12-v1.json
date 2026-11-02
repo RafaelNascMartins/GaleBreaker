@@ -1,0 +1,29 @@
+{
+  "tool": "ImageGen nativo",
+  "purpose": "Revisão visual das páginas 10 e 12 do GDD",
+  "assets": [
+    {
+      "output": "infografico-habilidades-v1.png",
+      "references": [
+        "C:/Users/Rafael/Downloads/gale-breaker_-elemental-clash/concept-art/personagens-v2.png"
+      ],
+      "prompt": "Create an elegant illustrated INFOGRAPHIC for a light editorial game design document. Wide panoramic 3:1 canvas, warm ivory background, charcoal ink, jade green and muted terracotta accents. Crisp readable painted game concept vignettes and fine vector-like arrows, generous whitespace. Three equal main stages linked left to right with arrows. Stage 1 exact label \"ESCOLHA\": approved Kaze full body beside four small abstract character-selection slots, do not draw other faces. Stage 2 exact label \"COMBINE\": hand arranging a few illustrated ability cards (shield, wind, fist) under a bank of exactly FOUR jade point tokens. Exact label above tokens \"4 NO PROTÓTIPO\" and small label below \"LIMITE DE PONTOS\". Do not place cost numbers on cards, do not imply four ability slots, no currency shop or locks. Stage 3 exact label \"LUTE\": small readable side-view scene of Kaze vs Ignis in combat, full bodies. Bottom small row with THREE understated illustrated emblems and exact labels: \"ARCADE\" under a tower of four steps, \"VERSUS LOCAL\" under two game controllers, \"TREINO\" under a training dummy. No other text. Convey choosing a fighter, freely combining abilities within point budget before combat, then playing modes. These are conceptual illustrations, not screenshots. Use ONLY the FIRST TWO characters from character reference: Kaze is a tall bald barefoot adult male jade-green monk; Ignis is a huge hunched muscular country cowboy with brown cowboy hat, shirtless sunburn-red head shoulders arms and pale chest, blue jeans and brown boots. Preserve their approved costumes. No long hair on Kaze, no red spiky hair on Ignis."
+    },
+    {
+      "output": "menu-pausa-v2.png",
+      "references": [
+        "C:/Users/Rafael/Downloads/gale-breaker_-elemental-clash/concept-art/personagens-v2.png",
+        "C:/Users/Rafael/Downloads/gale-breaker_-elemental-clash/concept-art/menu-principal-v3.png"
+      ],
+      "prompt": "Create a polished 16:9 PAUSE MENU concept for Gale Breaker. First reference gives character identities; second gives sanctuary setting and minimal jade/ivory typography. Use ONLY the FIRST TWO characters from character reference: Kaze is a tall bald barefoot adult male jade-green monk; Ignis is a huge hunched muscular country cowboy with brown cowboy hat, shirtless sunburn-red head shoulders arms and pale chest, blue jeans and brown boots. Preserve their approved costumes. No long hair on Kaze, no red spiky hair on Ignis. Show Kaze standing LEFT facing right and Ignis RIGHT facing left on a stone sanctuary arena. BOTH full bodies including feet visible, fighting frozen with no attack VFX, backdrop dimmed and gently softened. HUD behind overlay: left KAZE health bar and bald portrait, right IGNIS health bar and cowboy portrait, centered timer \"99\", simple round dots. In center a compact beautiful warm ivory translucent vertical menu panel, fine jade edge, restrained serif heading \"PAUSA\", followed by \"CONTINUAR\" (jade highlight), \"OPÇÕES\", \"VOLTAR AO MENU\". Bottom small hint \"ESC · CONTINUAR\". Very minimal, no excessive ornament, no extra character art, no skill list, no additional buttons. Main figures remain visible at sides of narrow panel. Do NOT include Elemental Clash anywhere. Authentic game mockup, clean and legible."
+    },
+    {
+      "output": "hud-combate-v2.png",
+      "references": [
+        "C:/Users/Rafael/Downloads/gale-breaker_-elemental-clash/concept-art/personagens-v2.png",
+        "C:/Users/Rafael/Downloads/gale-breaker_-elemental-clash/concept-art/menu-principal-v3.png"
+      ],
+      "prompt": "Create a polished 16:9 in-game COMBAT HUD concept for Gale Breaker. First reference for character identities, second for stone sanctuary sunset environment and restrained jade/ivory graphic language. Use ONLY the FIRST TWO characters from character reference: Kaze is a tall bald barefoot adult male jade-green monk; Ignis is a huge hunched muscular country cowboy with brown cowboy hat, shirtless sunburn-red head shoulders arms and pale chest, blue jeans and brown boots. Preserve their approved costumes. No long hair on Kaze, no red spiky hair on Ignis. Side view: Kaze LEFT performing open palm toward right, Ignis RIGHT guarding with red forearms, full bodies and feet well within frame, stone floor, distant torii and mountain mist. Keep characters as painted stylized game models, readable and separated. TOP HUD: elegant slim jade life bar for KAZE on left with correctly bald portrait, terracotta life bar for IGNIS on right with correct cowboy portrait; centered large timer \"99\", small text \"ROUND 1\" and two round indicator dots per player. Bottom corners: unobtrusive elemental-energy meters, labels \"VENTO\" left and \"FOGO\" right, one simple diamond ultimate indicator each. Small clear \"3 ACERTOS\" feedback near upper left side of action. All controls and gauges stay away from fighter feet and torso. No pause overlay, no character selection screen, no shop, no extraneous panels, no title or Elemental Clash. Focus on readable combat, modern minimal typography, warm ivory HUD labels, restrained gold separators."
+    }
+  ]
+}

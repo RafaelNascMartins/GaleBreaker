@@ -1,0 +1,264 @@
+[
+  {
+    "id": "kaze-light",
+    "fighter": "kaze",
+    "action": "light",
+    "name": "Palma de Jade",
+    "filename": "kaze-j123-v1.png",
+    "sequence": "Palma frontal; duas palmas em movimento vertical; chute frontal.",
+    "behavior": "Curto alcance. Encadear até três entradas de básico; J3 afasta o alvo.",
+    "counter": "Bloquear a sequência ou punir o chute se errar.",
+    "cost": "Sem custo proposto.",
+    "status": "Base no esboço do autor; regras propostas"
+  },
+  {
+    "id": "kaze-heavy",
+    "fighter": "kaze",
+    "action": "heavy",
+    "name": "Chute do Vendaval",
+    "filename": "kaze-heavy-v1.png",
+    "sequence": "Recolhe a perna com giro do quadril; desfere chute lateral amplo; termina apoiado com arco de vento jade e pé estendido.",
+    "behavior": "Arco médio à frente. Impacto único com empurrão forte.",
+    "counter": "Recuar durante a preparação e punir a recuperação.",
+    "cost": "Sem custo proposto.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Kaze. Character: Tall bald adult male monk, jade-green sleeveless robes and loose pants, barefoot, upright disciplined posture. Preserve exact costume across panels. Title at top: \"KAZE / CHUTE DO VENDAVAL\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Coils leg and twists hip; powerful barefoot horizontal side kick RIGHT with jade crescent; extended kick follow-through and fading wind arc. One continuous kick, not three attacks. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "kaze-elemental",
+    "fighter": "kaze",
+    "action": "elemental",
+    "name": "Rajada de Vento",
+    "filename": "kaze-elemental-v1.png",
+    "sequence": "Reúne ar entre as mãos; lança ambas as palmas; uma onda horizontal avança pela arena.",
+    "behavior": "Onda com deslocamento visível. Controla espaço sem perseguir o alvo.",
+    "counter": "Pular a onda ou bloquear; aproximar durante a recuperação.",
+    "cost": "Custo de energia a testar.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Kaze. Character: Tall bald adult male monk, jade-green sleeveless robes and loose pants, barefoot, upright disciplined posture. Preserve exact costume across panels. Title at top: \"KAZE / RAJADA DE VENTO\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Gather swirling air between open palms; both palms push RIGHT; visible jade wind wave travels right away from hands, feet remain planted. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "kaze-ultimate",
+    "fighter": "kaze",
+    "action": "ultimate",
+    "name": "Tufão Celestial",
+    "filename": "kaze-ultimate-v1.png",
+    "sequence": "Abaixa o centro de gravidade; ergue os braços em espiral; um tornado vertical explode à sua frente.",
+    "behavior": "Área fixa adiante, com impactos curtos e expulsão final. Sem perseguição.",
+    "counter": "Sair da área sinalizada antes da formação do tornado.",
+    "cost": "Referência do protótipo: 50/100 de energia.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Kaze. Character: Tall bald adult male monk, jade-green sleeveless robes and loose pants, barefoot, upright disciplined posture. Preserve exact costume across panels. Title at top: \"KAZE / TUFÃO CELESTIAL\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Low grounded stance gathering wind; rises sweeping both arms upward; towering jade tornado forms just RIGHT of him, full body visible outside the vortex. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "ignis-light",
+    "fighter": "ignis",
+    "action": "light",
+    "name": "Soco de Roça",
+    "filename": "ignis-j123-v2.png",
+    "sequence": "Direito; esquerdo à frente com direito oculto; marretada descendente com os dois braços.",
+    "behavior": "Curto alcance. Três entradas; o último contato empurra para baixo.",
+    "counter": "Bloquear ou recuar; a marretada expõe uma recuperação maior.",
+    "cost": "Sem custo proposto.",
+    "status": "Base no esboço do autor; regras propostas"
+  },
+  {
+    "id": "ignis-heavy",
+    "fighter": "ignis",
+    "action": "heavy",
+    "name": "Marreta Caipira",
+    "filename": "ignis-heavy-v1.png",
+    "sequence": "Trava os pés e junta os punhos; ergue os braços; desce a marretada na frente do corpo.",
+    "behavior": "Um único golpe descendente com alto impacto e recuperação longa.",
+    "counter": "Sair do alcance; punir quando os punhos chegam ao chão.",
+    "cost": "Sem custo proposto.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\ignis-j123-v2.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Ignis. Character: Huge hunched muscular male country cowboy, brown cowboy hat, shirtless with red sunburned head shoulders and arms, pale chest and belly, worn blue jeans and brown boots. Preserve exact costume across panels. Title at top: \"IGNIS / MARRETA CAIPIRA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Plants boots and clasps two fists; raises joined fists overhead; slams both bare fists down toward ground RIGHT with dust and red impact marks. NO hammer weapon. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "ignis-elemental",
+    "fighter": "ignis",
+    "action": "elemental",
+    "name": "Pisada da Fornalha",
+    "filename": "ignis-elemental-v1.png",
+    "sequence": "Ergue um joelho e concentra calor na bota; pisa com força; fogo e poeira se espalham rente ao chão.",
+    "behavior": "Explosão baixa próxima ao pé. Afasta oponentes ao redor.",
+    "counter": "Pular na preparação ou manter distância do círculo de calor.",
+    "cost": "Custo de energia a testar.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\ignis-j123-v2.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Ignis. Character: Huge hunched muscular male country cowboy, brown cowboy hat, shirtless with red sunburned head shoulders and arms, pale chest and belly, worn blue jeans and brown boots. Preserve exact costume across panels. Title at top: \"IGNIS / PISADA DA FORNALHA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Raises bent knee, boot glowing warm orange; stomps boot down; low short radial burst of stylized fire and dust at ground, cowboy body stays visible. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "ignis-ultimate",
+    "fighter": "ignis",
+    "action": "ultimate",
+    "name": "Fúria do Meio-Dia",
+    "filename": "ignis-ultimate-v1.png",
+    "sequence": "Ajusta o chapéu e agacha; avança com o ombro; finaliza com os antebraços unidos e explosão de calor.",
+    "behavior": "Investida frontal comprometida. Um alvo principal e impacto final em área curta.",
+    "counter": "Saltar sobre a investida ou evitar a linha sinalizada.",
+    "cost": "Referência do protótipo: 50/100 de energia.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\personagens-v2.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\ignis-j123-v2.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Ignis. Character: Huge hunched muscular male country cowboy, brown cowboy hat, shirtless with red sunburned head shoulders and arms, pale chest and belly, worn blue jeans and brown boots. Preserve exact costume across panels. Title at top: \"IGNIS / FÚRIA DO MEIO-DIA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Tips cowboy hat and crouches loading legs; explosive shoulder charge RIGHT with sunlike heat trail; braced shoulder impact RIGHT with huge orange sunburst behind him, hat stays on. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "tophia-light",
+    "fighter": "tophia",
+    "action": "light",
+    "name": "Punho de Arenito",
+    "filename": "tophia-j123-v1.png",
+    "sequence": "Soco de pedra direito; cruzado esquerdo; pisão frontal com a bota de pedra.",
+    "behavior": "Curto alcance. Três entradas; pisão final gera poeira e empurrão curto.",
+    "counter": "Bloquear os socos; recuar para fazer o pisão errar.",
+    "cost": "Sem custo proposto.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\tophia-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Tophia. Character: Young adult woman, short straight black hair, only head exposed, entire body enclosed in chunky ORANGE sandstone knight armor including gauntlets and boots. Playful athletic personality. Stone joints move magically. Preserve exact costume across panels. Title at top: \"TOPHIA / PUNHO DE ARENITO\". Panel labels in order: J1 / J2 / J3. Action directions: Three DISTINCT attacks labelled J1 J2 J3. J1 right orange stone gauntlet straight punch RIGHT; J2 left gauntlet rising cross RIGHT with torso rotation; J3 front orange armored boot stomps down RIGHT making small dust splash, no magical spires. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "tophia-heavy",
+    "fighter": "tophia",
+    "action": "heavy",
+    "name": "Martelo de Pedra",
+    "filename": "tophia-heavy-v1.png",
+    "sequence": "Recolhe o punho junto ao ombro; gira o tronco; golpeia de cima para baixo com a manopla.",
+    "behavior": "Golpe único em arco. O peso aparece no corpo e na recuperação.",
+    "counter": "Recuar ou punir o arco quando errar. Sem armadura invencível automática.",
+    "cost": "Sem custo proposto.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\tophia-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Tophia. Character: Young adult woman, short straight black hair, only head exposed, entire body enclosed in chunky ORANGE sandstone knight armor including gauntlets and boots. Playful athletic personality. Stone joints move magically. Preserve exact costume across panels. Title at top: \"TOPHIA / MARTELO DE PEDRA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Pulls orange stone gauntlet back at shoulder; torso rotates into overhead downward punch; huge stone gauntlet strikes down RIGHT with fragments and dust. No separate hammer weapon. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "tophia-elemental",
+    "fighter": "tophia",
+    "action": "elemental",
+    "name": "Erupção Rochosa",
+    "filename": "tophia-elemental-v1.png",
+    "sequence": "Encosta a manopla no chão; uma fissura laranja avança; três espinhos de pedra surgem em sequência.",
+    "behavior": "Faixa frontal fixa, com aviso no piso antes de cada espinho.",
+    "counter": "Saltar a sequência ou sair da faixa anunciada.",
+    "cost": "Custo de energia a testar.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\tophia-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Tophia. Character: Young adult woman, short straight black hair, only head exposed, entire body enclosed in chunky ORANGE sandstone knight armor including gauntlets and boots. Playful athletic personality. Stone joints move magically. Preserve exact costume across panels. Title at top: \"TOPHIA / ERUPÇÃO ROCHOSA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Kneels and touches ground with orange gauntlet; glowing orange crack runs RIGHT; three orange sandstone spires rise in sequence to the RIGHT, character stays visible left of spires. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "tophia-ultimate",
+    "fighter": "tophia",
+    "action": "ultimate",
+    "name": "Colosso de Terra",
+    "filename": "tophia-ultimate-v1.png",
+    "sequence": "Finca os pés e cruza os braços; placas flutuam ao redor; projeta um punho colossal de pedra à frente.",
+    "behavior": "Ataque amplo frontal com aviso longo. Armadura continua sendo identidade visual.",
+    "counter": "Sair da frente durante a formação; punir a recuperação.",
+    "cost": "Referência do protótipo: 50/100 de energia.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\tophia-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Tophia. Character: Young adult woman, short straight black hair, only head exposed, entire body enclosed in chunky ORANGE sandstone knight armor including gauntlets and boots. Playful athletic personality. Stone joints move magically. Preserve exact costume across panels. Title at top: \"TOPHIA / COLOSSO DE TERRA\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Plants stone boots and crosses armored arms; large orange rock slabs float in halo around body; punches RIGHT creating one colossal projected orange stone fist, her normal body silhouette remains readable. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "volt-light",
+    "fighter": "volt",
+    "action": "light",
+    "name": "Tiro de Sucata",
+    "filename": "volt-j123-v1.png",
+    "sequence": "Tiro em pé; tiro agachado; disparo curto apoiando o canhão com as duas mãos.",
+    "behavior": "Três tiros visíveis; J2 muda a altura do projétil. Sem mira automática.",
+    "counter": "Bloquear ou saltar conforme a altura; aproximar entre disparos.",
+    "cost": "Sem munição ou calor nesta proposta inicial.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\volt-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Volt. Character: Young adult male, messy partially singed blond hair, handmade armor built from mismatched trash scrap metal and cables, cyan battery. Uses a HANDHELD scrap cannon, never a replacement arm. Preserve exact costume across panels. Title at top: \"VOLT / TIRO DE SUCATA\". Panel labels in order: J1 / J2 / J3. Action directions: Three DISTINCT attacks labelled J1 J2 J3. J1 standing handheld cannon shot RIGHT small cyan bolt; J2 crouched handheld cannon shot RIGHT at low height; J3 braces same handheld cannon in BOTH hands and fires a stronger short cyan burst RIGHT. Clearly show cannon, body and recoil in every panel. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "volt-heavy",
+    "fighter": "volt",
+    "action": "heavy",
+    "name": "Disparo Carregado",
+    "filename": "volt-heavy-v1.png",
+    "sequence": "Firma o canhão com as duas mãos; a bateria acumula uma esfera; dispara um projétil grande com recuo.",
+    "behavior": "Carga fixa e projétil lento, de maior impacto. Sem carga infinita.",
+    "counter": "Pressionar durante a carga ou saltar o projétil.",
+    "cost": "Sem custo proposto; carga e recuperação limitam a frequência.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\volt-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Volt. Character: Young adult male, messy partially singed blond hair, handmade armor built from mismatched trash scrap metal and cables, cyan battery. Uses a HANDHELD scrap cannon, never a replacement arm. Preserve exact costume across panels. Title at top: \"VOLT / DISPARO CARREGADO\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Braces handheld scrap cannon with BOTH hands; cyan orb swells at muzzle while feet grounded; fires large slow cyan orb RIGHT, body leans back visibly from recoil. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "volt-elemental",
+    "fighter": "volt",
+    "action": "elemental",
+    "name": "Curto-Circuito",
+    "filename": "volt-elemental-v1.png",
+    "sequence": "Abaixa o canhão e aciona a bateria; cabos soltam faíscas; um pulso elétrico curto expande ao redor.",
+    "behavior": "Área curta ao redor. Interrompe aproximação, sem paralisar indefinidamente.",
+    "counter": "Recuar diante do aviso elétrico; atacar após o pulso.",
+    "cost": "Custo de energia a testar.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\volt-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Volt. Character: Young adult male, messy partially singed blond hair, handmade armor built from mismatched trash scrap metal and cables, cyan battery. Uses a HANDHELD scrap cannon, never a replacement arm. Preserve exact costume across panels. Title at top: \"VOLT / CURTO-CIRCUITO\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Lowers handheld cannon and taps salvaged chest battery; blue cyan sparks travel cables; short circular cyan electric pulse surrounds him, cannon remains handheld and body fully visible. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  },
+  {
+    "id": "volt-ultimate",
+    "fighter": "volt",
+    "action": "ultimate",
+    "name": "Sobrecarga Total",
+    "filename": "volt-ultimate-v1.png",
+    "sequence": "Ancora os pés e liga a bateria ao canhão; carrega luz intensa; dispara um feixe horizontal com recuo extremo.",
+    "behavior": "Feixe frontal em linha fixa. Direção travada após a preparação.",
+    "counter": "Saltar antes do feixe ou sair da linha durante o aviso.",
+    "cost": "Referência do protótipo: 50/100 de energia.",
+    "status": "Proposta de design autônoma; ainda não implementada",
+    "references": [
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\volt-v5.png",
+      "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\attacks\\kaze-j123-v1.png"
+    ],
+    "prompt": "Create a polished game combat animation concept storyboard, panoramic 3:1 landscape, exactly THREE equal panels on warm ivory paper, thin vertical separators, full-body figures including feet in every panel, facing RIGHT. Match the supplied combo sheet reference: stylized painted 3D game concept, weighty poses, readable silhouettes, blue directional arrows and small red impact marks. Reference 1 is CHARACTER IDENTITY; reference 2 is STORYBOARD STYLE ONLY. If reference 1 has four fighters, use only Volt. Character: Young adult male, messy partially singed blond hair, handmade armor built from mismatched trash scrap metal and cables, cyan battery. Uses a HANDHELD scrap cannon, never a replacement arm. Preserve exact costume across panels. Title at top: \"VOLT / SOBRECARGA TOTAL\". Panel labels in order: PREPARAÇÃO / EXECUÇÃO / IMPACTO. Action directions: Plants feet wide and connects cyan battery cable to handheld cannon; braces cannon with BOTH hands as muzzle charges bright cyan; fires huge horizontal cyan beam RIGHT, recoiling strongly with boots skidding, full body and trash armor visible. Each panel is one clear pose, not a collage. No arena background, no UI, no inset portraits, no realistic gore. Keep effects limited enough to read the body. This is a game production sheet with clean motion direction and coherent anatomy."
+  }
+]
