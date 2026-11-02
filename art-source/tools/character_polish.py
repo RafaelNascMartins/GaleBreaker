@@ -217,6 +217,10 @@ def finalize_pose(rig, fid, clip='idle', frame=0, phase=None):
         _world_orientation(bones['cannon'])
         cannon=bones['cannon']
         solve_limb(bones,'upper_arm_l','forearm_l',cannon.head+Vector((.08,-.23,-.015)),Vector((.8,0,-1)))
+    if clip in ['crouch','guard_low','jump_land']:
+        # Keep both soles flat on the floor in a deep squat instead of on tiptoe.
+        for side in ['l','r']:
+            _world_orientation(bones['foot_'+side])
     # Plant the lowest sole, calculated from the actual skinned foot vertices.
     # Jump and floor reactions deliberately retain their authored trajectories.
     if clip in ['jump_start','jump_air','jump_land','knockdown','ko','get_up','air_punch']:return

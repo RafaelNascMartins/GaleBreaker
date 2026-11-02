@@ -24,6 +24,10 @@ func run() -> void:
 		check(view.is_valid_asset(), id + " imports complete rig, clips and materials")
 		view.play_clip("idle", 0.0)
 		var hand_idle := view.socket_position("socket_hand_r")
+		var chest_idle := view.socket_position("socket_chest").y
+		for low: String in ["crouch", "guard_low"]:
+			view.play_clip(low, 0.1)
+			check(view.socket_position("socket_chest").y < chest_idle - 0.25, id + " " + low + " visibly lowers the body")
 		view.play_clip("light_1", GaleAnimTiming.contact_sec(id, "light_1"))
 		var hand_contact := view.socket_position("socket_hand_r")
 		check(hand_contact.z < -0.2, id + " striking hand points in the fighting direction")

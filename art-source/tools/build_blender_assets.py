@@ -568,6 +568,10 @@ def animate_fighter(arm_obj, fighter_id: str):
         act = bpy.data.actions.new(name=name)
         act.use_fake_user = True
         arm_obj.animation_data.action = act
+        # Assigning an action tags the rig; the first depsgraph update then writes
+        # the NLA result of earlier clips back onto the pose. Let it happen now,
+        # before posing, or the first key of every clip is silently overwritten.
+        bpy.context.view_layer.update()
         builder_fn()
         if hasattr(arm_obj.animation_data, "action_slot") and len(act.slots) > 0:
             arm_obj.animation_data.action_slot = act.slots[0]
@@ -1010,13 +1014,23 @@ def animate_fighter(arm_obj, fighter_id: str):
 
     # 3. crouch, jump_start, jump_air, jump_land, dash
     def build_crouch():
+        # Deep crouch, matching the combat hurtbox that shrinks by about a third.
         apply_base_stance()
-        set_loc("hips", 0, 0, -0.32)
-        set_rot("thigh_l", 55, 0, -10)
-        set_rot("shin_l", -65, 0, 0)
-        set_rot("thigh_r", 50, 0, 10)
-        set_rot("shin_r", -60, 0, 0)
-        set_rot("spine", 18, 0, 0)
+        set_loc("hips", 0, 0, -0.46)
+        set_rot("thigh_l", 82, 0, -12)
+        set_rot("shin_l", -118, 0, 0)
+        set_rot("thigh_r", 76, 0, 12)
+        set_rot("shin_r", -110, 0, 0)
+        set_rot("spine", 24, 0, 0)
+        set_rot("head", -14, 0, 0)
+        if fighter_id == "kaze":
+            # The long robe panels spread over the knees instead of sinking into the floor.
+            add_rot("robe_front", -38, 0, 0)
+            add_rot("robe_back", 36, 0, 0)
+            for side, sx in (("l", 1.0), ("r", -1.0)):
+                add_rot("robe_side_" + side, 14, -sx * 26, 0)
+            add_rot("sash_tail", 40, 0, 0)
+            add_rot("sash", -30, 0, -35)
         key_all(0)
         key_all(10)
     make_clip("crouch", 10, build_crouch)

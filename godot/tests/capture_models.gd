@@ -57,7 +57,7 @@ func capture() -> void:
 		label.add_theme_font_size_override("font_size", 22)
 		canvas.add_child(label)
 	await settle()
-	for clip: String in ["idle", "light_1", "light_2", "light_3", "heavy", "elemental", "ultimate", "guard_high","victory","ko"]:
+	for clip: String in ["idle", "crouch", "guard_low", "light_1", "light_2", "light_3", "heavy", "elemental", "ultimate", "guard_high","victory","ko"]:
 		for view in views:
 			var camera:Camera3D=view.get_viewport().get_camera_3d()
 			camera.size=3.4 if clip in ["victory","ko"] else 2.6
@@ -66,7 +66,7 @@ func capture() -> void:
 				seek = GaleAnimTiming.state_sec(view.fighter_id, clip)
 			elif clip.begins_with("light") or clip in ["heavy","elemental","ultimate"]:
 				seek = GaleAnimTiming.contact_sec(view.fighter_id, clip)
-			elif clip == "guard_high":
+			elif clip in ["guard_high", "crouch", "guard_low"]:
 				seek = 0.1
 			view.play_clip(clip, seek)
 		await settle()
