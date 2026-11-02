@@ -79,9 +79,14 @@ def generate_fighter_textures(fighter_id: str, cfg: dict):
             if pat == "sunburn":
                 # Mottled sunburn blotches & pores on Ignis's arms/head/shoulders
                 r = rng.randint(6, 22)
-                blotch = lerp_color(c_base, (195, 55, 42), rng.uniform(0.15, 0.55))
+                blotch = lerp_color(c_base, (196, 78, 68), rng.uniform(0.10, 0.40))
                 adraw.ellipse([px - r, py - r, px + r, py + r], fill=(*blotch, 255))
                 hdraw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=rng.randint(118, 138))
+                # Short dark body-hair strokes across the whole sunburnt torso/arms.
+                if rng.random() < 0.55:
+                    hx = px + rng.randint(-10, 10)
+                    hy = py + rng.randint(-10, 10)
+                    adraw.line([hx, hy, hx + rng.randint(-3, 3), hy + rng.randint(5, 11)], fill=(128, 66, 52, 255), width=1)
             elif pat == "skin":
                 r = rng.randint(8, 24)
                 tone = lerp_color(c_base, c_light if rng.random() > 0.5 else c_dark, rng.uniform(0.04, 0.12))
@@ -96,7 +101,7 @@ def generate_fighter_textures(fighter_id: str, cfg: dict):
                 # Diagonal denim twill weave + mud/dust specks
                 adraw.line([px, py, min(x1 - 2, px + 14), min(size - 2, py + 14)], fill=(*c_light, 255), width=1)
                 hdraw.line([px, py, min(x1 - 2, px + 14), min(size - 2, py + 14)], fill=148, width=1)
-                if rng.random() < 0.22:
+                if rng.random() < 0.40:
                     mud = (122, 96, 68)
                     r = rng.randint(3, 9)
                     adraw.ellipse([px - r, py - r, px + r, py + r], fill=(*mud, 255))
@@ -167,9 +172,9 @@ FIGHTER_TEX_CONFIGS = {
         "dark": "#1B2823",
     },
     "ignis": {
-        "skin_base": "#EDD3BE",      # Pale chest & belly
-        "skin_sunburn": "#C84B39",   # Red sunburned head, shoulders, and arms!
-        "primary": "#3B5978",        # Worn blue jeans (recolorable by palette)
+        "skin_base": "#EDD3BE",      # Pale tone kept for eye whites only
+        "skin_sunburn": "#D8776A",   # Sunburnt pink-red over the whole upper body (menu-pausa-v2)
+        "primary": "#5B7088",        # Worn blue jeans (recolorable by palette)
         "primary_pattern": "denim",
         "secondary": "#5C4028",      # Cowboy hat & boots brown leather
         "secondary_pattern": "leather",
@@ -249,6 +254,10 @@ def generate_portraits():
 
 
 if __name__ == "__main__":
+    import sys
+    only = sys.argv[sys.argv.index("--fighter") + 1] if "--fighter" in sys.argv else None
     for fid, cfg in FIGHTER_TEX_CONFIGS.items():
-        generate_fighter_textures(fid, cfg)
-    generate_portraits()
+        if only is None or fid == only:
+            generate_fighter_textures(fid, cfg)
+    if only is None:
+        generate_portraits()

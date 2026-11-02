@@ -41,8 +41,8 @@ def add_model_detail(mb, fid):
                 mb.add_limb('finger_'+digit+'_'+side,0,(x,-.09,hand_z-.025),(x,-.09,hand_z-.095+abs(i-1.5)*.009),.009,.007,8)
             mb.add_limb('finger_thumb_'+side,0,(hand_x+sx*.028,-.08,hand_z+.01),(hand_x+sx*.055,-.09,hand_z-.025),.012,.009,8)
             # Jade wraps, folds and gold clasp stay separate readable shapes.
-            for k in range(3):
-                mb.add_limb('forearm_'+side,2,(hand_x,-.03,.945+k*.026),(hand_x,-.03,.96+k*.026),.063,.063,12)
+            for k in range(5):
+                mb.add_limb('forearm_'+side,2 if k%2==0 else 3,(hand_x,-.03,.945+k*.026),(hand_x,-.03,.96+k*.026),.073,.073,12)
             for i in range(5):
                 mb.add_sphere('foot_'+side,0,(sx*.1365+(i-2)*.016,-.192,.04),(.011,.022,.019),8,6)
         elif fid=='ignis':
@@ -81,9 +81,9 @@ def add_model_detail(mb, fid):
     if fid=='kaze':
         mb.add_box('hips',4,(0,-.187,1.0),(.075,.035,.075),rot_deg=(0,0,45))
     elif fid=='ignis':
-        # Rounded pale pecs keep the chest distinct from red shoulder caps.
+        # Rounded pecs in the same sunburnt tone as the arms.
         for sx in [-1,1]:
-            mb.add_sphere('chest',0,(sx*.13,-.25,1.44),(.135,.095,.115),14,10)
+            mb.add_sphere('chest',1,(sx*.13,-.26,1.44),(.145,.10,.12),14,10)
         mb.add_box('hat',4,(0,-.344,1.90),(.055,.018,.035))
     elif fid=='tophia':
         for sx in [-1,1]:

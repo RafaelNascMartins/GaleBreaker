@@ -19,7 +19,7 @@ normal_path = "res://assets/characters/ignis/textures/normal.png"
 palettes = [{
 "accent": "#F97316",
 "name": "Sol do Meio-Dia",
-"primary": "#3B5978",
+"primary": "#5B7088",
 "secondary": "#5C4028"
 }, {
 "accent": "#38BDF8",

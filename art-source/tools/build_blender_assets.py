@@ -207,6 +207,11 @@ def create_humanoid_armature(fighter_id: str, scale_cfg: dict):
     add_bone("robe_front", (0, -0.10, h * 0.52), (0, -0.13, h * 0.25), "hips")
     add_bone("robe_back", (0, 0.10, h * 0.52), (0, 0.13, h * 0.25), "hips")
     add_bone("sash", (-hip_w - 0.04, -0.06, h * 0.52), (-hip_w - 0.08, -0.08, h * 0.28), "hips")
+    if fighter_id == "kaze":
+        # Loose cloth that trails behind the monk: side robe panels and the sash tail.
+        for side_name, sx in [("l", 1.0), ("r", -1.0)]:
+            add_bone(f"robe_side_{side_name}", (sx * (hip_w + 0.07), 0.0, h * 0.52), (sx * (hip_w + 0.16), 0.02, h * 0.17), "hips")
+        add_bone("sash_tail", (0.0, 0.14, h * 0.53), (0.04, 0.25, h * 0.22), "hips")
 
     for side_name, sx in [("l", 1.0), ("r", -1.0)]:
         sh_x = sx * w
@@ -220,6 +225,8 @@ def create_humanoid_armature(fighter_id: str, scale_cfg: dict):
         add_bone(f"upper_arm_{side_name}", (sh_x, -hunch, sh_z), (el_x, -hunch * 0.5, el_z), f"shoulder_{side_name}")
         add_bone(f"forearm_{side_name}", (el_x, -hunch * 0.5, el_z), (wr_x, -hunch * 0.8 - 0.05, wr_z), f"upper_arm_{side_name}")
         add_bone(f"hand_{side_name}", (wr_x, -hunch * 0.8 - 0.05, wr_z), (wr_x, -hunch * 0.8 - 0.12, wr_z - 0.08), f"forearm_{side_name}")
+        if fighter_id == "kaze":
+            add_bone(f"wrap_tail_{side_name}", (wr_x, -hunch * 0.8 - 0.05, wr_z + 0.05), (wr_x + sx * 0.05, -0.13, wr_z - 0.15), f"forearm_{side_name}")
 
         # Separate digit bones allow open palms and Tophia's V-sign.
         palm_z=.84 if fighter_id in ['kaze','volt'] else .83 if fighter_id=='tophia' else .78
@@ -245,24 +252,36 @@ def create_humanoid_armature(fighter_id: str, scale_cfg: dict):
 
 
 def build_kaze_mesh(mb: MeshBuilder):
-    # V2 Kaze: Tall bald monk, upright posture, sleeveless jade robes, jade beads at waist, baggy pants, shin wraps, barefoot!
+    # V2 Kaze (menu-pausa-v2): tall bald monk, sleeveless layered jade robe with flowing panels, jade beads with tassel,
+    # wide baggy trousers, wrist wraps and crisscross ankle wraps, barefoot.
     h = 1.90
     # Torso & sleeveless jade monk vest (Zone 2 primary jade, Zone 3 light jade lapel)
     mb.add_limb("hips", 2, (0, 0, 0.88), (0, 0, 1.08), 0.17, 0.16, 12)
     mb.add_limb("spine", 2, (0, 0, 1.06), (0, 0, 1.32), 0.16, 0.20, 12)
     mb.add_limb("chest", 2, (0, 0, 1.30), (0, 0, 1.56), 0.20, 0.23, 12)
-    # Crossed monk lapel (Zone 3 secondary sage-jade) and exposed muscular upper chest V-neck (Zone 0 skin)
-    mb.add_box("chest", 3, (0, -0.14, 1.43), (0.28, 0.12, 0.26), rot_deg=(0, 12, 0))
-    mb.add_box("chest", 0, (0, -0.15, 1.51), (0.14, 0.10, 0.14))
-    # Waist sash & flowing lower robe panels
+    # Crossed monk lapels (Zone 3) and exposed muscular upper chest V-neck (Zone 0 skin)
+    mb.add_box("chest", 3, (0.04, -0.14, 1.43), (0.26, 0.12, 0.28), rot_deg=(0, 12, 0))
+    mb.add_box("chest", 3, (-0.05, -0.155, 1.40), (0.20, 0.07, 0.30), rot_deg=(0, -16, 0))
+    mb.add_box("chest", 0, (0, -0.15, 1.52), (0.12, 0.10, 0.13))
+    # Waist sash (Zone 6) with darker leather belt knot
     mb.add_limb("hips", 6, (0, 0, 0.95), (0, 0, 1.04), 0.185, 0.185, 12)
-    mb.add_box("robe_front", 2, (0, -0.14, 0.68), (0.28, 0.05, 0.50), taper_top=0.85)
-    mb.add_box("robe_front", 3, (0.02, -0.155, 0.66), (0.15, 0.04, 0.52), taper_top=0.8)
-    mb.add_box("robe_back", 2, (0, 0.14, 0.68), (0.30, 0.05, 0.50), taper_top=0.85)
-    # Jade prayer beads hanging on left hip (`sash` bone, Zone 4 accent)
-    for i in range(6):
-        mb.add_sphere("sash", 4, (-0.17 - i * 0.01, -0.08, 0.94 - i * 0.06), (0.028, 0.028, 0.028), 8, 6)
-    mb.add_box("sash", 4, (-0.22, -0.08, 0.54), (0.04, 0.04, 0.14))
+    # Layered lower robe: long front panels, side panels that flare outward, back panel and trailing sash.
+    mb.add_box("robe_front", 2, (0, -0.145, 0.64), (0.30, 0.05, 0.62), taper_top=0.85)
+    mb.add_box("robe_front", 3, (0.03, -0.165, 0.60), (0.16, 0.04, 0.58), taper_top=0.8)
+    mb.add_box("robe_front", 3, (-0.07, -0.158, 0.55), (0.10, 0.035, 0.50), taper_top=0.8)
+    mb.add_box("robe_front", 6, (0.0, -0.172, 0.34), (0.30, 0.045, 0.035))  # hem trim
+    mb.add_box("robe_back", 2, (0, 0.14, 0.64), (0.32, 0.05, 0.62), taper_top=0.85)
+    for side_name, sx in [("l", 1.0), ("r", -1.0)]:
+        mb.add_box(f"robe_side_{side_name}", 2, (sx * 0.215, -0.01, 0.66), (0.05, 0.24, 0.58), rot_deg=(0, sx * 9, 0), taper_top=0.8)
+        mb.add_box(f"robe_side_{side_name}", 3, (sx * 0.235, -0.02, 0.60), (0.04, 0.20, 0.46), rot_deg=(0, sx * 11, 0), taper_top=0.75)
+        mb.add_box(f"robe_side_{side_name}", 6, (sx * 0.255, -0.02, 0.36), (0.04, 0.22, 0.03), rot_deg=(0, sx * 12, 0))
+    mb.add_box("sash_tail", 3, (0.02, 0.19, 0.74), (0.09, 0.03, 0.46), rot_deg=(8, 0, 0), taper_top=0.9)
+    mb.add_box("sash_tail", 6, (0.02, 0.215, 0.50), (0.09, 0.03, 0.04))
+    # Jade prayer beads hanging on the right hip (`sash` bone, Zone 4 accent), pendant and tassel
+    for i in range(9):
+        mb.add_sphere("sash", 4, (-0.17 - i * 0.008, -0.085, 0.94 - i * 0.055), (0.034, 0.034, 0.034), 8, 6)
+    mb.add_sphere("sash", 4, (-0.245, -0.09, 0.43), (0.05, 0.03, 0.06), 8, 6)
+    mb.add_box("sash", 3, (-0.245, -0.09, 0.30), (0.035, 0.035, 0.16), taper_top=1.3)
 
     # Bald monk head & neck (Zone 0 skin, NO hair/headband!)
     mb.add_limb("neck", 0, (0, 0, 1.55), (0, 0, 1.66), 0.075, 0.07, 10)
@@ -272,50 +291,53 @@ def build_kaze_mesh(mb: MeshBuilder):
     for sx in (-1.0, 1.0):
         mb.add_sphere("head", 0, (sx * 0.115, 0.0, 1.76), (0.022, 0.035, 0.045), 8, 6)
 
-    # Bare muscular arms + jade wrist wraps + barefoot legs
+    # Muscular bare arms + jade wrist wraps with trailing tails + barefoot legs
     for side_name, sx in [("l", 1.0), ("r", -1.0)]:
         sh_x = sx * 0.24
         el_x = sx * 0.30
         wr_x = sx * 0.32
-        mb.add_sphere(f"shoulder_{side_name}", 0, (sh_x, 0, 1.50), (0.095, 0.095, 0.095), 10, 8)
-        mb.add_limb(f"upper_arm_{side_name}", 0, (sh_x, 0, 1.50), (el_x, 0, 1.20), 0.082, 0.068, 10)
-        mb.add_limb(f"forearm_{side_name}", 0, (el_x, 0, 1.20), (wr_x, -0.03, 1.02), 0.068, 0.058, 10)
-        # Jade wrist wraps (Zone 6)
-        mb.add_limb(f"forearm_{side_name}", 6, (wr_x, -0.03, 1.04), (wr_x, -0.05, 0.90), 0.062, 0.054, 10)
+        mb.add_sphere(f"shoulder_{side_name}", 0, (sh_x, 0, 1.50), (0.10, 0.10, 0.10), 10, 8)
+        mb.add_limb(f"upper_arm_{side_name}", 0, (sh_x, 0, 1.50), (el_x, 0, 1.20), 0.09, 0.072, 10)
+        mb.add_limb(f"forearm_{side_name}", 0, (el_x, 0, 1.20), (wr_x, -0.03, 1.02), 0.072, 0.060, 10)
+        # Jade wrist wraps (Zone 6) with a light trailing tail on the `wrap_tail` bone
+        mb.add_limb(f"forearm_{side_name}", 6, (wr_x, -0.03, 1.05), (wr_x, -0.05, 0.90), 0.070, 0.060, 10)
+        mb.add_box(f"wrap_tail_{side_name}", 3, (wr_x + sx * 0.05, -0.10, 0.80), (0.035, 0.015, 0.20), rot_deg=(0, sx * 10, 0), taper_top=1.2)
         # Open monk palm / hand (Zone 0 skin)
         mb.add_box(f"hand_{side_name}", 0, (wr_x, -0.08, 0.84), (0.05, 0.09, 0.11))
 
-        # Baggy jade trousers on thighs & upper shins (Zone 2)
+        # Wide baggy trousers (Zone 2): billowing thighs, gathered at the ankle
         lx = sx * 0.13
-        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.05, -0.02, 0.50), 0.135, 0.155, 10)
-        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.05, -0.02, 0.52), (lx * 1.05, 0, 0.26), 0.15, 0.11, 10)
-        # Crisscross ankle wraps (Zone 6 & Zone 3)
-        mb.add_limb(f"shin_{side_name}", 6, (lx * 1.05, 0, 0.26), (lx * 1.05, 0, 0.09), 0.075, 0.062, 10)
+        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.05, -0.02, 0.50), 0.155, 0.185, 10)
+        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.05, -0.02, 0.52), (lx * 1.05, 0, 0.26), 0.18, 0.125, 10)
+        # Crisscross ankle wraps (Zone 6 leather + Zone 3 light bands)
+        mb.add_limb(f"shin_{side_name}", 6, (lx * 1.05, 0, 0.26), (lx * 1.05, 0, 0.09), 0.078, 0.064, 10)
+        for k in range(3):
+            mb.add_limb(f"shin_{side_name}", 3, (lx * 1.05 - 0.07, -0.01, 0.12 + k * 0.045), (lx * 1.05 + 0.07, -0.01, 0.145 + k * 0.045), 0.012, 0.012, 6)
         # Barefoot feet (Zone 0 skin!)
         mb.add_box(f"foot_{side_name}", 0, (lx * 1.05, -0.08, 0.045), (0.095, 0.22, 0.065), taper_top=0.85)
 
 
 def build_ignis_mesh(mb: MeshBuilder):
-    # V2 Ignis: Massive hunched country cowboy, brown cowboy hat, shirtless with PALE chest (Zone 0) and RED SUNBURNED head/shoulders/arms (Zone 1), blue jeans (Zone 2), brown boots (Zone 6).
+    # V2 Ignis: Massive hunched country cowboy, brown cowboy hat, shirtless with the whole upper body SUNBURNT pink-red (Zone 1), blue jeans (Zone 2), brown boots (Zone 6).
     # Broad shirtless torso: pale chest/belly (Zone 0) + sunburned upper back/traps (Zone 1)
     mb.add_limb("hips", 2, (0, 0, 0.88), (0, 0, 1.06), 0.24, 0.23, 12)
     # Leather belt + brass buckle (Zone 6 & Zone 4)
     mb.add_limb("hips", 6, (0, 0, 0.96), (0, 0, 1.04), 0.248, 0.248, 12)
     mb.add_box("hips", 4, (0, -0.24, 1.00), (0.11, 0.05, 0.08))
 
-    # Pale belly & chest (Zone 0 skin_base)
-    mb.add_limb("spine", 0, (0, -0.03, 1.04), (0, -0.07, 1.34), 0.23, 0.28, 12)
-    mb.add_limb("chest", 0, (0, -0.07, 1.32), (0, -0.14, 1.60), 0.27, 0.31, 12)
-    mb.add_box("chest", 0, (-0.11, -0.24, 1.44), (0.18, 0.14, 0.16))
-    mb.add_box("chest", 0, (0.11, -0.24, 1.44), (0.18, 0.14, 0.16))
-    # Sunburned upper traps/hunched shoulders (Zone 1 skin_sunburn!)
-    mb.add_sphere("chest", 1, (0, -0.06, 1.62), (0.29, 0.22, 0.14), 12, 8)
+    # Sunburnt belly & chest (Zone 1), same pink-red as head and arms (menu-pausa-v2)
+    mb.add_limb("spine", 1, (0, -0.03, 1.04), (0, -0.07, 1.34), 0.26, 0.31, 12)
+    mb.add_limb("chest", 1, (0, -0.07, 1.32), (0, -0.14, 1.60), 0.30, 0.34, 12)
+    mb.add_box("chest", 1, (-0.12, -0.25, 1.44), (0.20, 0.15, 0.18))
+    mb.add_box("chest", 1, (0.12, -0.25, 1.44), (0.20, 0.15, 0.18))
+    # Sunburned upper traps/hunched shoulders (Zone 1)
+    mb.add_sphere("chest", 1, (0, -0.06, 1.62), (0.32, 0.24, 0.16), 12, 8)
 
     # Sunburned head (Zone 1) + full brown beard (Zone 5) + Cowboy Hat (`hat` bone, Zone 3)
     mb.add_limb("neck", 1, (0, -0.14, 1.56), (0, -0.19, 1.68), 0.11, 0.10, 10)
     mb.add_sphere("head", 1, (0, -0.20, 1.76), (0.13, 0.14, 0.14), 12, 10)
     # Beard & mustache (Zone 5)
-    mb.add_sphere("head", 5, (0, -0.23, 1.69), (0.125, 0.12, 0.095), 10, 8)
+    mb.add_sphere("head", 5, (0, -0.24, 1.68), (0.142, 0.14, 0.12), 10, 8)
     for sx in (-1.0, 1.0):
         mb.add_box("head", 5, (sx * 0.05, -0.32, 1.78), (0.05, 0.03, 0.018))
     # Cowboy Hat (`hat` bone: wide curved brim + pinched crown + leather band)
@@ -330,15 +352,15 @@ def build_ignis_mesh(mb: MeshBuilder):
         sh_x = sx * 0.33
         el_x = sx * 0.40
         wr_x = sx * 0.42
-        mb.add_sphere(f"shoulder_{side_name}", 1, (sh_x, -0.12, 1.54), (0.16, 0.15, 0.15), 12, 8)
-        mb.add_limb(f"upper_arm_{side_name}", 1, (sh_x, -0.12, 1.54), (el_x, -0.08, 1.20), 0.135, 0.115, 10)
-        mb.add_limb(f"forearm_{side_name}", 1, (el_x, -0.08, 1.20), (wr_x, -0.14, 0.88), 0.12, 0.095, 10)
-        mb.add_box(f"hand_{side_name}", 1, (wr_x, -0.16, 0.78), (0.13, 0.14, 0.15))
+        mb.add_sphere(f"shoulder_{side_name}", 1, (sh_x, -0.12, 1.54), (0.19, 0.17, 0.17), 12, 8)
+        mb.add_limb(f"upper_arm_{side_name}", 1, (sh_x, -0.12, 1.54), (el_x, -0.08, 1.20), 0.16, 0.13, 10)
+        mb.add_limb(f"forearm_{side_name}", 1, (el_x, -0.08, 1.20), (wr_x, -0.14, 0.88), 0.135, 0.105, 10)
+        mb.add_box(f"hand_{side_name}", 1, (wr_x, -0.16, 0.78), (0.14, 0.15, 0.16))
 
         # Worn blue denim jeans (Zone 2) + brown work boots (Zone 6)
         lx = sx * 0.16
-        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.06, -0.02, 0.50), 0.155, 0.135, 10)
-        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.06, -0.02, 0.52), (lx * 1.06, 0, 0.14), 0.135, 0.14, 10)
+        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.06, -0.02, 0.50), 0.17, 0.145, 10)
+        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.06, -0.02, 0.52), (lx * 1.06, 0, 0.14), 0.145, 0.15, 10)
         mb.add_box(f"foot_{side_name}", 6, (lx * 1.06, -0.09, 0.07), (0.14, 0.27, 0.13), taper_top=0.88)
 
 

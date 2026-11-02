@@ -82,7 +82,7 @@ static func build_default(id: String) -> GaleVisualCatalog:
 			cat.element_label = "FOGO"
 			cat.accent_color = Color("A54332")
 			cat.palettes = [
-				{"name": "Sol do Meio-Dia", "primary": "#3B5978", "secondary": "#5C4028", "accent": "#F97316"},
+				{"name": "Sol do Meio-Dia", "primary": "#5B7088", "secondary": "#5C4028", "accent": "#F97316"},
 				{"name": "Chama Azul", "primary": "#1E293B", "secondary": "#334155", "accent": "#38BDF8"},
 				{"name": "Cinza da Forja", "primary": "#3F2E3E", "secondary": "#18181B", "accent": "#C084FC"},
 				{"name": "Poeira Dourada", "primary": "#78350F", "secondary": "#D97706", "accent": "#FACC15"},
