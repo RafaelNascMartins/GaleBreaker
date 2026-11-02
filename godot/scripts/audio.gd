@@ -1,12 +1,34 @@
 class_name GaleAudio
 extends Node
 
+const SAMPLE_PATHS := {
+	"fight_start": "res://assets/audio/sfx/fight_start_metal_punch.mp3",
+	"match_start": "res://assets/audio/sfx/match_start_sword_unsheath.mp3",
+	"menu_hover": "res://assets/audio/sfx/menu_hover.mp3",
+	"countdown": "res://assets/audio/voice/countdown_three_two_one_fight.mp3",
+	"victory": "res://assets/audio/voice/victory_male.mp3",
+	"lose": "res://assets/audio/voice/you_lose.mp3",
+	"kaze_light_1": "res://assets/audio/fighters/kaze/light_1_power_punch.mp3",
+	"kaze_light_2": "res://assets/audio/fighters/kaze/light_2_punch_02.mp3",
+	"kaze_light_3": "res://assets/audio/fighters/kaze/light_3_punch_impact_hit.mp3",
+	"kaze_heavy": "res://assets/audio/fighters/kaze/heavy_wet_impact.mp3",
+	"kaze_elemental": "res://assets/audio/fighters/kaze/elemental_iced_magic.mp3",
+}
+const MENU_MUSIC_PATH := "res://assets/audio/music/menu_deep_house_instrumental.mp3"
+# Recorded tracks are mastered louder than the synthesized arena loops.
+const MENU_MUSIC_OFFSET_DB := -10.0
+const ARENA_MUSIC_OFFSET_DB := -18.0
+
 var players: Array[AudioStreamPlayer] = []
 var music: AudioStreamPlayer
+var voice: AudioStreamPlayer
 var tones: Dictionary = {}
+var samples: Dictionary = {}
 var songs: Dictionary = {}
+var menu_music: AudioStream
 var cursor := 0
 var sfx_volume := 0.85
+var music_volume := 0.7
 
 func _ready() -> void:
 	for i in 8:
@@ -16,6 +38,16 @@ func _ready() -> void:
 	music = AudioStreamPlayer.new()
 	music.volume_db = -23
 	add_child(music)
+	# Announcer lines get their own player so they can pause with the match.
+	voice = AudioStreamPlayer.new()
+	add_child(voice)
+	for key: String in SAMPLE_PATHS:
+		var stream := load(SAMPLE_PATHS[key]) as AudioStream
+		if stream != null:
+			samples[key] = stream
+	menu_music = load(MENU_MUSIC_PATH) as AudioStream
+	if menu_music is AudioStreamMP3:
+		(menu_music as AudioStreamMP3).loop = true
 	for kind: String in ["hit", "heavy", "block", "parry", "clash", "ultimate", "ko", "click"]:
 		var frequency: float = {"hit": 140.0, "heavy": 75.0, "block": 280.0, "parry": 880.0, "clash": 620.0, "ultimate": 110.0, "ko": 440.0, "click": 700.0}[kind]
 		tones[kind] = synth(frequency, 0.32 if kind in ["ko", "ultimate"] else 0.1)
@@ -64,22 +96,51 @@ func synth(frequency: float, duration: float) -> AudioStreamWAV:
 	stream.data = bytes
 	return stream
 
-func play(kind: String, fighter: String = "") -> void:
+## variant names a specific move sound (e.g. "light_2"); a recorded sample for
+## fighter_variant wins over the synthesized signature for the event kind.
+func play(kind: String, fighter: String = "", variant: String = "") -> void:
+	if not fighter.is_empty() and not variant.is_empty() and samples.has(fighter+"_"+variant):
+		_play_stream(samples[fighter+"_"+variant])
+		return
+	if samples.has(kind) and fighter.is_empty():
+		_play_stream(samples[kind])
+		return
 	var aliases := {"bolt":"elemental","charged_bolt":"heavy","wave":"elemental","pulse":"elemental","stomp":"elemental","spikes":"elemental","vortex":"ultimate","fist":"ultimate","beam":"ultimate"}
 	var category: String = aliases.get(kind,kind)
 	if not fighter.is_empty() and tones.has(fighter+"_"+category):
 		kind = fighter+"_"+category
 	if not tones.has(kind):
 		return
+	_play_stream(tones[kind])
+
+func has_sample(key: String) -> bool:
+	return samples.has(key)
+
+func _play_stream(stream: AudioStream) -> void:
 	var player := players[cursor]
 	cursor = (cursor + 1) % players.size()
-	player.stream = tones[kind]
+	player.stream = stream
 	player.volume_db = linear_to_db(maxf(0.001,sfx_volume))
 	player.play()
 
+func play_voice(key: String, from_sec: float = 0.0) -> void:
+	if not samples.has(key):
+		return
+	voice.stream = samples[key]
+	voice.volume_db = linear_to_db(maxf(0.001,sfx_volume))
+	voice.stream_paused = false
+	voice.play(from_sec)
+
+func pause_voice(paused: bool) -> void:
+	voice.stream_paused = paused
+
+func stop_voice() -> void:
+	voice.stop()
+
 func apply_settings(prefs: GalePreferences) -> void:
 	sfx_volume = prefs.sfx_volume
-	if is_instance_valid(music): music.volume_db = linear_to_db(maxf(0.001,prefs.music_volume))-18.0
+	music_volume = prefs.music_volume
+	_apply_music_volume()
 	AudioServer.set_bus_mute(0, prefs.muted or prefs.volume <= 0)
 	AudioServer.set_bus_volume_db(0, linear_to_db(maxf(0.001, prefs.volume)))
 
@@ -95,6 +156,25 @@ func set_music(stage: String, playing: bool) -> void:
 	elif not music.playing:
 		music.play()
 	music.stream_paused = false
+	_apply_music_volume()
+
+func play_menu_music() -> void:
+	if menu_music == null:
+		music.stream_paused = true
+		return
+	if music.stream != menu_music:
+		music.stream = menu_music
+		music.play()
+	elif not music.playing:
+		music.play()
+	music.stream_paused = false
+	_apply_music_volume()
+
+func _apply_music_volume() -> void:
+	if not is_instance_valid(music):
+		return
+	var offset := MENU_MUSIC_OFFSET_DB if music.stream != null and music.stream == menu_music else ARENA_MUSIC_OFFSET_DB
+	music.volume_db = linear_to_db(maxf(0.001,music_volume)) + offset
 
 func compose(stage: String) -> AudioStreamWAV:
 	var scales := {"zephyr_dojo":[0,2,4,7,9],"molten_forge":[0,1,5,7,10],"storm_market":[0,2,3,7,8]}

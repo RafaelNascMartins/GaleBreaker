@@ -4,6 +4,8 @@ extends RefCounted
 const DT := 1.0 / 60.0
 const EDGE := 9.5
 const GRAVITY := 28.0
+# Long enough for the full "three, two, one, FIGHT" announcer line.
+const COUNTDOWN_FRAMES := 216
 var data: GaleData
 var p1: Dictionary
 var p2: Dictionary
@@ -15,7 +17,7 @@ var round_number := 1
 var wins := [0, 0]
 var winner := 0
 var remaining := 99.0
-var countdown := 180
+var countdown := COUNTDOWN_FRAMES
 var freeze := 0
 var round_wait := 0
 var banner := "PREPARE-SE"
@@ -63,7 +65,7 @@ func start(id1: String, id2: String, stage: String, game_mode: String, skills1: 
 	round_number = 1
 	winner = 0
 	remaining = 99.0
-	countdown = 180
+	countdown = COUNTDOWN_FRAMES
 	freeze = 0
 	round_wait = 0
 	announce("ROUND 1 — PREPARE-SE", 180)
@@ -463,6 +465,10 @@ func resolve_hit(a: Dictionary, d: Dictionary, inp: Dictionary, move_override: D
 	freeze = maxi(1, roundi(float(move.hitstopMs) * 0.06))
 	emit("heavy" if move.type in ["heavy", "ultimate"] else "hit", d, Color(data.fighter(a.id).primaryColor))
 	events[-1].fighter = a.id
+	# Which move landed, so presentation can pick a per-move sound.
+	events[-1].move_type = String(move.get("type", ""))
+	events[-1].chain_step = int(move.get("chain_step", 1))
+	events[-1].entity = not move_override.is_empty()
 	return "hit"
 
 func update_hazards() -> void:
@@ -534,7 +540,7 @@ func next_round() -> void:
 	p1.meter = meter1
 	p2.meter = meter2
 	remaining = 99.0
-	countdown = 84
+	countdown = COUNTDOWN_FRAMES
 	freeze = 0
 	reset_hazards()
-	announce("ROUND %d — PREPARE-SE" % round_number, 84)
+	announce("ROUND %d — PREPARE-SE" % round_number, COUNTDOWN_FRAMES)

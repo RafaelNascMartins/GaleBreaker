@@ -38,6 +38,8 @@ var command_labels: Array = []
 var in_selection := false
 var editorial_font: SystemFont
 var step_distance := [0.0, 0.0]
+var hover_quiet_until := 0
+var attack_serials := [0, 0]
 
 func _ready() -> void:
 	DisplayServer.window_set_title("Gale Breaker")
@@ -138,6 +140,11 @@ func button(parent: Node, text: String, callback: Callable, primary_style: bool 
 	node.pressed.connect(func() -> void:
 		audio.play("click")
 		callback.call())
+	node.mouse_entered.connect(func() -> void: audio.play("menu_hover"))
+	# Keyboard/gamepad navigation; skip clicks (already hovered) and automatic focus on screen open.
+	node.focus_entered.connect(func() -> void:
+		if not node.is_hovered() and Time.get_ticks_msec() >= hover_quiet_until:
+			audio.play("menu_hover"))
 	parent.add_child(node)
 	return node
 
@@ -242,7 +249,8 @@ func show_menu(selection: bool = false) -> void:
 		hud.queue_free()
 		hud = null
 	screen = "selection" if selection else "menu"
-	audio.set_music(stage, false)
+	audio.stop_voice()
+	audio.play_menu_music()
 	# Sanctuary background without characters per GDD v0.9 page 11 & IMPLEMENTATION_PLAN Section 6
 	arena.set_menu_mode(not selection, not selection)
 
@@ -631,7 +639,7 @@ func update_hud() -> void:
 		combo_labels[i].text = "%d ACERTOS • %d DMG" % [f.combo, f.combo_damage] if f.combo > 1 else "HP %d / %d   •   %s %d%%" % [f.hp, f.max_hp, cat.element_label, f.meter]
 	timer_label.text = "∞" if mode == "training" else str(ceili(sim.remaining))
 	round_label.text = "— ROUND %d —" % sim.round_number
-	banner_label.text = str(ceili(sim.countdown / 60.0)) if sim.countdown > 0 else (sim.banner if sim.banner_frames > 0 else "")
+	banner_label.text = str(ceili(sim.countdown * 3.0 / GaleCombat.COUNTDOWN_FRAMES)) if sim.countdown > 0 else (sim.banner if sim.banner_frames > 0 else "")
 	status_label.text = "%s  /  %s%s" % [mode.to_upper(), data.stage(sim.stage_id).name, "  /  ETAPA %d/4" % arcade_index if mode == "arcade" else ""]
 
 func pause_match() -> void:
@@ -639,6 +647,7 @@ func pause_match() -> void:
 		return
 	screen = "paused"
 	audio.set_music(sim.stage_id, false)
+	audio.pause_voice(true)
 	# Instantiate pause_menu.tscn with warm ivory card matching menu-pausa-v2.png while keeping fighters visible!
 	modal = instantiate_ui_scene("res://scenes/ui/pause_menu.tscn", 0.45)
 	var column := centered(modal, 380, true)
@@ -665,6 +674,7 @@ func resume_match() -> void:
 	close_modal()
 	screen = "playing"
 	audio.set_music(sim.stage_id, true)
+	audio.pause_voice(false)
 
 func show_moves() -> void:
 	var return_to_pause := (screen == "paused")
@@ -739,6 +749,8 @@ func show_moves() -> void:
 func show_outcome() -> void:
 	screen = "outcome"
 	audio.set_music(sim.stage_id, false)
+	# Versus always celebrates the winner; against the CPU the line follows player 1.
+	audio.play_voice("victory" if mode == "versus" or sim.winner == 1 else "lose")
 	modal = overlay()
 	var column := centered(modal, 560)
 	var completed := mode == "arcade" and arcade_index == 4 and sim.winner == 1
@@ -964,7 +976,18 @@ func _physics_process(_delta: float) -> void:
 	var input1 := GalePreferences.input_for(1)
 	var input2 := GalePreferences.input_for(2) if mode == "versus" else (training_input() if mode == "training" else sim.ai_input())
 	var old_positions := [float(sim.p1.x),float(sim.p2.x)]
+	if sim.countdown == GaleCombat.COUNTDOWN_FRAMES:
+		audio.play_voice("countdown")
+	var countdown_before := sim.countdown
 	sim.step(input1, input2)
+	if countdown_before > 0 and sim.countdown == 0:
+		audio.play("fight_start")
+	for player in 2:
+		var attacker: Dictionary = sim.p1 if player == 0 else sim.p2
+		if int(attacker.attack_serial) != attack_serials[player]:
+			attack_serials[player] = int(attacker.attack_serial)
+			if String(attacker.move.get("type", "")) == "elemental":
+				audio.play("", attacker.id, "elemental")
 	for player in 2:
 		var fighter:Dictionary=sim.p1 if player==0 else sim.p2
 		if fighter.action=="walk" and fighter.grounded and sim.freeze==0 and sim.countdown==0:
@@ -975,7 +998,11 @@ func _physics_process(_delta: float) -> void:
 		else:step_distance[player]=0.0
 	for event: Dictionary in sim.events:
 		arena.impact(event)
-		audio.play(event.kind,event.get("fighter",""))
+		var variant := ""
+		if event.kind in ["hit", "heavy"] and not bool(event.get("entity", true)):
+			var move_type := String(event.get("move_type", ""))
+			variant = "light_%d" % clampi(int(event.get("chain_step", 1)), 1, 3) if move_type == "light" else move_type
+		audio.play(event.kind,event.get("fighter",""),variant)
 		if prefs.vibration and event.kind in ["hit","heavy","ko"]:
 			var devices := Input.get_connected_joypads()
 			var player := 0 if absf(float(sim.p1.x)-event.position.x)<absf(float(sim.p2.x)-event.position.x) else 1
@@ -1006,6 +1033,7 @@ func focus_first(parent: Node) -> void:
 
 func focus_control(control: Control) -> void:
 	if is_instance_valid(control) and control.is_inside_tree() and control.is_visible_in_tree():
+		hover_quiet_until = Time.get_ticks_msec() + 200
 		control.grab_focus()
 
 func apply_presentation_options() -> void:
@@ -1017,6 +1045,7 @@ func apply_presentation_options() -> void:
 
 func begin_fight() -> void:
 	tutorial = null
+	audio.play("match_start")
 	if mode == "arcade": show_arcade_intro()
 	else: start_match()
 

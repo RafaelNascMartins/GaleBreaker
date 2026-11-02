@@ -94,8 +94,8 @@ func run() -> void:
 	sim.step(attack_input("light"), GaleCombat.idle_input())
 	advance(sim, 15)
 	check(sim.wins[0] == 1 and sim.winner == 0 and sim.round_wait > 0, "first round does not finish best of three")
-	advance(sim, 200)
-	check(sim.round_number == 2 and sim.p2.hp == sim.p2.max_hp, "round resets HP and starts next countdown")
+	advance(sim, 116 + GaleCombat.COUNTDOWN_FRAMES)
+	check(sim.round_number == 2 and sim.p2.hp == sim.p2.max_hp and sim.countdown == 0, "round resets HP and runs the next countdown")
 	sim.p2.hp = 0
 	sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
 	check(sim.winner == 1 and sim.wins[0] == 2, "second round victory finishes match")

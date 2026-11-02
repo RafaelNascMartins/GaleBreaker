@@ -165,5 +165,15 @@ func run() -> void:
 	check(app.prefs.arcade_run.is_empty(),"finishing the tower clears its continue checkpoint")
 	app.close_modal();app.queue_free();await process_frame
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://gdd-app-regression.cfg"))
+	var sound := GaleAudio.new()
+	root.add_child(sound)
+	check(sound.samples.size() == GaleAudio.SAMPLE_PATHS.size(), "every recorded sound effect and voice line loads")
+	check(sound.menu_music is AudioStreamMP3 and (sound.menu_music as AudioStreamMP3).loop, "menu music loads and loops")
+	sound.play("", "kaze", "light_2")
+	var last := sound.players[(sound.cursor - 1 + sound.players.size()) % sound.players.size()]
+	check(last.stream == sound.samples["kaze_light_2"], "Kaze J2 hit uses its recorded punch")
+	check(float(GaleCombat.COUNTDOWN_FRAMES) / 60.0 >= 3.4, "countdown leaves room for the full announcer line")
+	sound.queue_free()
+
 	print("GDD TESTS: %d checks, %d failures"%[checks,failures])
 	quit(1 if failures>0 else 0)
