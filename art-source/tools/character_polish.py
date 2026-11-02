@@ -136,28 +136,39 @@ def _world_orientation(bone, rotation=None):
     bpy.context.view_layer.update()
 
 
-def finalize_pose(rig, fid, clip='idle', frame=0):
+def finalize_pose(rig, fid, clip='idle', frame=0, phase=None):
     """Bake clean end-effector targets, support hand and a planted lowest foot.
 
     No runtime IK dependency. Combat root X/Y is controlled exclusively by Godot.
     """
     bpy.context.view_layer.update()
     bones=rig.pose.bones
-    active=clip in ['light_1','light_2','light_3','heavy','elemental','ultimate','down_punch','air_punch','sweep'] and frame in [6,10,12]
-    prep=frame==4
+    attack=clip in ['light_1','light_2','light_3','heavy','elemental','ultimate','down_punch','air_punch','sweep']
+    if phase is None:
+        # Original fixed 24-frame layout (Tophia and Volt).
+        active=attack and frame in [6,10,12]
+        prep=frame==4
+        base=clip in ['idle','walk_forward','walk_back'] or frame in [0,24]
+    else:
+        # Phase-tagged keys from the per-fighter timing table (Kaze and Ignis).
+        active=attack and phase in ['active','follow']
+        prep=phase=='prep'
+        base=phase=='base'
     height=bones['hips'].head.z-bones['hips'].bone.head_local.z
+    # Lunges move the hips forward; arm targets travel with them for timed clips.
+    forward=bones['hips'].head.y-bones['hips'].bone.head_local.y if phase is not None else 0.0
     def arm(side,target):
-        target=Vector(target)+Vector((0,0,height))
+        target=Vector(target)+Vector((0,forward,height))
         solve_limb(bones,'upper_arm_'+side,'forearm_'+side,target,Vector((1 if side=='l' else -1,0,-.6)))
-    if clip in ['idle','walk_forward','walk_back'] or frame in [0,24]:
+    if base:
         if fid=='kaze':
             arm('l',(.22,-.47,1.33));arm('r',(-.24,-.20,1.05))
         elif fid in ['ignis','tophia']:
             for side,sx in [('l',1),('r',-1)]:arm(side,(sx*.24,-.40,1.25 if fid=='ignis' else 1.24))
     if fid=='kaze' and active:
-        if clip=='light_1':arm('r',(-.24,-.68,1.40))
+        if clip=='light_1':arm('r',(-.24,-.80,1.40))
         elif clip in ['light_2','elemental']:
-            arm('r',(-.22,-.64,1.26));arm('l',(.22,-.64,1.47))
+            arm('r',(-.22,-.76,1.26));arm('l',(.22,-.76,1.47))
         elif clip=='ultimate':
             arm('r',(-.24,-.18,2.08));arm('l',(.24,-.18,2.08))
         if clip in ['light_3','heavy']:
@@ -166,7 +177,7 @@ def finalize_pose(rig, fid, clip='idle', frame=0):
     elif fid=='ignis':
         if active and clip in ['light_1','light_2']:
             side='r' if clip=='light_1' else 'l'
-            arm(side,(-.24 if side=='r' else .24,-.75,1.30))
+            arm(side,(-.20 if side=='r' else .20,-.92,1.32))
             other='l' if side=='r' else 'r'
             arm(other,(.30 if other=='l' else -.30,-.03,1.02))
         if clip in ['heavy','light_3'] and (active or prep):

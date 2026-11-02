@@ -1011,7 +1011,9 @@ func focus_control(control: Control) -> void:
 func apply_presentation_options() -> void:
 	if is_instance_valid(arena):
 		arena.shake_strength = prefs.shake_strength
-		for view in arena.fighters: view.flashes_enabled = prefs.flashes
+		for view in arena.fighters:
+			view.flashes_enabled = prefs.flashes
+			view.shake_strength = prefs.shake_strength
 
 func begin_fight() -> void:
 	tutorial = null

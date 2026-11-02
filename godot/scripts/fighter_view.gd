@@ -25,7 +25,25 @@ var state_elapsed := 0.0
 var last_state := ""
 var locomotion_phase := 0.0
 var flashes_enabled := true
+var shake_strength := 0.65
 var contact_shadow: MeshInstance3D
+# Presentation-only motion layer (squash/stretch, lean, hit shake, limb trails).
+# It never touches combat hitboxes, which live in combat.gd.
+var pivot_base := Transform3D.IDENTITY
+var fx_squash := 0.0
+var fx_lean := 0.0
+var fx_shake := 0.0
+var land_timer := 0.0
+var was_grounded := true
+var trail: MeshInstance3D
+var trail_mesh: ImmediateMesh
+var trail_points: Array = []
+const TRAIL_LIFE := 0.14
+const MOVE_WEIGHT := {"light": 0.6, "heavy": 1.0, "elemental": 0.9, "ultimate": 1.3}
+const TRAIL_LIMBS := {
+	"kaze": {"light_2": "socket_hand_l", "light_3": "socket_foot_r", "heavy": "socket_foot_r"},
+	"ignis": {"light_2": "socket_hand_l", "elemental": "socket_foot_r", "ultimate": "socket_chest"},
+}
 const MoveEffects = preload("res://scripts/move_effects.gd")
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
@@ -97,6 +115,8 @@ func build(data: GaleData, id: String, palette: int) -> void:
 	add_child(scene_instance)
 	model_pivot = scene_instance.get_node_or_null("ModelPivot") as Node3D
 	if model_pivot!=null:model_pivot.position.y=0.025
+	if model_pivot != null:
+		pivot_base = model_pivot.transform
 
 	meshes.clear()
 	var found := {}
@@ -137,6 +157,18 @@ func build(data: GaleData, id: String, palette: int) -> void:
 	contact_shadow.material_override=shadow_mat
 	contact_shadow.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(contact_shadow)
+	trail_mesh = ImmediateMesh.new()
+	trail = MeshInstance3D.new()
+	trail.mesh = trail_mesh
+	trail.top_level = true
+	trail.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var trail_mat := StandardMaterial3D.new()
+	trail_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	trail_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	trail_mat.vertex_color_use_as_albedo = true
+	trail_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	trail.material_override = trail_mat
+	add_child(trail)
 
 	move_effects = MoveEffects.new()
 	add_child(move_effects)
@@ -232,10 +264,11 @@ func sync(f: Dictionary, time: float) -> void:
 
 	move_effects.visible = false
 
+	var attack_clip := ""
 	if state_key == "victory":
-		play_clip("victory", minf(state_elapsed, 40.0 / 60.0))
+		play_clip("victory", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "victory")))
 	elif state_key == "ko":
-		play_clip("ko", minf(state_elapsed, 30.0 / 60.0))
+		play_clip("ko", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "ko")))
 	elif f.action in ["startup", "active", "recovery"] and not f.move.is_empty():
 		var mtype: String = String(f.move.get("type", "light"))
 		var clip := mtype
@@ -246,27 +279,24 @@ func sync(f: Dictionary, time: float) -> void:
 
 		var total_frames := maxi(1, int(f.get("phase_total", f.frames)))
 		var progress := clampf(1.0 - float(maxi(0, int(f.frames))) / float(total_frames), 0.0, 1.0)
-		var seek_sec := 0.0
-		match String(f.action):
-			"startup":
-				seek_sec = lerpf(0.0, 6.0 / 60.0, progress)
-			"active":
-				seek_sec = lerpf(6.0 / 60.0, 12.0 / 60.0, progress)
-			"recovery":
-				seek_sec = lerpf(12.0 / 60.0, 24.0 / 60.0, progress)
-		play_clip(clip, seek_sec)
+		play_clip(clip, GaleAnimTiming.attack_seek(fighter_id, clip, String(f.action), progress))
+		attack_clip = clip
 		if f.move.get("delivery","melee") == "melee" or (f.id == "volt" and f.action == "startup"):
 			move_effects.present(f, progress, socket_position("socket_muzzle"), socket_position("socket_hand_r"), socket_position("socket_foot_r"))
 	elif f.action == "knockdown":
-		play_clip("knockdown", minf(state_elapsed, 24.0 / 60.0))
+		play_clip("knockdown", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "knockdown")))
 	elif f.action == "hitstun":
-		play_clip("hit", minf(state_elapsed, 16.0 / 60.0))
+		play_clip("hit", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "hit")))
 	elif f.action == "parry":
-		play_clip("parry", minf(state_elapsed, 16.0 / 60.0))
+		play_clip("parry", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "parry")))
 	elif f.action in ["guard", "blockstun"]:
-		play_clip("guard_low" if f.crouch else "guard_high", 0.08)
+		if f.crouch:
+			play_clip("guard_low", 0.08)
+		else:
+			# Each block replays the brace-and-rebound before holding the guard.
+			play_clip("guard_high", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "guard_high")))
 	elif f.action == "dash":
-		play_clip("dash", minf(state_elapsed, 10.0 / 60.0))
+		play_clip("dash", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "dash")))
 	elif not f.grounded:
 		play_clip("jump_start" if float(f.vy) > 4.0 else "jump_air", 0.08)
 	elif f.crouch:
@@ -274,10 +304,12 @@ func sync(f: Dictionary, time: float) -> void:
 	elif f.action == "walk":
 		var forward: bool = float(f.vx) * float(f.facing) >= 0.0
 		var w_clip := "walk_forward" if forward else "walk_back"
-		locomotion_phase = fmod(locomotion_phase + absf(float(f.vx)) * presentation_delta * 0.4 / 0.85, 0.4)
+		var cycle := GaleAnimTiming.state_sec(fighter_id, "walk")
+		locomotion_phase = fmod(locomotion_phase + absf(float(f.vx)) * presentation_delta * cycle / 0.85, cycle)
 		play_clip(w_clip, locomotion_phase)
 	else:
-		play_clip("idle", fmod(time * 0.65, 40.0 / 60.0))
+		play_clip("idle", fmod(time * 0.65, GaleAnimTiming.state_sec(fighter_id, "idle")))
+	_update_motion_fx(f, attack_clip)
 
 	aura.scale = Vector3.ONE * (1.2 + sin(time * 6.0) * 0.1 if f.boss else 1.0)
 	aura.visible=bool(f.boss)
@@ -288,3 +320,81 @@ func sync(f: Dictionary, time: float) -> void:
 		material.set_shader_parameter("base_color", Color.WHITE if flashes_enabled and int(f.flash) > 0 else primary)
 	syncing = false
 
+
+func _update_motion_fx(f: Dictionary, attack_clip: String) -> void:
+	var squash := 0.0
+	var lean := 0.0
+	var shake := 0.0
+	var grounded := bool(f.get("grounded", true))
+	if grounded and not was_grounded:
+		land_timer = 0.12
+	was_grounded = grounded
+	land_timer = maxf(0.0, land_timer - presentation_delta)
+	var action := String(f.action)
+	if attack_clip != "":
+		var weight: float = MOVE_WEIGHT.get(String(f.move.get("type", "light")), 0.6)
+		var heavy_body := 1.3 if fighter_id == "ignis" else 1.0
+		var progress := clampf(1.0 - float(maxi(0, int(f.frames))) / float(maxi(1, int(f.get("phase_total", f.frames)))), 0.0, 1.0)
+		match action:
+			"startup":
+				# Load: crouch into the wind-up and lean away from the target.
+				squash = 0.07 * weight * heavy_body * progress
+				lean = -0.07 * weight * progress
+			"active":
+				# Release: stretch through the strike and throw the body forward.
+				squash = -0.08 * weight * (1.0 - progress * 0.5) * (1.2 if fighter_id == "kaze" else 1.0)
+				lean = 0.13 * weight
+			_:
+				squash = 0.03 * weight * heavy_body * (1.0 - progress)
+				lean = 0.05 * weight * (1.0 - progress)
+	elif action == "hitstun" or action == "knockdown":
+		var decay := clampf(1.0 - state_elapsed / GaleAnimTiming.state_sec(fighter_id, "hit"), 0.0, 1.0)
+		squash = 0.06 * decay
+		lean = -0.2 * decay
+		shake = sin(state_elapsed * 95.0) * 0.035 * decay * shake_strength / 0.65
+	elif action == "dash":
+		squash = -0.04
+		lean = 0.14
+	elif not grounded:
+		squash = -0.05 if float(f.vy) > 0.0 else 0.0
+	if land_timer > 0.0:
+		squash += 0.12 * land_timer / 0.12
+	# Follow the target at presentation speed; hitstop (zero delta) freezes the pose.
+	var blend := 1.0 - exp(-presentation_delta * 28.0)
+	fx_squash = lerpf(fx_squash, squash, blend)
+	fx_lean = lerpf(fx_lean, lean, blend)
+	fx_shake = shake if presentation_delta > 0.0 else fx_shake
+	if model_pivot != null:
+		var stretch := Basis.from_scale(Vector3(1.0 + fx_squash * 0.6, 1.0 - fx_squash, 1.0 + fx_squash * 0.6))
+		# Forward is -Z in view space, so a forward lean tips the top toward -Z.
+		model_pivot.transform = Transform3D(Basis(Vector3.RIGHT, -fx_lean) * stretch, Vector3(fx_shake, 0, 0)) * pivot_base
+		# Sockets drive VFX origins, so they must match the pose actually drawn.
+		_update_sockets()
+	_update_trail(f, attack_clip)
+
+func _update_trail(f: Dictionary, attack_clip: String) -> void:
+	if trail == null:
+		return
+	var limbs: Dictionary = TRAIL_LIMBS.get(fighter_id, {})
+	if presentation_delta > 0.0:
+		for point: Dictionary in trail_points:
+			point.age += presentation_delta
+		trail_points = trail_points.filter(func(point: Dictionary) -> bool: return point.age < TRAIL_LIFE)
+		if attack_clip != "" and String(f.action) == "active" and fighter_id in TRAIL_LIMBS:
+			var socket_name: String = limbs.get(attack_clip, "socket_hand_r")
+			if sockets.has(socket_name):
+				trail_points.append({"pos": (sockets[socket_name] as Node3D).global_position, "age": 0.0,
+					"width": 0.11 if String(f.move.get("type", "light")) in ["heavy", "ultimate"] else 0.06})
+	trail_mesh.clear_surfaces()
+	if trail_points.size() < 2:
+		return
+	var tint := Color(catalog.palettes[palette_index].accent) if catalog != null else Color.WHITE
+	trail_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP)
+	for point: Dictionary in trail_points:
+		var life: float = 1.0 - float(point.age) / TRAIL_LIFE
+		var half: float = float(point.width) * life
+		trail_mesh.surface_set_color(Color(tint, 0.55 * life))
+		trail_mesh.surface_add_vertex(point.pos + Vector3.UP * half)
+		trail_mesh.surface_set_color(Color(tint, 0.55 * life))
+		trail_mesh.surface_add_vertex(point.pos - Vector3.UP * half)
+	trail_mesh.surface_end()

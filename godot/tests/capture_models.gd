@@ -61,15 +61,27 @@ func capture() -> void:
 		for view in views:
 			var camera:Camera3D=view.get_viewport().get_camera_3d()
 			camera.size=3.4 if clip in ["victory","ko"] else 2.6
-			view.play_clip(clip, 0.50 if clip in ["victory","ko"] else 0.10 if clip != "idle" else 0.0)
+			var seek := 0.0
+			if clip in ["victory","ko"]:
+				seek = GaleAnimTiming.state_sec(view.fighter_id, clip)
+			elif clip.begins_with("light") or clip in ["heavy","elemental","ultimate"]:
+				seek = GaleAnimTiming.contact_sec(view.fighter_id, clip)
+			elif clip == "guard_high":
+				seek = 0.1
+			view.play_clip(clip, seek)
 		await settle()
 		root.get_texture().get_image().save_png(output + "/" + clip + ".png")
 	if "--animate" in OS.get_cmdline_user_args():
-		for frame in 72:
-			var clip := "light_%d" % (1 + frame / 24)
+		# Each fighter plays light_1..3 back to back at its own clip lengths.
+		for frame in 96:
 			for view in views:
 				view.get_viewport().get_camera_3d().size=2.6
-				view.play_clip(clip, float(frame % 24) / 60.0)
+				var local := frame
+				var step := 1
+				while step < 3 and local >= int(GaleAnimTiming.attack(view.fighter_id, "light_%d" % step).end):
+					local -= int(GaleAnimTiming.attack(view.fighter_id, "light_%d" % step).end)
+					step += 1
+				view.play_clip("light_%d" % step, minf(float(local), float(GaleAnimTiming.attack(view.fighter_id, "light_%d" % step).end)) / 60.0)
 			await settle()
 			root.get_texture().get_image().save_png(output + "/frame-%03d.png" % frame)
 	print("MODEL CAPTURE COMPLETE")

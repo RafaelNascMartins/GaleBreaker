@@ -459,8 +459,18 @@ def animate_fighter(arm_obj, fighter_id: str):
     clip_context = {'name':'idle'}
     for b in pb:
         b.rotation_mode = 'XYZ'
+    import anim_timing
+    # Kaze and Ignis use per-fighter timing and the exaggerated clips below;
+    # Tophia and Volt keep the original 24-frame clips until their own pass.
+    NEW = fighter_id in anim_timing.TIMING
+    amp = {'k': 1.0}
+    authored_rot = {}
+    authored_loc = {}
+    new_builders = {}
 
     def reset_pose():
+        authored_rot.clear()
+        authored_loc.clear()
         for b in pb:
             b.location = (0, 0, 0)
             b.rotation_euler = (0, 0, 0)
@@ -468,6 +478,9 @@ def animate_fighter(arm_obj, fighter_id: str):
 
     def set_rot(bname: str, rx=0.0, ry=0.0, rz=0.0):
         if bname in pb:
+            k = amp['k']
+            rx, ry, rz = rx * k, ry * k, rz * k
+            authored_rot[bname] = (rx, ry, rz)
             # Author poses in character space, then conjugate into the bone's rest
             # basis. A humanoid's local Y runs along each bone, not world Y.
             joint = bname.startswith(('upper_arm_', 'forearm_', 'hand_', 'thigh_', 'shin_'))
@@ -477,11 +490,23 @@ def animate_fighter(arm_obj, fighter_id: str):
 
     def set_loc(bname: str, x=0.0, y=0.0, z=0.0):
         if bname in pb:
+            authored_loc[bname] = (x, y, z)
             pb[bname].location = pb[bname].bone.matrix_local.to_3x3().inverted() @ Vector((x,y,z))
 
-    def key_all(frame: int):
+    def add_rot(bname: str, dx=0.0, dy=0.0, dz=0.0):
+        rx, ry, rz = authored_rot.get(bname, (0.0, 0.0, 0.0))
+        k = amp['k']
+        amp['k'] = 1.0
+        set_rot(bname, rx + dx, ry + dy, rz + dz)
+        amp['k'] = k
+
+    def add_loc(bname: str, dx=0.0, dy=0.0, dz=0.0):
+        x, y, z = authored_loc.get(bname, (0.0, 0.0, 0.0))
+        set_loc(bname, x + dx, y + dy, z + dz)
+
+    def key_all(frame: int, phase=None):
         from character_polish import finalize_pose
-        finalize_pose(arm_obj, fighter_id, clip_context['name'], frame)
+        finalize_pose(arm_obj, fighter_id, clip_context['name'], frame, phase)
         for b in pb:
             b.keyframe_insert(data_path="location", frame=frame)
             b.keyframe_insert(data_path="rotation_euler", frame=frame)
@@ -537,6 +562,8 @@ def animate_fighter(arm_obj, fighter_id: str):
             set_rot("shin_r", -20, 0, 0)
 
     def make_clip(name: str, end_frame: int, builder_fn):
+        if name in new_builders:
+            end_frame, builder_fn = new_builders[name]
         clip_context['name'] = name
         act = bpy.data.actions.new(name=name)
         act.use_fake_user = True
@@ -552,6 +579,405 @@ def animate_fighter(arm_obj, fighter_id: str):
         if hasattr(strip, "action_slot") and len(act.slots) > 0:
             strip.action_slot = act.slots[0]
         track.mute = False
+        return act
+
+    def action_fcurves(act):
+        legacy = getattr(act, "fcurves", None)
+        if legacy is not None and len(legacy):
+            return list(legacy)
+        curves = []
+        for layer in getattr(act, "layers", []):
+            for strip in layer.strips:
+                for bag in strip.channelbags:
+                    curves.extend(bag.fcurves)
+        return curves
+
+    def ease_from(act, frame: int, mode='CUBIC', easing='EASE_IN'):
+        # The segment after this key accelerates, so strikes snap into contact.
+        for fc in action_fcurves(act):
+            for kp in fc.keyframe_points:
+                if round(kp.co.x) == frame:
+                    kp.interpolation = mode
+                    kp.easing = easing
+
+    def knees(drop: float):
+        # Bend both knees with any hips drop so the planted feet stay under the body.
+        deg = drop * 260.0
+        for side in 'lr':
+            add_rot('thigh_' + side, deg, 0, 0)
+            add_rot('shin_' + side, -deg * 1.2, 0, 0)
+
+    def cloth(swing=0.0, twist=0.0, lift=0.0):
+        # swing > 0 trails the cloth backward (body moving forward), < 0 throws it forward.
+        if fighter_id == 'kaze':
+            add_rot('robe_front', swing * 0.7, 0, twist * 0.5)
+            add_rot('robe_back', swing, 0, twist * 0.5)
+            for side, sx in (('l', 1.0), ('r', -1.0)):
+                add_rot('robe_side_' + side, swing * 0.9, -sx * lift, twist * 0.6)
+                add_rot('wrap_tail_' + side, swing * 1.2, -sx * lift * 0.5, 0)
+            add_rot('sash_tail', swing * 1.3, 0, twist)
+            add_rot('sash', swing * 0.5, twist * 0.4, 0)
+        elif fighter_id == 'ignis':
+            add_rot('hat', -swing * 0.25, 0, twist * 0.3)
+
+    BODY = {
+        'kaze': {
+            'light_1': {'coil': 18, 'lean': 10, 'lunge': .07, 'drop': .04, 'cloth': 28},
+            'light_2': {'coil': -18, 'lean': 10, 'lunge': .07, 'drop': .04, 'cloth': 28},
+            'light_3': {'coil': 10, 'lean': -6, 'lunge': .03, 'drop': .02, 'cloth': 34},
+            'heavy': {'coil': 30, 'lean': -10, 'lunge': .04, 'drop': .05, 'cloth': 45},
+            'elemental': {'coil': 14, 'lean': 14, 'lunge': .11, 'drop': .08, 'cloth': 48},
+            'ultimate': {'coil': 24, 'lean': -8, 'lunge': 0.0, 'drop': .10, 'cloth': 60},
+        },
+        'ignis': {
+            'light_1': {'coil': 36, 'lean': 16, 'lunge': .10, 'drop': .06, 'cloth': 30},
+            'light_2': {'coil': -36, 'lean': 16, 'lunge': .10, 'drop': .06, 'cloth': 30},
+            'light_3': {'coil': 0, 'lean': 20, 'lunge': .06, 'drop': .12, 'cloth': 40},
+            'heavy': {'coil': 0, 'lean': 24, 'lunge': .06, 'drop': .16, 'cloth': 50},
+            'elemental': {'coil': 10, 'lean': 12, 'lunge': .04, 'drop': .12, 'cloth': 40},
+            'ultimate': {'coil': 30, 'lean': 22, 'lunge': .18, 'drop': .10, 'cloth': 60},
+        },
+    }.get(fighter_id, {})
+
+    def body_layer(stage: str, b: dict):
+        coil, lean = b.get('coil', 0), b.get('lean', 0)
+        lunge, drop = b.get('lunge', 0.0), b.get('drop', 0.0)
+        if stage == 'wind':
+            # Anticipation: coil away, lean back, pull the hips back and load the legs.
+            add_rot('chest', 0, 0, coil)
+            add_rot('hips', 0, 0, coil * 0.5)
+            add_rot('spine', -lean * 0.5, 0, 0)
+            add_loc('hips', 0, lunge * 0.3, -drop * 0.8)
+            knees(drop * 0.8)
+            return
+        k = {'contact': 1.0, 'over': 1.3, 'follow': 0.6, 'recover': 0.15}[stage]
+        add_rot('chest', 0, 0, -coil * 0.8 * k)
+        add_rot('hips', 0, 0, -coil * 0.4 * k)
+        add_rot('spine', lean * k, 0, 0)
+        add_loc('hips', 0, -lunge * k, -drop * k)
+        knees(drop * k)
+
+    # Exaggerated movement, defence, reaction and presentation clips for Kaze and Ignis.
+    st = lambda n: anim_timing.state(fighter_id, n)
+    KAZE = fighter_id == 'kaze'
+
+    def cycle_keys(n, count=8):
+        return [(round(n * i / count), 2 * math.pi * i / count) for i in range(count + 1)]
+
+    def new_idle():
+        n = st('idle')
+        for f, p in cycle_keys(n):
+            apply_base_stance()
+            breath, sway = math.sin(2 * p), math.sin(p)
+            if KAZE:
+                # Calm, centred breathing with a slow sway that keeps the robe moving.
+                add_loc('hips', 0, 0, -0.012 * (1 - breath))
+                knees(0.012 * (1 - breath))
+                add_rot('chest', 3 * breath, 0, 4 * sway)
+                add_rot('head', -2 * breath, 0, -2 * sway)
+                cloth(6 * sway, 5 * sway, 3 * (1 + breath))
+            else:
+                # Heavy brawler breathing: chest heaves, shoulders roll, weight sinks.
+                add_loc('hips', 0, 0, -0.022 * (1 - breath))
+                knees(0.022 * (1 - breath))
+                add_rot('chest', -6 * breath, 0, 3 * sway)
+                add_rot('spine', 2 * breath, 0, 0)
+                add_rot('shoulder_l', 0, -5 * breath, 0)
+                add_rot('shoulder_r', 0, 5 * breath, 0)
+                add_rot('head', -5 * breath, 0, 2 * sway)
+                cloth(4 * breath, 3 * sway)
+            key_all(f, 'base')
+
+    def new_walk(s=1.0):
+        n = st('walk')
+        for f, p in cycle_keys(n):
+            apply_base_stance()
+            if KAZE:
+                sw = math.sin(p) * 32.0 * s
+                set_rot("thigh_l", sw, 0, 0)
+                set_rot("shin_l", -abs(sw) * 0.7, 0, 0)
+                set_rot("thigh_r", -sw, 0, 0)
+                set_rot("shin_r", -abs(sw) * 0.7, 0, 0)
+                add_loc("hips", 0, 0, abs(math.cos(p)) * 0.03)
+                add_rot("chest", 0, 0, 8 * math.sin(p) * s)
+                cloth(12 * s + 4 * math.sin(2 * p), 6 * math.sin(p), 4)
+                key_all(f, 'base')
+            else:
+                # Lumbering stomp: the body drops on every planted step and swings side to side.
+                sw = math.sin(p) * 26.0 * s
+                set_rot("thigh_l", sw + 10, 0, -6)
+                set_rot("shin_l", -abs(sw) * 0.8 - 14, 0, 0)
+                set_rot("thigh_r", -sw + 10, 0, 6)
+                set_rot("shin_r", -abs(sw) * 0.8 - 14, 0, 0)
+                add_loc("hips", 0, 0, -abs(math.sin(p)) * 0.05)
+                add_rot("hips", 0, 0, 10 * math.sin(p))
+                add_rot("chest", 0, 6 * math.sin(p), -14 * math.sin(p))
+                add_rot("upper_arm_l", -sw * 0.9, 0, 0)
+                add_rot("upper_arm_r", sw * 0.9, 0, 0)
+                cloth(8 * s, 6 * math.sin(p))
+                key_all(f, 'free')
+
+    def new_dash():
+        n = st('dash')
+        for f, k in [(0, 0.85), (n // 2, 1.1), (n, 1.0)]:
+            apply_base_stance()
+            if KAZE:
+                # Low wind-runner dash with the arms trailing behind.
+                set_rot("spine", 30 * k, 0, 0)
+                set_rot("chest", 18 * k, 0, 0)
+                set_rot("thigh_l", 50 * k, 0, 0)
+                set_rot("shin_l", -35 * k, 0, 0)
+                set_rot("thigh_r", -40 * k, 0, 0)
+                set_rot("shin_r", -55 * k, 0, 0)
+                set_rot("upper_arm_l", -45 * k, 10, -10)
+                set_rot("forearm_l", 20, 0, 0)
+                set_rot("upper_arm_r", -50 * k, -10, 10)
+                set_rot("forearm_r", 20, 0, 0)
+                add_loc("hips", 0, -0.05 * k, -0.05 * k)
+                cloth(55 * k, 0, 8)
+            else:
+                # Shoulder-first bull rush.
+                set_rot("spine", 28 * k, 0, -10 * k)
+                set_rot("chest", 20 * k, 0, -22 * k)
+                set_rot("upper_arm_r", 60, -20, 20)
+                set_rot("forearm_r", 85, 0, 0)
+                set_rot("upper_arm_l", 30, 20, -20)
+                set_rot("forearm_l", 70, 0, 0)
+                set_rot("thigh_l", 45 * k, 0, -6)
+                set_rot("shin_l", -40 * k, 0, 0)
+                set_rot("thigh_r", -35 * k, 0, 6)
+                set_rot("shin_r", -45 * k, 0, 0)
+                add_loc("hips", 0, -0.06 * k, -0.06 * k)
+                cloth(35 * k)
+            key_all(f, 'free')
+
+    def guard_pose():
+        apply_base_stance()
+        if KAZE:
+            set_rot("chest", 6, 0, -15)
+            set_rot("upper_arm_l", 85, 10, 10)
+            set_rot("forearm_l", 50, 0, 0)
+            set_rot("upper_arm_r", 60, -20, -20)
+            set_rot("forearm_r", 95, 0, 0)
+        else:
+            set_rot("chest", 22, 0, 0)
+            set_rot("head", -12, 0, 0)
+            set_rot("upper_arm_l", 80, 20, 25)
+            set_rot("forearm_l", 95, 0, 0)
+            set_rot("upper_arm_r", 80, -20, -25)
+            set_rot("forearm_r", 95, 0, 0)
+
+    def new_guard_high():
+        n = st('guard_high')
+        guard_pose()
+        key_all(0, 'free')
+        # The block lands: compress into the stance, rebound, then hold.
+        guard_pose()
+        add_loc("hips", 0, 0.03, -0.05)
+        knees(0.05)
+        add_rot("chest", 8, 0, 0)
+        add_rot("spine", 4, 0, 0)
+        cloth(-18)
+        key_all(4, 'free')
+        guard_pose()
+        add_rot("chest", -3, 0, 0)
+        cloth(8)
+        key_all(8, 'free')
+        guard_pose()
+        key_all(n, 'free')
+
+    def parry_pose(k=1.0):
+        apply_base_stance()
+        amp['k'] = k
+        if KAZE:
+            # Circular palm deflection.
+            set_rot("chest", -8, 0, -40)
+            set_rot("hips", 0, 0, -10)
+            set_rot("upper_arm_l", 100, 35, -30)
+            set_rot("forearm_l", 15, 0, 0)
+            set_rot("upper_arm_r", 40, -15, 10)
+            set_rot("forearm_r", 80, 0, 0)
+        else:
+            # Forearm shove.
+            set_rot("spine", 10, 0, 0)
+            set_rot("chest", 6, 0, -30)
+            set_rot("upper_arm_l", 95, 20, -10)
+            set_rot("forearm_l", 30, 0, 0)
+            set_rot("upper_arm_r", 40, -20, 20)
+            set_rot("forearm_r", 80, 0, 0)
+        amp['k'] = 1.0
+        if not KAZE:
+            add_loc("hips", 0, -0.06 * k, 0)
+
+    def new_parry():
+        n = st('parry')
+        apply_base_stance()
+        key_all(0, 'free')
+        parry_pose(1.2)
+        cloth(-20, -25)
+        key_all(3, 'free')
+        parry_pose()
+        cloth(10, -10)
+        key_all(8, 'free')
+        parry_pose(0.7)
+        key_all(n, 'free')
+
+    def hit_pose(k: float):
+        apply_base_stance()
+        add_rot("spine", -30 * k, 0, 14 * k)
+        add_rot("chest", -24 * k, 0, 12 * k)
+        add_rot("head", -34 * k, 0, 8 * k)
+        if k > 0:
+            set_rot("upper_arm_l", 20 + 50 * k, 40, -50 * k)
+            set_rot("upper_arm_r", 20 + 50 * k, -40, 50 * k)
+            set_rot("forearm_l", 30, 0, 0)
+            set_rot("forearm_r", 30, 0, 0)
+        add_loc("hips", 0, 0.10 * k, -0.05 * abs(k))
+        knees(0.05 * abs(k))
+        cloth(-40 * k)
+        if not KAZE:
+            add_rot("hat", -25 * k, 0, 0)
+
+    def new_hit():
+        n = st('hit')
+        hit_pose(0.6)
+        key_all(0, 'free')
+        hit_pose(1.0)
+        key_all(3, 'free')
+        hit_pose(0.35)
+        key_all(8, 'free')
+        hit_pose(-0.12)
+        key_all(13, 'free')
+        apply_base_stance()
+        key_all(n, 'base')
+
+    def lying(rot=-85.0, z=-0.80, legs=10.0, arms=40.0, head=0.0):
+        reset_pose()
+        set_loc("hips", 0, 0.38, z)
+        set_rot("hips", rot, 0, 0)
+        set_rot("spine", -6, 0, 0)
+        set_rot("head", -10, 0, head)
+        set_rot("upper_arm_l", 30, 0, -arms)
+        set_rot("upper_arm_r", 30, 0, arms)
+        set_rot("thigh_l", legs, 0, 0)
+        set_rot("thigh_r", legs * 0.5, 0, 0)
+
+    def airborne():
+        reset_pose()
+        set_loc("hips", 0, 0.22, 0.10)
+        set_rot("hips", -40, 0, 10)
+        set_rot("spine", -20, 0, 0)
+        set_rot("head", -25, 0, 0)
+        set_rot("upper_arm_l", 150, 0, -30)
+        set_rot("upper_arm_r", 150, 0, 30)
+        set_rot("thigh_l", 40, 0, 0)
+        set_rot("shin_l", -60, 0, 0)
+        set_rot("thigh_r", 10, 0, 0)
+        set_rot("shin_r", -20, 0, 0)
+        cloth(-50)
+
+    def fall_sequence(n):
+        # Launched, slammed into the floor, one bounce, then flat.
+        hit_pose(1.0)
+        key_all(0, 'free')
+        airborne()
+        key_all(round(n * 0.2), 'free')
+        lying()
+        cloth(-10)
+        key_all(round(n * 0.43), 'free')
+        lying(rot=-70, z=-0.66, legs=35, arms=50)
+        add_rot("shin_l", -40, 0, 0)
+        cloth(30)
+        key_all(round(n * 0.57), 'free')
+        lying(rot=-82)
+        key_all(round(n * 0.73), 'free')
+
+    def new_knockdown():
+        n = st('knockdown')
+        fall_sequence(n)
+        lying()
+        key_all(n, 'free')
+
+    def new_ko():
+        n = st('ko')
+        fall_sequence(round(n * 0.75))
+        lying(rot=-88, arms=65, legs=25, head=25)
+        add_rot("shin_l", -45, 0, 0)
+        key_all(n, 'free')
+
+    def new_get_up():
+        lying()
+        key_all(0, 'free')
+        reset_pose()
+        set_loc("hips", 0, 0.15, -0.50)
+        set_rot("hips", -25, 0, 0)
+        set_rot("spine", 30, 0, 0)
+        set_rot("thigh_l", 85, 0, 0)
+        set_rot("shin_l", -120, 0, 0)
+        set_rot("thigh_r", 70, 0, 0)
+        set_rot("shin_r", -100, 0, 0)
+        set_rot("upper_arm_l", 20, 0, -20)
+        set_rot("upper_arm_r", 20, 0, 20)
+        key_all(7, 'free')
+        apply_base_stance()
+        add_loc("hips", 0, 0, -0.20)
+        knees(0.20)
+        add_rot("spine", 15, 0, 0)
+        key_all(12, 'free')
+        apply_base_stance()
+        key_all(18, 'base')
+
+    def new_victory():
+        n = st('victory')
+        apply_base_stance()
+        key_all(0, 'free')
+        if KAZE:
+            apply_base_stance()
+            add_rot("spine", -10, 0, 0)
+            set_rot("upper_arm_l", 40, 30, -60)
+            set_rot("upper_arm_r", 40, -30, 60)
+            cloth(-20, 0, 8)
+            key_all(12, 'free')
+            for f, bow, cl in [(20, 26, 30), (28, 14, -8), (n, 14, 4)]:
+                apply_base_stance()
+                add_rot("spine", bow, 0, 0)
+                add_rot("head", bow * 0.6, 0, 0)
+                cloth(cl, 0, 4)
+                key_all(f, 'free')
+        else:
+            apply_base_stance()
+            add_loc("hips", 0, 0, -0.10)
+            knees(0.10)
+            add_rot("chest", 22, 0, 0)
+            set_rot("upper_arm_l", 10, 10, -10)
+            set_rot("forearm_l", 30, 0, 0)
+            cloth(10)
+            key_all(14, 'free')
+            for f, proud, hat in [(24, 1.25, 22), (34, 1.0, 16), (44, 1.15, 18), (n, 1.0, 16)]:
+                apply_base_stance()
+                add_rot("spine", -10 * proud, 0, 0)
+                add_rot("chest", -16 * proud, 0, 0)
+                add_rot("head", -12 * proud, 0, 0)
+                set_rot("upper_arm_l", 85, 25, -20)
+                set_rot("forearm_l", 80 * proud, 0, 0)
+                add_rot("hat", hat, 0, 0)
+                key_all(f, 'free')
+
+    if NEW:
+        new_builders.update({
+            "idle": (st('idle'), new_idle),
+            "walk_forward": (st('walk'), lambda: new_walk(1.0)),
+            "walk_back": (st('walk'), lambda: new_walk(-0.7)),
+            "dash": (st('dash'), new_dash),
+            "guard_high": (st('guard_high'), new_guard_high),
+            "parry": (st('parry'), new_parry),
+            "hit": (st('hit'), new_hit),
+            "knockdown": (st('knockdown'), new_knockdown),
+            "get_up": (18, new_get_up),
+            "ko": (st('ko'), new_ko),
+            "victory": (st('victory'), new_victory),
+            "select": (st('victory'), new_victory),
+        })
 
     # 1. idle (frames 0..40)
     def build_idle():
@@ -641,6 +1067,8 @@ def animate_fighter(arm_obj, fighter_id: str):
     # Frame 6..12: Active (EXECUÇÃO / CONTATO)
     # Frame 12..24: Recovery (IMPACTO / RECUPERAÇÃO)
     def build_attack_clip(name: str, prep_fn, active_fn, recov_fn=None):
+        if NEW and name in BODY:
+            return build_attack_clip_v2(name, prep_fn, active_fn, recov_fn)
         def _fn():
             apply_base_stance()
             key_all(0)
@@ -663,6 +1091,57 @@ def animate_fighter(arm_obj, fighter_id: str):
             apply_base_stance()
             key_all(24)
         make_clip(name, 24, _fn)
+
+    def build_attack_clip_v2(name: str, prep_fn, active_fn, recov_fn=None):
+        t = anim_timing.attack(fighter_id, name)
+        b = BODY[name]
+        c = b.get('cloth', 25)
+        tw = b.get('coil', 0) * 0.3
+
+        def pose(fn, k=1.0):
+            apply_base_stance()
+            amp['k'] = k
+            fn()
+            amp['k'] = 1.0
+
+        def _fn():
+            apply_base_stance()
+            key_all(0, 'base')
+            # Big wind-up, then a fast snap into contact.
+            pose(prep_fn, 1.15)
+            body_layer('wind', b)
+            cloth(-c * 0.5, tw)
+            key_all(t['wind'], 'prep')
+            pose(active_fn)
+            body_layer('contact', b)
+            cloth(c, -tw)
+            key_all(t['contact'], 'active')
+            # Overshoot past the contact pose, then settle back into the hold.
+            over = min(t['contact'] + 2, t['hold'] - 1)
+            if over > t['contact']:
+                pose(active_fn, 1.15)
+                body_layer('over', b)
+                cloth(c * 1.3, -tw * 1.3)
+                key_all(over, 'active')
+            pose(active_fn)
+            body_layer('contact', b)
+            cloth(c * 0.8, -tw)
+            key_all(t['hold'], 'active')
+            # Follow-through: the body relaxes while the cloth whips back.
+            pose(active_fn, 0.8)
+            body_layer('follow', b)
+            cloth(-c * 0.4, tw * 0.5)
+            key_all(t['follow'], 'follow')
+            apply_base_stance()
+            if recov_fn:
+                recov_fn()
+            body_layer('recover', b)
+            cloth(c * 0.15)
+            key_all(t['recover'], 'base')
+            apply_base_stance()
+            key_all(t['end'], 'base')
+        act = make_clip(name, t['end'], _fn)
+        ease_from(act, t['wind'])
 
     # LIGHT 1 (J1)
     def l1_prep():
@@ -1146,6 +1625,8 @@ def build_and_export_fighter(fighter_id: str):
     add_model_detail(mb, fighter_id)
     mesh_obj = mb.build_object(f"{fighter_id}_Body", arm_obj, mat)
     animate_fighter(arm_obj, fighter_id)
+    import anim_timing
+    anim_timing.export_json(GODOT / "data" / "anim_timing.json")
 
     blend_path = ART_SRC / "characters" / fighter_id / f"{fighter_id}.blend"
     glb_path = GODOT / "assets" / "characters" / fighter_id / f"{fighter_id}.glb"

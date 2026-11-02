@@ -1,0 +1,350 @@
+{
+  "kaze": {
+    "attacks": {
+      "light_1": {
+        "wind": 5,
+        "contact": 7,
+        "hold": 9,
+        "follow": 12,
+        "recover": 17,
+        "end": 22
+      },
+      "light_2": {
+        "wind": 5,
+        "contact": 7,
+        "hold": 9,
+        "follow": 12,
+        "recover": 17,
+        "end": 22
+      },
+      "light_3": {
+        "wind": 7,
+        "contact": 10,
+        "hold": 13,
+        "follow": 16,
+        "recover": 22,
+        "end": 28
+      },
+      "heavy": {
+        "wind": 10,
+        "contact": 13,
+        "hold": 16,
+        "follow": 20,
+        "recover": 28,
+        "end": 36
+      },
+      "elemental": {
+        "wind": 11,
+        "contact": 14,
+        "hold": 18,
+        "follow": 22,
+        "recover": 29,
+        "end": 36
+      },
+      "ultimate": {
+        "wind": 18,
+        "contact": 24,
+        "hold": 30,
+        "follow": 35,
+        "recover": 44,
+        "end": 54
+      },
+      "down_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "air_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "sweep": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      }
+    },
+    "states": {
+      "idle": 64,
+      "walk": 26,
+      "dash": 12,
+      "guard_high": 12,
+      "parry": 18,
+      "hit": 20,
+      "knockdown": 30,
+      "ko": 40,
+      "victory": 48
+    }
+  },
+  "ignis": {
+    "attacks": {
+      "light_1": {
+        "wind": 8,
+        "contact": 11,
+        "hold": 14,
+        "follow": 17,
+        "recover": 24,
+        "end": 30
+      },
+      "light_2": {
+        "wind": 8,
+        "contact": 11,
+        "hold": 14,
+        "follow": 17,
+        "recover": 24,
+        "end": 30
+      },
+      "light_3": {
+        "wind": 13,
+        "contact": 17,
+        "hold": 21,
+        "follow": 25,
+        "recover": 33,
+        "end": 40
+      },
+      "heavy": {
+        "wind": 17,
+        "contact": 21,
+        "hold": 26,
+        "follow": 30,
+        "recover": 40,
+        "end": 48
+      },
+      "elemental": {
+        "wind": 15,
+        "contact": 19,
+        "hold": 24,
+        "follow": 28,
+        "recover": 37,
+        "end": 44
+      },
+      "ultimate": {
+        "wind": 22,
+        "contact": 28,
+        "hold": 34,
+        "follow": 40,
+        "recover": 50,
+        "end": 58
+      },
+      "down_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "air_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "sweep": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      }
+    },
+    "states": {
+      "idle": 52,
+      "walk": 34,
+      "dash": 14,
+      "guard_high": 14,
+      "parry": 18,
+      "hit": 22,
+      "knockdown": 32,
+      "ko": 44,
+      "victory": 56
+    }
+  },
+  "tophia": {
+    "attacks": {
+      "light_1": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "light_2": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "light_3": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "elemental": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "ultimate": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "down_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "air_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "sweep": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      }
+    },
+    "states": {
+      "idle": 40,
+      "walk": 24,
+      "dash": 10,
+      "guard_high": 10,
+      "parry": 16,
+      "hit": 16,
+      "knockdown": 24,
+      "ko": 30,
+      "victory": 40
+    }
+  },
+  "volt": {
+    "attacks": {
+      "light_1": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "light_2": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "light_3": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "elemental": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "ultimate": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "down_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "air_punch": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "sweep": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      }
+    },
+    "states": {
+      "idle": 40,
+      "walk": 24,
+      "dash": 10,
+      "guard_high": 10,
+      "parry": 16,
+      "hit": 16,
+      "knockdown": 24,
+      "ko": 30,
+      "victory": 40
+    }
+  }
+}
