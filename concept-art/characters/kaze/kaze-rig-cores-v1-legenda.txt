@@ -1,0 +1,16 @@
+KAZE — GUIA VISUAL DE SEGMENTOS E RIG V1
+
+Vistas separadas: frente, perfil e costas. Anatomia da concept lowpoly anime v3.
+Direita/esquerda são sempre as do personagem. Na frente, a direita aparece à esquerda da imagem; nas costas, à direita. O perfil apresenta o lado esquerdo próximo.
+
+Cabeça: amarelo
+Pescoço: bege
+Tórax: ciano
+Abdômen: verde-menta
+Pelve: violeta
+
+Direita: braço vermelho; antebraço laranja; mão ocre; coxa lima; perna verde; pé verde-escuro.
+Esquerda: braço azul; antebraço azul-petróleo; mão azul-marinho; coxa rosa; perna magenta; pé ameixa.
+
+Ossos brancos e círculos indicam cadeias e articulações. Roupa tracejada para permitir ver a estrutura por baixo.
+Referência conceitual em PNG: não contém malha, pesos ou esqueleto 3D editável. Ajustar pivôs e deformações na modelagem.

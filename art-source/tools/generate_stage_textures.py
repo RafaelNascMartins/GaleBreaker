@@ -36,11 +36,11 @@ def split_atlas(stage):
     return written
 
 
-def clean_cutout(tile):
+def clean_cutout(tile, threshold=110):
     """Hard alpha edge plus colour bleed into the transparent area (no halo under mipmaps)."""
     import numpy as np
     rgba = np.asarray(tile.convert("RGBA")).astype(np.float32)
-    inside = (rgba[..., 3] >= 110).astype(np.float32)
+    inside = (rgba[..., 3] >= threshold).astype(np.float32)
     rgb = rgba[..., :3] * inside[..., None]
     filled = rgba[..., :3].copy()
     known = inside.copy()
@@ -56,6 +56,59 @@ def clean_cutout(tile):
     filled[inside == 1] = rgba[..., :3][inside == 1]
     out = np.dstack([np.clip(filled, 0, 255), inside * 255]).astype(np.uint8)
     return Image.fromarray(out, "RGBA")
+
+
+FOREST_UI_PIECES = {"slider", "toggle-ligado", "toggle-desligado", "botao-neutro", "botao-selecionado", "botao-hover",
+                    "painel-pergaminho", "selo-confirmar", "cantoneira-latao"}
+
+
+def split_forest():
+    """Forest passage and quest board (concept-art/floresta-atlas): one PNG per atlas cell.
+
+    Materials are opaque; vegetation and board props are cut out with a hard edge
+    (their generated alpha has a wide yellow-green fringe, hence the higher threshold).
+    Board UI widgets also go to godot/assets/ui/board for the options screen.
+    """
+    src = CONCEPT / "floresta-atlas"
+    meta = json.loads((src / "manifest.json").read_text(encoding="utf-8"))
+    out = OUT / "beach" / "textures" / "forest"
+    ui_out = ROOT / "godot" / "assets" / "ui" / "board"
+    out.mkdir(parents=True, exist_ok=True)
+    ui_out.mkdir(parents=True, exist_ok=True)
+    written = []
+    for atlas in meta["atlases"]:
+        sheet = Image.open(src / atlas["file"]).convert("RGBA")
+        opaque = atlas.get("mode") == "RGB"
+        for cell in atlas["cells"]:
+            x, y, w, h = cell["rect_px"]
+            tile = sheet.crop((x + TRIM, y + TRIM, x + w - TRIM, y + h - TRIM))
+            name = cell["id"]
+            if opaque:
+                tile.convert("RGB").resize((512, 512), Image.Resampling.LANCZOS).save(out / f"{name}.png")
+            else:
+                clean = clean_cutout(tile, 140)
+                bbox = clean.getchannel("A").getbbox()
+                if bbox:
+                    clean = clean.crop(bbox)
+                clean.save(out / f"{name}.png")
+                if name in FOREST_UI_PIECES:
+                    clean.save(ui_out / f"{name}.png")
+            written.append(name)
+    light_shaft().save(out / "raio.png")
+    return written
+
+
+def light_shaft():
+    """Soft vertical sunbeam for the clearing (additive)."""
+    import numpy as np
+    w, h = 128, 512
+    x = np.linspace(-1, 1, w)[None, :]
+    y = np.linspace(0, 1, h)[:, None]
+    alpha = np.exp(-(x / 0.45) ** 2) * (0.75 - 0.6 * y) * 0.32
+    rgba = np.zeros((h, w, 4), np.uint8)
+    rgba[..., 0], rgba[..., 1], rgba[..., 2] = 255, 236, 170
+    rgba[..., 3] = (alpha * 255).astype(np.uint8)
+    return Image.fromarray(rgba, "RGBA")
 
 
 def split_beach():
@@ -118,6 +171,7 @@ def main():
     zephyr_backdrop()
     bazaar_corridor_view()
     print("beach textures:", split_beach())
+    print("forest textures:", split_forest())
 
 
 if __name__ == "__main__":

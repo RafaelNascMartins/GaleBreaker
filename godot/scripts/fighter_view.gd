@@ -129,6 +129,8 @@ func build(data: GaleData, id: String, palette: int) -> void:
 	if anim_player != null:
 		anim_player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 
+	# Same ink outline as the cel-shaded scenery.
+	material.next_pass = preload("res://shaders/cel/outline.tres")
 	for m: MeshInstance3D in meshes:
 		m.material_override = material
 

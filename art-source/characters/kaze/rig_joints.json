@@ -1,0 +1,18 @@
+{
+  "note": "Joint circles read from concept-art/characters/kaze/kaze-rig-cores-v1-frente.png (x, y) and -perfil.png (y) in pixels; build_blender_assets converts them to metres on the generated model.",
+  "front_image": {"bbox_x": [122, 899], "top": 41, "sole": 1462},
+  "side_image": {"bbox_x": [357, 666], "top": 48, "sole": 1471},
+  "front": {
+    "head_top": [510, 70], "neck_head": [510, 262], "neck_base": [510, 292], "chest_top": [510, 385],
+    "abdomen": [510, 590], "pelvis": [510, 678],
+    "shoulder_r": [385, 362], "elbow_r": [297, 517], "wrist_r": [205, 686], "hand_tip_r": [163, 762],
+    "shoulder_l": [640, 362], "elbow_l": [727, 517], "wrist_l": [818, 686], "hand_tip_l": [858, 762],
+    "hip_r": [441, 692], "knee_r": [405, 1012], "ankle_r": [390, 1343], "toe_r": [374, 1422],
+    "hip_l": [582, 692], "knee_l": [614, 1012], "ankle_l": [632, 1343], "toe_l": [648, 1422]
+  },
+  "side": {
+    "head_top": 518, "neck_head": 508, "neck_base": 506, "chest_top": 494, "abdomen": 476, "pelvis": 471,
+    "shoulder": 551, "elbow": 553, "wrist": 549, "hand_tip": 545,
+    "hip": 471, "knee": 503, "ankle": 526, "toe": 448
+  }
+}

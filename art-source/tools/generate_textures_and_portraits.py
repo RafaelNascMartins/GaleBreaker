@@ -160,12 +160,12 @@ def generate_fighter_textures(fighter_id: str, cfg: dict):
 
 FIGHTER_TEX_CONFIGS = {
     "kaze": {
-        "skin_base": "#d89c74",
-        "skin_sunburn": "#c68860",
-        "primary": "#28654F",
-        "primary_pattern": "robe",
-        "secondary": "#84A98C",
-        "secondary_pattern": "robe",
+        "skin_base": "#E7AE78",
+        "skin_sunburn": "#D59B66",
+        "primary": "#357A57",
+        "primary_pattern": "flat",  # low-poly anime: flat colour, the facets do the shading
+        "secondary": "#C6D1A8",
+        "secondary_pattern": "flat",
         "accent": "#4AD69D",
         "hair": "#22201E",
         "leather": "#26463B",

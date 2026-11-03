@@ -12,6 +12,12 @@ GODOT = ROOT / "godot"
 
 # UV strip centers for the 8 vertical strips in our 1024x1024 texture:
 # 0: skin_base, 1: skin_sunburn, 2: primary, 3: secondary, 4: accent, 5: hair, 6: leather, 7: dark
+# Fighters already in the low-poly anime style (concept-art/characters/<id>/*-lowpoly-anime-*).
+FLAT_SHADED = set()
+# Fighters whose body is a generated model of the concept (art-source/characters/<id>/source/<id>_tripo.glb).
+MODEL_FIGHTERS = {"kaze"}
+
+
 def zone_u(zone_idx: int) -> float:
     return (zone_idx + 0.5) / 8.0
 
@@ -155,8 +161,10 @@ class MeshBuilder:
         self.bm.to_mesh(mesh)
         self.bm.free()
 
+        # Low-poly anime fighters keep hard facets; the others stay smooth.
+        flat = name.split("_")[0] in FLAT_SHADED
         for poly in mesh.polygons:
-            poly.use_smooth = True
+            poly.use_smooth = not flat
 
         obj = bpy.data.objects.new(name, mesh)
         bpy.context.collection.objects.link(obj)
@@ -252,69 +260,61 @@ def create_humanoid_armature(fighter_id: str, scale_cfg: dict):
 
 
 def build_kaze_mesh(mb: MeshBuilder):
-    # V2 Kaze (menu-pausa-v2): tall bald monk, sleeveless layered jade robe with flowing panels, jade beads with tassel,
-    # wide baggy trousers, wrist wraps and crisscross ankle wraps, barefoot.
-    h = 1.90
-    # Torso & sleeveless jade monk vest (Zone 2 primary jade, Zone 3 light jade lapel)
-    mb.add_limb("hips", 2, (0, 0, 0.88), (0, 0, 1.08), 0.17, 0.16, 12)
-    mb.add_limb("spine", 2, (0, 0, 1.06), (0, 0, 1.32), 0.16, 0.20, 12)
-    mb.add_limb("chest", 2, (0, 0, 1.30), (0, 0, 1.56), 0.20, 0.23, 12)
-    # Crossed monk lapels (Zone 3) and exposed muscular upper chest V-neck (Zone 0 skin)
-    mb.add_box("chest", 3, (0.04, -0.14, 1.43), (0.26, 0.12, 0.28), rot_deg=(0, 12, 0))
-    mb.add_box("chest", 3, (-0.05, -0.155, 1.40), (0.20, 0.07, 0.30), rot_deg=(0, -16, 0))
-    mb.add_box("chest", 0, (0, -0.15, 1.52), (0.12, 0.10, 0.13))
-    # Waist sash (Zone 6) with darker leather belt knot
-    mb.add_limb("hips", 6, (0, 0, 0.95), (0, 0, 1.04), 0.185, 0.185, 12)
-    # Layered lower robe: long front panels, side panels that flare outward, back panel and trailing sash.
-    mb.add_box("robe_front", 2, (0, -0.145, 0.64), (0.30, 0.05, 0.62), taper_top=0.85)
-    mb.add_box("robe_front", 3, (0.03, -0.165, 0.60), (0.16, 0.04, 0.58), taper_top=0.8)
-    mb.add_box("robe_front", 3, (-0.07, -0.158, 0.55), (0.10, 0.035, 0.50), taper_top=0.8)
-    mb.add_box("robe_front", 6, (0.0, -0.172, 0.34), (0.30, 0.045, 0.035))  # hem trim
-    mb.add_box("robe_back", 2, (0, 0.14, 0.64), (0.32, 0.05, 0.62), taper_top=0.85)
-    for side_name, sx in [("l", 1.0), ("r", -1.0)]:
-        mb.add_box(f"robe_side_{side_name}", 2, (sx * 0.215, -0.01, 0.66), (0.05, 0.24, 0.58), rot_deg=(0, sx * 9, 0), taper_top=0.8)
-        mb.add_box(f"robe_side_{side_name}", 3, (sx * 0.235, -0.02, 0.60), (0.04, 0.20, 0.46), rot_deg=(0, sx * 11, 0), taper_top=0.75)
-        mb.add_box(f"robe_side_{side_name}", 6, (sx * 0.255, -0.02, 0.36), (0.04, 0.22, 0.03), rot_deg=(0, sx * 12, 0))
-    mb.add_box("sash_tail", 3, (0.02, 0.19, 0.74), (0.09, 0.03, 0.46), rot_deg=(8, 0, 0), taper_top=0.9)
-    mb.add_box("sash_tail", 6, (0.02, 0.215, 0.50), (0.09, 0.03, 0.04))
-    # Jade prayer beads hanging on the right hip (`sash` bone, Zone 4 accent), pendant and tassel
-    for i in range(9):
-        mb.add_sphere("sash", 4, (-0.17 - i * 0.008, -0.085, 0.94 - i * 0.055), (0.034, 0.034, 0.034), 8, 6)
-    mb.add_sphere("sash", 4, (-0.245, -0.09, 0.43), (0.05, 0.03, 0.06), 8, 6)
-    mb.add_box("sash", 3, (-0.245, -0.09, 0.30), (0.035, 0.035, 0.16), taper_top=1.3)
-
-    # Bald monk head & neck (Zone 0 skin, NO hair/headband!)
-    mb.add_limb("neck", 0, (0, 0, 1.55), (0, 0, 1.66), 0.075, 0.07, 10)
-    mb.add_sphere("head", 0, (0, -0.01, 1.77), (0.115, 0.135, 0.145), 14, 10)
-    # Subtle ears, nose, brow & eyes
-    mb.add_box("head", 0, (0, -0.14, 1.76), (0.035, 0.04, 0.05))
+    # Low-poly anime v3 (concept-art/characters/kaze/kaze-lowpoly-anime-v3-*.png): slim young bald monk,
+    # sleeveless jade vest with crossed cream collar, dark sash with two cream buttons, cream sash tail at
+    # his left front, asymmetric knee-length skirt with cream hem (longer, pointed at the back), baggy
+    # trousers gathered below the knee, bare shins and feet, three bands on each wrist.
+    # Few segments + flat shading (FLAT_SHADED) give the faceted look.
+    # Torso: vest over a slim body.
+    mb.add_limb("hips", 2, (0, 0, 0.90), (0, 0, 1.06), 0.155, 0.15, 8)
+    mb.add_limb("spine", 2, (0, 0, 1.04), (0, 0, 1.30), 0.145, 0.17, 8)
+    mb.add_limb("chest", 2, (0, 0, 1.28), (0, 0, 1.55), 0.175, 0.19, 8)
+    # Crossed collar: his right lapel over the left, forming a V down to the sash.
+    mb.add_box("chest", 0, (0, -0.155, 1.50), (0.11, 0.06, 0.12), bevel=0)
+    mb.add_box("chest", 3, (0.035, -0.178, 1.38), (0.075, 0.025, 0.40), rot_deg=(0, 24, 0), bevel=0)
+    mb.add_box("chest", 3, (-0.045, -0.172, 1.43), (0.06, 0.022, 0.26), rot_deg=(0, -26, 0), bevel=0)
+    mb.add_box("chest", 3, (0, 0.13, 1.55), (0.16, 0.05, 0.06), bevel=0)  # collar at the back
+    # Sash (dark) with two round cream buttons in front.
+    mb.add_limb("hips", 6, (0, 0, 0.97), (0, 0, 1.07), 0.165, 0.165, 8)
     for sx in (-1.0, 1.0):
-        mb.add_sphere("head", 0, (sx * 0.115, 0.0, 1.76), (0.022, 0.035, 0.045), 8, 6)
+        mb.add_sphere("hips", 3, (sx * 0.065, -0.17, 1.02), (0.042, 0.03, 0.042), 7, 5)
+    # Cream sash tail hanging at his left front, in two folds.
+    mb.add_box("robe_front", 3, (0.055, -0.185, 0.84), (0.075, 0.02, 0.28), rot_deg=(0, -4, 0), bevel=0)
+    mb.add_box("robe_front", 3, (0.08, -0.19, 0.66), (0.065, 0.02, 0.2), rot_deg=(0, 8, 0), bevel=0)
+    # Skirt: front flap ending on a slant, back flap longer and pointed, side flaps that flutter.
+    mb.add_box("robe_front", 2, (0, -0.135, 0.79), (0.31, 0.035, 0.34), taper_top=0.85, bevel=0)
+    mb.add_box("robe_front", 3, (0.01, -0.15, 0.62), (0.33, 0.03, 0.035), rot_deg=(0, -10, 0), bevel=0)
+    mb.add_box("robe_back", 2, (0, 0.13, 0.75), (0.33, 0.035, 0.42), taper_top=0.85, bevel=0)
+    for sx in (-1.0, 1.0):
+        mb.add_box("robe_back", 3, (sx * 0.08, 0.145, 0.55), (0.19, 0.03, 0.035), rot_deg=(0, sx * 18, 0), bevel=0)
+    for side_name, sx in [("l", 1.0), ("r", -1.0)]:
+        mb.add_box(f"robe_side_{side_name}", 2, (sx * 0.175, -0.01, 0.78), (0.03, 0.2, 0.34), rot_deg=(0, sx * 8, 0), taper_top=0.85, bevel=0)
+        mb.add_box(f"robe_side_{side_name}", 3, (sx * 0.19, -0.01, 0.615), (0.028, 0.2, 0.03), rot_deg=(0, sx * 8, 0), bevel=0)
 
-    # Muscular bare arms + jade wrist wraps with trailing tails + barefoot legs
+    # Head and neck: youthful, slightly faceted skull and visible ears.
+    mb.add_limb("neck", 0, (0, 0, 1.54), (0, 0, 1.66), 0.058, 0.055, 6)
+    mb.add_sphere("head", 0, (0, -0.01, 1.78), (0.105, 0.12, 0.13), 8, 6)
+    mb.add_box("head", 0, (0, -0.075, 1.685), (0.13, 0.11, 0.08), taper_top=1.3, bevel=0)  # jaw
+    for sx in (-1.0, 1.0):
+        mb.add_box("head", 0, (sx * 0.108, 0.0, 1.765), (0.025, 0.04, 0.06), rot_deg=(0, 0, sx * 10), bevel=0)
+
+    # Slim bare arms; the wrist bands come from character_polish.
     for side_name, sx in [("l", 1.0), ("r", -1.0)]:
         sh_x = sx * 0.24
         el_x = sx * 0.30
         wr_x = sx * 0.32
-        mb.add_sphere(f"shoulder_{side_name}", 0, (sh_x, 0, 1.50), (0.10, 0.10, 0.10), 10, 8)
-        mb.add_limb(f"upper_arm_{side_name}", 0, (sh_x, 0, 1.50), (el_x, 0, 1.20), 0.09, 0.072, 10)
-        mb.add_limb(f"forearm_{side_name}", 0, (el_x, 0, 1.20), (wr_x, -0.03, 1.02), 0.072, 0.060, 10)
-        # Jade wrist wraps (Zone 6) with a light trailing tail on the `wrap_tail` bone
-        mb.add_limb(f"forearm_{side_name}", 6, (wr_x, -0.03, 1.05), (wr_x, -0.05, 0.90), 0.070, 0.060, 10)
-        mb.add_box(f"wrap_tail_{side_name}", 3, (wr_x + sx * 0.05, -0.10, 0.80), (0.035, 0.015, 0.20), rot_deg=(0, sx * 10, 0), taper_top=1.2)
-        # Open monk palm / hand (Zone 0 skin)
-        mb.add_box(f"hand_{side_name}", 0, (wr_x, -0.08, 0.84), (0.05, 0.09, 0.11))
+        mb.add_sphere(f"shoulder_{side_name}", 0, (sh_x, 0, 1.50), (0.072, 0.075, 0.075), 7, 5)
+        mb.add_limb(f"upper_arm_{side_name}", 0, (sh_x, 0, 1.50), (el_x, 0, 1.20), 0.062, 0.05, 7)
+        mb.add_limb(f"forearm_{side_name}", 0, (el_x, 0, 1.20), (wr_x, -0.03, 1.0), 0.05, 0.042, 7)
+        mb.add_box(f"hand_{side_name}", 0, (wr_x, -0.08, 0.86), (0.045, 0.08, 0.1), bevel=0)
 
-        # Wide baggy trousers (Zone 2): billowing thighs, gathered at the ankle
-        lx = sx * 0.13
-        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.05, -0.02, 0.50), 0.155, 0.185, 10)
-        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.05, -0.02, 0.52), (lx * 1.05, 0, 0.26), 0.18, 0.125, 10)
-        # Crisscross ankle wraps (Zone 6 leather + Zone 3 light bands)
-        mb.add_limb(f"shin_{side_name}", 6, (lx * 1.05, 0, 0.26), (lx * 1.05, 0, 0.09), 0.078, 0.064, 10)
-        for k in range(3):
-            mb.add_limb(f"shin_{side_name}", 3, (lx * 1.05 - 0.07, -0.01, 0.12 + k * 0.045), (lx * 1.05 + 0.07, -0.01, 0.145 + k * 0.045), 0.012, 0.012, 6)
-        # Barefoot feet (Zone 0 skin!)
-        mb.add_box(f"foot_{side_name}", 0, (lx * 1.05, -0.08, 0.045), (0.095, 0.22, 0.065), taper_top=0.85)
+        # Baggy trousers gathered under the knee, then bare shins and feet.
+        lx = sx * 0.11
+        mb.add_limb(f"thigh_{side_name}", 2, (lx, 0, 0.94), (lx * 1.05, -0.02, 0.50), 0.12, 0.15, 7)
+        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.05, -0.02, 0.52), (lx * 1.05, 0, 0.40), 0.155, 0.11, 7)
+        mb.add_limb(f"shin_{side_name}", 2, (lx * 1.05, 0, 0.41), (lx * 1.05, 0, 0.35), 0.072, 0.07, 7)
+        mb.add_limb(f"shin_{side_name}", 0, (lx * 1.05, 0, 0.36), (lx * 1.05, 0, 0.07), 0.05, 0.04, 6)
+        mb.add_box(f"foot_{side_name}", 0, (lx * 1.05, -0.07, 0.04), (0.08, 0.2, 0.055), taper_top=0.85, bevel=0)
 
 
 def build_ignis_mesh(mb: MeshBuilder):
@@ -1633,11 +1633,16 @@ def build_and_export_fighter(fighter_id: str):
     cfg = FIGHTER_SCALES[fighter_id]
     arm_obj = create_humanoid_armature(fighter_id, cfg)
     mat = make_fighter_material(fighter_id)
-    mb = MeshBuilder()
-    cfg["builder"](mb)
-    from character_polish import add_model_detail
-    add_model_detail(mb, fighter_id)
-    mesh_obj = mb.build_object(f"{fighter_id}_Body", arm_obj, mat)
+    if fighter_id in MODEL_FIGHTERS:
+        # Generated 1:1 from the concept turnaround; see model_rig.py.
+        from model_rig import build_model_fighter
+        mesh_obj = build_model_fighter(fighter_id, arm_obj, mat, cfg["height"])
+    else:
+        mb = MeshBuilder()
+        cfg["builder"](mb)
+        from character_polish import add_model_detail
+        add_model_detail(mb, fighter_id)
+        mesh_obj = mb.build_object(f"{fighter_id}_Body", arm_obj, mat)
     animate_fighter(arm_obj, fighter_id)
     import anim_timing
     anim_timing.export_json(GODOT / "data" / "anim_timing.json")
@@ -1700,6 +1705,10 @@ def build_and_export_stages():
         ("bazaar", "storm_market"),
         ("beach", "beach"),  # main menu scene
     ]
+    if '--stage' in sys.argv:
+        # Rebuild a single scene, e.g. --stage beach (the beach is by far the slowest).
+        wanted = sys.argv[sys.argv.index('--stage') + 1]
+        stages = [st for st in stages if wanted in st]
     for blend_folder, stage_id in stages:
         clear_scene()
         out_dir = GODOT / "assets" / "environments" / stage_id

@@ -48,7 +48,7 @@ Preferências: `user://preferences.cfg`. O nome interno do projeto foi preservad
 | `scripts/preferences.gd` | Persistência, remapeamento e gamepads |
 | `scripts/audio.gd` | Composição e síntese de áudio |
 
-Fontes Blender em `../art-source/`; GLBs em `assets/`. O gerador `../art-source/tools/build_blender_assets.py` usa `character_polish.py` e `stage_polish.py`. Execute com Blender em background: `--python ../art-source/tools/build_blender_assets.py -- --characters-only` ou `--stages-only`; `--fighter volt` limita a um lutador. Reimporte no Godot após gerar.
+Fontes Blender em `../art-source/`; GLBs em `assets/`. O gerador `../art-source/tools/build_blender_assets.py` usa `character_polish.py` e `stage_polish.py`. Execute com Blender em background: `--python ../art-source/tools/build_blender_assets.py -- --characters-only` ou `--stages-only`; `--fighter volt` limita a um lutador. `--stage beach` (ou `zephyr`, `forge`, `bazaar`) reconstrói só uma cena; a praia do menu é a mais lenta. Reimporte no Godot após gerar.
 
 Backups: `../art-source/revisions/`. Capturas reais: `../art-source/previews/index.html`. GDD: `../docs/gdd/index.html` e PDF v0.10. O projeto web permanece independente.
 

@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ENV = ROOT / "godot" / "assets" / "environments"
 # x_min, x_max, y_front, y_back of the walkable floor.
 STAGE_FLOOR = {"zephyr_dojo": (-8.6, 8.6, -4.6, 4.2), "molten_forge": (-7.6, 7.6, -4.6, 3.8), "storm_market": (-9.6, 9.6, -14.0, 16.6)}
-KEEP_PREFIXES = ("Blocker_", "Barrier_", "Banner_", "Crowd_", "Backdrop")
+KEEP_PREFIXES = ("Blocker_", "Barrier_", "Banner_", "Crowd_", "Backdrop", "QuestBoardPanel")
 
 
 class Kit:
@@ -761,8 +761,8 @@ def build_beach(k):
     tree_bark = k.tex("arvore_tronco", "arvore_tronco.png", 1.5)
     planks = k.tex("madeira_barco", "madeira_barco.png", 1.0)
     grass = k.tex("grama", "grama.png", 3.0)
-    shallows = k.tex("water_mar", "mar-transicao-v1.png")
-    ocean = k.tex("water_agua", "agua.png", 6.0)
+    seabed = k.tex("leito_areia", "areia.png", 3.0)
+    water = k.mat("water_toon", (0.2, 0.6, 0.8))
     leaves = k.tex("cutout_folhas", "folhas.png")
     fronds = k.tex("cutout_palmeira", "palmeira_folhas.png")
     flowers = k.tex("cutout_flores", "flores.png")
@@ -772,18 +772,24 @@ def build_beach(k):
     nut = k.mat("coco", (0.45, 0.30, 0.14))
     sail = k.mat("vela", (0.93, 0.88, 0.76))
 
-    # Land to the left of the shoreline, a sand-to-deep strip and the open ocean.
+    # Land to the left of the shoreline; the seabed slopes down from it under a
+    # transparent water surface, so the toon water shader can read the depth.
     flat_mesh(k, "Sand", [((x - 0.4, y, 0.0), (-220.0, y, 0.0)) for x, y in SHORE], sand)
-    strip, uvs, length = [], [], 0.0
+    near, far = [], []
     for i, (x, y) in enumerate(SHORE):
-        if i:
-            length += math.dist(SHORE[i - 1], (x, y))
         prev, nxt = SHORE[max(i - 1, 0)], SHORE[min(i + 1, len(SHORE) - 1)]
         n = Vector((nxt[1] - prev[1], -(nxt[0] - prev[0]), 0)).normalized()
-        strip.append(((x - 1.5, y, 0.02), tuple(Vector((x, y, 0.02)) + n * 28)))
-        uvs.append(((0.0, length / 28), (1.0, length / 28)))
-    flat_mesh(k, "Shallows", strip, shallows, uvs)
-    k.cyl("Ocean", (0, 0, -0.03), 195, 195, 0.02, ocean, 64)
+        shore = Vector((x - 0.4, y, 0.0))
+        mid = Vector((x, y, 0.0)) + n * SEABED_SHELF + Vector((0, 0, -SEABED_SHELF_DEPTH))
+        out = Vector((x, y, 0.0)) + n * SEABED_DROP + Vector((0, 0, -SEABED_DEPTH))
+        near.append((tuple(shore), tuple(mid)))
+        far.append((tuple(mid), tuple(out)))
+    flat_mesh(k, "SeabedShelf", near, seabed)
+    flat_mesh(k, "SeabedSlope", far, seabed)
+    k.cyl("SeabedDeep", (0, 60, -SEABED_DEPTH - 0.05), 260, 260, 0.1, seabed, 64)
+    water_rows = [((x - 0.6, y, WATER_Z), (260.0, y, WATER_Z)) for x, y in SHORE]
+    water_rows.append(((-260.0, 260.0, WATER_Z), (260.0, 260.0, WATER_Z)))
+    flat_mesh(k, "WaterSurface", water_rows, water)
     # Clouds occupy the top half of the painted sky: bring them down to 3-20 degrees of elevation.
     backdrop(k, radius=200.0, a_left=190.0, a_right=-10.0, segments=64, filename="ceu-praia-v1.png", v_rows=[(-6.0, 0.0), (10.0, 0.5), (75.0, 1.0)])
 
@@ -852,11 +858,27 @@ def build_beach(k):
                  (k.rng.uniform(55, 90), 0, k.rng.uniform(0, 360)))
         card(k, "Hibiscus", (bx + 0.2, by - 0.35, 0.75), 0.7, 0.7, flowers, (80, 0, k.rng.uniform(-20, 20)))
     for cx, cy in [(8.0, -2.0), (10.5, 2.5), (9.0, 6.5), (12.0, -5.0)]:
-        card(k, "Coral", (cx, cy, 0.05), 1.6, 1.6, corals, (0, 0, k.rng.uniform(0, 360)))
+        # Corals rest on the seabed and are seen through the water.
+        card(k, "Coral", (cx, cy, seabed_z(cx, cy) + 0.04), 1.6, 1.6, corals, (0, 0, k.rng.uniform(0, 360)))
     vegetation(k, leaves, fronds, flowers, rock, grass)
     # Sun path toward the back-right of the bay, where the light comes from.
     k.panel("SunGlints", (20, 52, 0.06), 26, 44, k.tex("glint_sol", "glints.png"), "up", rot_z=-18)
     foliage_wall(k, leaves, fronds, flowers, tree_bark)
+    forest(k, sand)
+
+
+WATER_Z = 0.05
+SEABED_SHELF, SEABED_SHELF_DEPTH = 7.0, 0.9
+SEABED_DROP, SEABED_DEPTH = 30.0, 4.0
+
+
+def seabed_z(x, y):
+    """Approximate seabed height at a point offshore."""
+    dist = max(0.0, x - shore_x(y))
+    if dist < SEABED_SHELF:
+        return -SEABED_SHELF_DEPTH * dist / SEABED_SHELF
+    t = min(1.0, (dist - SEABED_SHELF) / (SEABED_DROP - SEABED_SHELF))
+    return -SEABED_SHELF_DEPTH - (SEABED_DEPTH - SEABED_SHELF_DEPTH) * t
 
 
 def shore_x(y):
@@ -935,6 +957,187 @@ def vegetation(k, leaves, fronds, flowers, rock, grass):
     for j in range(10):
         card(k, "CornerFrond", (rng.uniform(-3.4, -1.2), rng.uniform(-10.6, -9.2), rng.uniform(0.6, 1.6)), 2.6, 1.1, fronds,
              (rng.uniform(70, 100), rng.uniform(-50, -15), rng.uniform(-60, 60)))
+
+
+# --- Floresta e quadro de opções (concept-art/floresta-atlas, ui/quest-board-opcoes-floresta-v2) ---
+# The clearing sits behind the foliage wall on the left of the menu frame. The menu
+# camera flies through the corridor along CamPath_* and stops at CamBoard, facing the
+# board (which faces +X). Godot overlays the options UI on QuestBoardPanel.
+BOARD = Vector((-24.0, 1.0, 0.0))
+CORRIDOR_Y = 1.0
+
+
+def marker(name, loc):
+    empty = bpy.data.objects.new(name, None)
+    empty.location = loc
+    bpy.context.collection.objects.link(empty)
+    return empty
+
+
+def forest_tex(k, name, meters=0.0, emit=0.0):
+    return k.tex(name, "forest/" + name + ".png", meters, emit)
+
+
+def forest_card(k, name, center, size, mat, rot):
+    return card(k, name, center, size[0], size[1], mat, rot)
+
+
+def big_tree(k, base, height, radius, bark, moss, root_mat, leaf_mats, lean=(0.0, 0.0)):
+    """Thick trunk with flaring roots, a moss band and a cluster canopy."""
+    bx, by, bz = base
+    top = Vector((bx + lean[0], by + lean[1], bz + height))
+    k.beam("ForestTrunk", (bx, by, bz - 0.3), top, radius, bark, 12)
+    k.cyl("TrunkFlare", (bx, by, bz + 0.35), radius * 1.9, radius, 0.9, bark, 12)
+    k.beam("TrunkMoss", (bx, by, bz + 0.6), (bx + lean[0] * 0.2, by + lean[1] * 0.2, bz + 2.2), radius * 1.03, moss, 12)
+    for j in range(5):
+        a = j * 2 * math.pi / 5 + k.rng.uniform(-0.3, 0.3)
+        d = Vector((math.cos(a), math.sin(a), 0))
+        forest_card(k, "Root", Vector((bx, by, bz + 0.25)) + d * (radius * 1.8), (2.2, 1.0), root_mat,
+                    (k.rng.uniform(70, 90), 0, math.degrees(a) + 90))
+    for j in range(4):
+        a = j * math.pi / 2 + k.rng.uniform(0, 1)
+        end = top + Vector((math.cos(a) * 3.0, math.sin(a) * 3.0, k.rng.uniform(0.5, 1.8)))
+        k.beam("ForestBranch", top - Vector((0, 0, 1.0)), end, radius * 0.35, bark, 8)
+        for n in range(9):
+            off = Vector((k.rng.uniform(-1.8, 1.8), k.rng.uniform(-1.8, 1.8), k.rng.uniform(-0.8, 0.8)))
+            forest_card(k, "Canopy", end + off, (2.4, 2.4), leaf_mats[n % len(leaf_mats)],
+                        (k.rng.uniform(20, 160), k.rng.uniform(-40, 40), k.rng.uniform(0, 360)))
+
+
+def undergrowth(k, center, spread, count, mats, scale=1.0):
+    for n in range(count):
+        x = center[0] + k.rng.uniform(-spread[0], spread[0])
+        y = center[1] + k.rng.uniform(-spread[1], spread[1])
+        s = k.rng.uniform(0.9, 1.6) * scale
+        forest_card(k, "Undergrowth", (x, y, 0.45 * s), (1.3 * s, 1.3 * s), mats[n % len(mats)],
+                    (k.rng.uniform(65, 100), k.rng.uniform(-20, 20), k.rng.uniform(0, 360)))
+
+
+def quest_board(k):
+    """Roofed wooden notice board facing +X, centred on BOARD (see the v2 concept)."""
+    wood = forest_tex(k, "madeira-quadro", 1.2)
+    stone = forest_tex(k, "pedra-fundacao", 1.0)
+    brass = forest_tex(k, "latao", 0.6)
+    tiles = forest_tex(k, "telhas-azul-marinho", 0.9)
+    parchment = k.tex("cutout_painel", "forest/painel-pergaminho.png")
+    banner_mat = k.tex("cutout_estandarte", "forest/estandarte-jade.png")
+    lantern = k.tex("cutout_lanterna", "forest/lanterna.png")
+    vine = k.tex("cutout_cipo", "forest/cipo.png")
+    bx, by = BOARD.x, BOARD.y
+    for side in (-1, 1):
+        py = by + side * 2.05
+        k.box("BoardStone", (bx, py, 0.2), (0.75, 0.75, 0.4), stone)
+        k.box("BoardPost", (bx, py, 1.95), (0.32, 0.32, 3.5), wood)
+        k.beam("BoardBrace", (bx, py, 1.0), (bx, py + side * 0.75, 0.05), 0.09, wood)
+        for z in (1.05, 3.0):
+            k.box("BoardCorner", (bx + 0.12, py, z), (0.1, 0.42, 0.34), brass)
+        # Jade banners hang from the posts and sway (Banner_ prefix).
+        top = (bx + 0.22, py + side * 0.05, 2.95)
+        obj = k.panel("Banner_Board", (top[0], top[1], top[2] - 0.85), 0.55, 1.7, banner_mat, "+x")
+        k.group("Banner_Board%d" % (side + 1), [obj], origin=top)
+    # Backing boards, top beam with the carved wind emblem, bottom rail.
+    k.box("BoardBack", (bx - 0.04, by, 2.05), (0.12, 3.8, 2.15), wood)
+    k.box("BoardTopBeam", (bx, by, 3.25), (0.3, 4.6, 0.36), wood)
+    k.box("BoardBottomRail", (bx, by, 0.92), (0.24, 4.1, 0.2), wood)
+    k.ring("BoardEmblem", (bx + 0.17, by, 3.25), 0.16, 0.035, brass, rot=(0, 90, 0))
+    # The parchment the options are drawn on (kept as its own node for Godot).
+    panel = k.panel("QuestBoardPanel", (bx + 0.04, by, 2.06), 3.45, 1.95, parchment, "+x")
+    panel.name = "QuestBoardPanel"
+    # Tiled roof: a gable extruded along the board, with upturned ridge tips.
+    k.prism("BoardRoof", [(bx - 1.05, 3.4), (bx + 1.05, 3.4), (bx, 3.95)], by, 5.6, tiles)
+    k.box("BoardRidge", (bx, by, 3.98), (0.22, 5.7, 0.14), wood)
+    for side in (-1, 1):
+        k.box("RidgeTip", (bx, by + side * 2.9, 4.08), (0.22, 0.4, 0.22), wood, rot=(side * 25, 0, 0))
+    # Lantern on the left (screen) post, vines over the top beam.
+    k.beam("LanternHook", (bx + 0.1, by - 2.05, 3.0), (bx + 0.45, by - 2.05, 3.0), 0.03, brass)
+    k.panel("BoardLantern", (bx + 0.5, by - 2.05, 2.62), 0.45, 0.8, lantern, "+x")
+    for n in range(4):
+        forest_card(k, "BoardVine", (bx + 0.22, by - 1.5 + n * 1.0, 3.32), (0.55, 0.62), vine, (90, 0, 90))
+
+
+def forest(k, sand_dark):
+    bark = forest_tex(k, "casca-arvore", 1.6)
+    moss = forest_tex(k, "musgo-na-casca", 1.4)
+    path_mat = forest_tex(k, "caminho-arenoso", 2.0)
+    soil = forest_tex(k, "terra-umida", 3.0)
+    litter = forest_tex(k, "serrapilheira", 2.5)
+    rock = forest_tex(k, "pedra-laranja", 1.0)
+    seat = forest_tex(k, "madeira-banco", 0.8)
+    stone = forest_tex(k, "pedra-fundacao", 1.0)
+    cut = lambda name: k.tex("cutout_" + name, "forest/" + name + ".png")
+    leaves = [cut("monstera"), cut("folha-bananeira"), cut("folha-larga"), cut("galho-folhas")]
+    ground_plants = [cut("samambaia-touceira"), cut("arbusto"), cut("tufo-grama"), cut("samambaia-folha"), cut("monstera")]
+    flowers = [cut("hibisco"), cut("flores-brancas")]
+    root_mat = cut("raiz")
+    hanging = cut("folhagem-pendente")
+    dry = cut("folha-seca")
+
+    # Forest floor: leaf litter over the clearing and corridor, a sandy path through it.
+    k.box("ForestFloor", (-17.0, 1.0, 0.012), (24.0, 24.0, 0.02), litter)
+    k.box("ClearingSoil", (-21.5, 1.0, 0.018), (9.0, 9.0, 0.02), soil)
+    for (a, b) in [((-3.0, -8.0), (-8.0, CORRIDOR_Y)), ((-8.0, CORRIDOR_Y), (-20.5, CORRIDOR_Y))]:
+        mid = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0.024)
+        length = math.dist(a, b)
+        ang = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+        k.box("ForestPath", mid, (length + 1.0, 2.0, 0.02), path_mat, rot=(0, 0, ang))
+    for n in range(10):
+        x = k.rng.uniform(-20, -6)
+        forest_card(k, "DryLeaf", (x, CORRIDOR_Y + k.rng.uniform(-1, 1), 0.04), (0.35, 0.35), dry, (0, 0, k.rng.uniform(0, 360)))
+    for x, y in [(-11.5, CORRIDOR_Y - 0.7), (-15.5, CORRIDOR_Y + 0.9), (-19.0, CORRIDOR_Y - 1.1), (-22.0, CORRIDOR_Y + 2.6)]:
+        k.ball("PathRock", (x, y, 0.08), (0.45, 0.32, 0.18), rock, 1, rot=(0, 0, k.rng.uniform(0, 360)))
+
+    # Two great trunks frame the corridor entrance (as in the passage concept), more trees around the clearing.
+    big_tree(k, (-9.5, CORRIDOR_Y - 3.3, 0), 9.0, 0.85, bark, moss, root_mat, leaves, lean=(-0.5, -0.8))
+    big_tree(k, (-10.5, CORRIDOR_Y + 3.6, 0), 9.5, 0.9, bark, moss, root_mat, leaves, lean=(-0.6, 1.0))
+    for (x, y, h, r) in [(-15, -5.0, 10, 0.6), (-15.5, 7.5, 10, 0.65), (-21, -5.5, 11, 0.7), (-20, 8.0, 11, 0.7),
+                         (-28, -3.5, 12, 0.8), (-28.5, 5.5, 12, 0.8), (-31, 1.0, 13, 0.9), (-25, -9, 11, 0.7),
+                         (-25, 11, 11, 0.7), (-17, 12, 10, 0.6), (-17, -10, 10, 0.6), (-33, -7, 12, 0.8), (-33, 9, 12, 0.8)]:
+        big_tree(k, (x, y, 0), h, r, bark, moss, root_mat, leaves)
+
+    # Dense undergrowth: walls along the corridor and around the clearing, closing every gap.
+    for (cx, cy, sx, sy, n) in [(-6.5, CORRIDOR_Y - 3.0, 2.0, 1.2, 14), (-6.5, CORRIDOR_Y + 3.0, 2.0, 1.2, 14),
+                                (-13.0, CORRIDOR_Y - 2.6, 3.0, 1.0, 18), (-13.0, CORRIDOR_Y + 2.6, 3.0, 1.0, 18),
+                                (-21.0, CORRIDOR_Y - 5.5, 4.5, 1.5, 22), (-21.0, CORRIDOR_Y + 5.5, 4.5, 1.5, 22),
+                                (-27.5, CORRIDOR_Y, 2.0, 7.0, 34)]:
+        undergrowth(k, (cx, cy), (sx, sy), n, ground_plants, 1.3)
+    for (cx, cy) in [(-12.0, CORRIDOR_Y - 1.6), (-14.5, CORRIDOR_Y + 1.7), (-18.5, CORRIDOR_Y - 2.4), (-17.5, CORRIDOR_Y + 2.9)]:
+        undergrowth(k, (cx, cy), (0.6, 0.4), 4, flowers, 0.9)
+    for n in range(26):
+        x = k.rng.uniform(-30, -8)
+        y = k.rng.choice([k.rng.uniform(-10, -3), k.rng.uniform(5, 12)])
+        forest_card(k, "HangingLeaves", (x, y, k.rng.uniform(4.5, 7.5)), (1.6, 2.2), hanging, (90, 0, k.rng.uniform(0, 360)))
+    # Big leaves right beside the camera path, so the flight brushes through them.
+    for (x, y, z, yaw) in [(-4.2, -6.4, 2.2, 30), (-5.6, -4.0, 1.4, -20), (-7.2, -1.2, 2.6, 60), (-8.6, 2.4, 1.6, -40),
+                           (-9.6, -0.3, 2.9, 15), (-12.6, 2.1, 2.3, -60), (-13.4, -0.4, 1.4, 40)]:
+        forest_card(k, "PassLeaf", (x, y, z), (2.2, 2.2), leaves[0 if yaw > 0 else 1], (k.rng.uniform(60, 110), k.rng.uniform(-30, 30), yaw))
+
+    # Closed backdrop of foliage behind and above the clearing, so no sky shows through the trunks.
+    for n in range(120):
+        x = k.rng.uniform(-36, -27)
+        y = k.rng.uniform(-11, 13)
+        forest_card(k, "BackFoliage", (x, y, k.rng.uniform(0.5, 11.0)), (3.2, 3.2), leaves[n % len(leaves)],
+                    (k.rng.uniform(70, 110), k.rng.uniform(-30, 30), 90 + k.rng.uniform(-35, 35)))
+    for n in range(70):
+        forest_card(k, "Canopy", (k.rng.uniform(-30, -9), k.rng.uniform(-9, 11), k.rng.uniform(7.5, 10.5)), (3.4, 3.4),
+                    leaves[n % len(leaves)], (k.rng.uniform(-25, 25), k.rng.uniform(-25, 25), k.rng.uniform(0, 360)))
+    quest_board(k)
+    # Bench to the right of the board (screen right = +Y when facing the board).
+    bx, by = BOARD.x + 1.6, BOARD.y + 4.2
+    for dy in (-0.75, 0.75):
+        k.box("BenchLeg", (bx, by + dy, 0.25), (0.45, 0.32, 0.5), stone)
+    k.box("BenchSeat", (bx, by, 0.55), (0.6, 2.0, 0.12), seat)
+    k.box("BenchBack", (bx - 0.28, by, 0.95), (0.1, 2.0, 0.55), seat, rot=(0, -10, 0))
+    # Light shafts falling into the clearing.
+    shaft = k.tex("glint_raio", "forest/raio.png")
+    for (x, y) in [(-25.5, 3.6), (-26.0, -2.4)]:
+        obj = k.panel("LightShaft", (x, y, 5.0), 1.4, 9.0, shaft, "+x")
+        obj.rotation_euler = (math.radians(90), math.radians(-24), math.radians(90))
+
+    # Camera markers for the flight into the clearing and the arcade select spot.
+    for n, loc in enumerate([(1.2, -12.2, 2.8), (-1.5, -9.0, 2.3), (-5.0, -4.0, 1.9), (-8.0, CORRIDOR_Y, 1.8),
+                             (-12.5, CORRIDOR_Y, 1.95), (-16.0, CORRIDOR_Y, 2.3)]):
+        marker("CamPath_%d" % n, loc)
+    marker("BoardLook", (BOARD.x, BOARD.y, 2.06))
 
 
 BUILDERS = {"zephyr_dojo": build_zephyr, "molten_forge": build_forge, "storm_market": build_bazaar, "beach": build_beach}

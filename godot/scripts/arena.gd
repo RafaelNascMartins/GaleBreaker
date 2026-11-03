@@ -29,10 +29,35 @@ var crowd: Array = []
 var banners: Array = []
 var barriers: Array = []
 var crowd_excitement := 0.0
-var water_materials: Array[StandardMaterial3D] = []
+var water_materials: Array[Material] = []
 # Main menu beach (concept-art/ui/menu-principal-praia-v1.png), built by stage_builder.build_beach.
 const MENU_SCENE := "res://assets/environments/beach/stage.glb"
 var menu_scene_active := false
+# Flight from the beach menu into the forest clearing with the options board.
+signal board_ready
+signal board_closed
+const BOARD_FLIGHT_TIME := 1.7
+# The board faces +X; the camera stops this far in front of the parchment centre.
+const BOARD_VIEW_OFFSET := Vector3(4.1, 0.2, 0.0)
+const MENU_LOOK := Vector3(0.4, 2.3, -4.0)
+var board_path: Curve3D
+var board_look := Vector3.ZERO
+var board_panel: MeshInstance3D
+var board_flight := 0.0
+var board_target := 0.0
+# Arcade select: camera and fighter spot on the beach.
+var select_shot := false
+var select_view: GaleFighterView
+var select_turn := 0.0
+# Open sand near the water, clear of the foliage wall on the left.
+const SELECT_SPOT := Vector3(2.62, 0.0, -2.09)
+const SELECT_CAM := Vector3(0.05, 1.25, 2.25)
+const SELECT_LOOK := Vector3(3.69, 1.0, -2.18)
+# Model forward is -Z: this yaw turns the fighter toward the camera, slightly to the panel.
+const SELECT_FACING := 2.95
+# Cel-shaded scenery: shadow side = ambient, lit side = ambient + sun.
+const FIGHT_SUN := 0.55
+const FIGHT_AMBIENT := 0.5
 
 func _ready() -> void:
 	attack_renderer = AttackRenderer.new()
@@ -62,14 +87,14 @@ func _ready() -> void:
 	env.background_color = Color("102235")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color("c6e7ff")
-	env.ambient_light_energy = 0.42
+	env.ambient_light_energy = FIGHT_AMBIENT
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	world_env.environment = env
 	add_child(world_env)
 
 	sun = DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-46, -28, 0)
-	sun.light_energy = 0.85
+	sun.light_energy = FIGHT_SUN
 	sun.shadow_enabled = true
 	add_child(sun)
 
@@ -88,14 +113,17 @@ func _ready() -> void:
 
 func build(data: GaleData, sim: GaleCombat) -> void:
 	attack_renderer.reset()
+	select_shot = false
+	select_view = null
+	board_path = null
 	if menu_scene_active:
 		# Restore the fight lighting after the lit menu beach.
 		sun.rotation_degrees = Vector3(-46, -28, 0)
-		sun.light_energy = 0.85
+		sun.light_energy = FIGHT_SUN
 		sun.light_color = Color.WHITE
 		fill.light_energy = 0.22
 		world_env.environment.ambient_light_color = Color("c6e7ff")
-		world_env.environment.ambient_light_energy = 0.42
+		world_env.environment.ambient_light_energy = FIGHT_AMBIENT
 	menu_scene_active = false
 	water_materials.clear()
 	if is_instance_valid(scenery):
@@ -116,7 +144,8 @@ func build(data: GaleData, sim: GaleCombat) -> void:
 	var stage := data.stage(sim.stage_id)
 	if world_env != null and world_env.environment != null:
 		world_env.environment.background_color = Color(stage.skyColor).darkened(0.35)
-		world_env.environment.ambient_light_color = Color(stage.fogColor)
+		# Only a hint of the stage tint: the cel shadow side is lit by ambient alone.
+		world_env.environment.ambient_light_color = Color(stage.fogColor).lerp(Color("f2ece2"), 0.8)
 		sky_material.sky_top_color=Color(stage.skyColor).darkened(0.22)
 		sky_material.sky_horizon_color=Color(stage.fogColor).lightened(0.10)
 		sky_material.ground_horizon_color=Color(stage.fogColor)
@@ -181,9 +210,40 @@ func build(data: GaleData, sim: GaleCombat) -> void:
 
 	focused_x = 0
 
-func _style_environment(node: Node, cache: Dictionary, lit: bool = false) -> void:
-	# The imported PBR stage was clipping to white on Compatibility. Use the
-	# same bounded toon lighting as the fighters so their silhouettes stay clear.
+const CelSurface = preload("res://shaders/cel/cel_surface.gdshader")
+const CelCutout = preload("res://shaders/cel/cel_cutout.gdshader")
+const ToonWater = preload("res://shaders/water/toon_water.gdshader")
+const InkOutline = preload("res://shaders/cel/outline.tres")
+const WATER_DETAIL := "res://assets/environments/beach/textures/agua.png"
+
+static func toon_water_material() -> ShaderMaterial:
+	var water := ShaderMaterial.new()
+	water.shader = ToonWater
+	for pair: Array in [["surface_noise", 0.06], ["distort_noise", 0.03]]:
+		var noise := FastNoiseLite.new()
+		noise.frequency = pair[1]
+		noise.seed = 11 if pair[0] == "surface_noise" else 29
+		var tex := NoiseTexture2D.new()
+		tex.noise = noise
+		tex.seamless = true
+		tex.width = 256
+		tex.height = 256
+		water.set_shader_parameter(pair[0], tex)
+	if ResourceLoader.exists(WATER_DETAIL):
+		water.set_shader_parameter("detail_tex", load(WATER_DETAIL))
+	return water
+
+static func cel_material(source: StandardMaterial3D, cutout: bool = false) -> ShaderMaterial:
+	var cel := ShaderMaterial.new()
+	cel.shader = CelCutout if cutout else CelSurface
+	cel.set_shader_parameter("color", source.albedo_color)
+	if source.albedo_texture != null:
+		cel.set_shader_parameter("base_texture", source.albedo_texture)
+	return cel
+
+func _style_environment(node: Node, cache: Dictionary) -> void:
+	# Scenery uses the lit cel shader (shaders/cel): banded light, real shadows and a
+	# soft rim. Paintings, glows, glints and the heat curtain stay unshaded.
 	if node is MeshInstance3D:
 		var mesh_node := node as MeshInstance3D
 		for surface in mesh_node.mesh.get_surface_count():
@@ -210,43 +270,19 @@ func _style_environment(node: Node, cache: Dictionary, lit: bool = false) -> voi
 				mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 				water_materials.append(glint)
 				continue
-			if lit and not source.resource_name.begins_with("glow_"):
-				# Lit scene (menu beach): real sun light and shadows, including leaf shadows on the sand.
-				var key_lit := source.get_instance_id()
-				if not cache.has(key_lit):
-					var surface_mat := StandardMaterial3D.new()
-					surface_mat.albedo_color = source.albedo_color
-					surface_mat.albedo_texture = source.albedo_texture
-					surface_mat.texture_repeat = true
-					surface_mat.roughness = 0.35 if source.resource_name.begins_with("water_") else 1.0
-					surface_mat.metallic_specular = 0.3 if source.resource_name.begins_with("water_") else 0.0
-					if source.resource_name.begins_with("cutout_"):
-						surface_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-						surface_mat.alpha_scissor_threshold = 0.5
-						surface_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-					if source.resource_name.begins_with("water_"):
-						water_materials.append(surface_mat)
-					cache[key_lit] = surface_mat
-				mesh_node.set_surface_override_material(surface, cache[key_lit])
+			if source.resource_name.begins_with("water_toon"):
+				mesh_node.set_surface_override_material(surface, toon_water_material())
+				mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 				continue
-			if source.resource_name.begins_with("cutout_"):
-				# Foliage, flowers and corals: hard alpha edge, visible from both sides.
-				var leaf := StandardMaterial3D.new()
-				leaf.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				leaf.albedo_texture = source.albedo_texture
-				leaf.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-				leaf.alpha_scissor_threshold = 0.5
-				leaf.cull_mode = BaseMaterial3D.CULL_DISABLED
-				mesh_node.set_surface_override_material(surface, leaf)
-				continue
-			if source.resource_name.begins_with("water_"):
-				# Painted water drifts slowly (see _animate_living_pieces).
-				var water := StandardMaterial3D.new()
-				water.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				water.albedo_texture = source.albedo_texture
-				water.texture_repeat = true
-				mesh_node.set_surface_override_material(surface, water)
-				water_materials.append(water)
+			if String(mesh_node.name).begins_with("QuestBoardPanel"):
+				# The options are read on this parchment: keep it bright and unshaded.
+				var parchment := StandardMaterial3D.new()
+				parchment.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				parchment.albedo_texture = source.albedo_texture
+				parchment.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				parchment.alpha_scissor_threshold = 0.5
+				parchment.albedo_color = Color(0.97, 0.95, 0.9)
+				mesh_node.set_surface_override_material(surface, parchment)
 				continue
 			if String(mesh_node.name).begins_with("Barrier"):
 				# Heat curtain: invisible until a fighter nears the precipice.
@@ -259,23 +295,28 @@ func _style_environment(node: Node, cache: Dictionary, lit: bool = false) -> voi
 				mesh_node.set_surface_override_material(surface, curtain)
 				continue
 			var key := source.get_instance_id()
-			if not cache.has(key) and source.resource_name.begins_with("glow_"):
-				# Lava, fire, lamps and stained glass keep their full brightness.
-				var glow := StandardMaterial3D.new()
-				glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				glow.albedo_color = source.albedo_color
-				glow.albedo_texture = source.albedo_texture
-				glow.texture_repeat = true
-				cache[key] = glow
 			if not cache.has(key):
-				var toon := GaleFighterView.mat(source.albedo_color.darkened(0.12), source.emission_enabled)
-				if source.albedo_texture != null:
-					toon.set_shader_parameter("use_textures", true)
-					toon.set_shader_parameter("albedo_tex", source.albedo_texture)
-				cache[key] = toon
+				if source.resource_name.begins_with("glow_"):
+					# Lava, fire, lamps and stained glass keep their full brightness.
+					var glow := StandardMaterial3D.new()
+					glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+					glow.albedo_color = source.albedo_color
+					glow.albedo_texture = source.albedo_texture
+					glow.texture_repeat = true
+					cache[key] = glow
+				else:
+					var cel := cel_material(source, source.resource_name.begins_with("cutout_"))
+					if not source.resource_name.begins_with("cutout_"):
+						# Ink line around solid scenery (cards would outline as squares).
+						cel.next_pass = InkOutline
+					if source.resource_name.begins_with("water_"):
+						# Painted water drifts slowly and catches a sharp sun highlight.
+						cel.set_shader_parameter("specular", Color(1, 1, 1, 0.55))
+						water_materials.append(cel)
+					cache[key] = cel
 			mesh_node.set_surface_override_material(surface, cache[key])
 	for child in node.get_children():
-		_style_environment(child, cache, lit)
+		_style_environment(child, cache)
 
 func _collect_living_pieces(root_node: Node) -> void:
 	crowd.clear()
@@ -311,7 +352,7 @@ func show_menu_scene() -> void:
 	water_materials.clear()
 	stage_instance = (load(MENU_SCENE) as PackedScene).instantiate() as Node3D
 	scenery.add_child(stage_instance)
-	_style_environment(stage_instance, {}, true)
+	_style_environment(stage_instance, {})
 	# Afternoon sun from behind the bay: the canopy shadow falls on the foreground sand.
 	sun.rotation_degrees = Vector3(-50, 150, 0)
 	# Compatibility renderer: a little sun goes a long way on the pale sand.
@@ -322,6 +363,7 @@ func show_menu_scene() -> void:
 	world_env.environment.ambient_light_color = Color("cfe9ff")
 	world_env.environment.ambient_light_energy = 0.32
 	_collect_living_pieces(stage_instance)
+	_collect_board_markers(stage_instance)
 	sky_material.sky_top_color = Color("1f6fe0")
 	sky_material.sky_horizon_color = Color("bfe8fb")
 	sky_material.ground_horizon_color = Color("bfe8fb")
@@ -329,9 +371,106 @@ func show_menu_scene() -> void:
 	menu_scene_active = true
 	set_menu_mode(true, true)
 
+func _collect_board_markers(root_node: Node) -> void:
+	board_path = Curve3D.new()
+	board_flight = 0.0
+	board_target = 0.0
+	var index := 0
+	while root_node.find_child("CamPath_%d" % index, true, false) != null:
+		var mark := root_node.find_child("CamPath_%d" % index, true, false) as Node3D
+		board_path.add_point(mark.global_position)
+		index += 1
+	# Smooth the corners of the flight.
+	for i in range(1, board_path.point_count - 1):
+		var tangent := (board_path.get_point_position(i + 1) - board_path.get_point_position(i - 1)) * 0.22
+		board_path.set_point_in(i, -tangent)
+		board_path.set_point_out(i, tangent)
+	var look := root_node.find_child("BoardLook", true, false) as Node3D
+	if look != null:
+		board_look = look.global_position
+		# Final stop is set here (not in Blender) so the parchment fills the frame for reading.
+		if board_path.point_count > 1:
+			board_path.set_point_position(board_path.point_count - 1, board_look + BOARD_VIEW_OFFSET)
+	board_panel = root_node.find_child("QuestBoardPanel", true, false) as MeshInstance3D
+
+## Fly into the clearing (on = true) or back to the beach menu view.
+func focus_board(on: bool) -> void:
+	board_target = 1.0 if on else 0.0
+
+func board_open() -> bool:
+	return board_target > 0.0 and board_flight >= 1.0
+
+## Screen rectangle of the parchment, valid once the camera has stopped at the board.
+func board_screen_rect() -> Rect2:
+	if board_panel == null:
+		return Rect2()
+	var aabb := board_panel.get_aabb()
+	var points := PackedVector2Array()
+	for i in 8:
+		points.append(camera.unproject_position(board_panel.global_transform * aabb.get_endpoint(i)))
+	var rect := Rect2(points[0], Vector2.ZERO)
+	for point in points:
+		rect = rect.expand(point)
+	return rect
+
+func _update_menu_camera(delta: float) -> bool:
+	"""Board flight and arcade select shot; returns true while one of them drives the camera."""
+	if board_path != null and board_path.point_count > 1 and (board_flight > 0.0 or board_target > 0.0):
+		var was := board_flight
+		board_flight = move_toward(board_flight, board_target, delta / BOARD_FLIGHT_TIME)
+		var t := board_flight * board_flight * (3.0 - 2.0 * board_flight)
+		var length := board_path.get_baked_length()
+		camera.position = board_path.sample_baked(t * length, true)
+		var ahead := board_path.sample_baked(minf(length, t * length + 3.0), true) + Vector3(0, -0.15, 0)
+		var look := MENU_LOOK.lerp(ahead, smoothstep(0.0, 0.25, t))
+		look = look.lerp(board_look, smoothstep(0.55, 1.0, t))
+		camera.look_at(look)
+		camera.h_offset = 0.0
+		if was < 1.0 and board_flight >= 1.0:
+			board_ready.emit()
+		elif was > 0.0 and board_flight <= 0.0:
+			board_closed.emit()
+		return true
+	if select_shot:
+		camera.position = camera.position.lerp(SELECT_CAM, 1.0 - exp(-4.0 * delta))
+		camera.look_at(SELECT_LOOK)
+		camera.h_offset = 0.0
+		if is_instance_valid(select_view):
+			select_view.rotation.y = lerp_angle(select_view.rotation.y, SELECT_FACING + select_turn, 1.0 - exp(-8.0 * delta))
+		return true
+	return false
+
+## Arcade select: show (or replace) the chosen fighter standing on the beach.
+func show_select_fighter(data: GaleData, id: String, palette: int) -> void:
+	select_shot = true
+	if is_instance_valid(select_view) and select_view.fighter_id == id:
+		select_view.apply_palette(palette, data)
+		return
+	if is_instance_valid(select_view):
+		select_view.queue_free()
+	select_view = GaleFighterView.new()
+	scenery.add_child(select_view)
+	select_view.build(data, id, palette)
+	select_view.position = SELECT_SPOT
+	select_view.rotation.y = SELECT_FACING + select_turn
+	select_view.scale = Vector3.ONE
+	select_view.aura.visible = false
+	select_view.play_clip("select", 0.0)
+
+func hide_select_fighter() -> void:
+	select_shot = false
+	select_turn = 0.0
+	if is_instance_valid(select_view):
+		select_view.queue_free()
+	select_view = null
+
 func _animate_living_pieces(delta: float, sim: GaleCombat) -> void:
-	for water: StandardMaterial3D in water_materials:
-		water.uv1_offset = Vector3(sin(clock * 0.21) * 0.012, clock * 0.006, 0)
+	var drift := Vector2(sin(clock * 0.21) * 0.012, clock * 0.006)
+	for water: Material in water_materials:
+		if water is ShaderMaterial:
+			(water as ShaderMaterial).set_shader_parameter("uv_offset", drift)
+		else:
+			(water as StandardMaterial3D).uv1_offset = Vector3(drift.x, drift.y, 0)
 	crowd_excitement = maxf(0.0, crowd_excitement - delta * 0.55)
 	for person: Dictionary in crowd:
 		var t: float = clock * float(person.rate) + float(person.phase)
@@ -416,7 +555,10 @@ func render(sim: GaleCombat, delta: float) -> void:
 		else:
 			effect.node.scale += Vector3.ONE * delta * 5.0
 
-	if menu_mode:
+	if menu_mode and menu_scene_active and _update_menu_camera(delta):
+		if is_instance_valid(select_view):
+			select_view.play_clip("select", fmod(clock * 0.5, GaleAnimTiming.state_sec(select_view.fighter_id, "victory")))
+	elif menu_mode:
 		# Sanctuary overview camera matching menu-principal-v3.png
 		var menu_cam_pos := Vector3(1.2 + sin(clock * 0.25) * 0.25, 2.8, 12.2)
 		camera.position = camera.position.lerp(menu_cam_pos, 1.0 - exp(-5.0 * delta))

@@ -1,0 +1,921 @@
+{
+  "version": 1,
+  "purpose": "Atlas conceitual para a floresta e o quadro de opções. Não é um kit de modelos 3D.",
+  "concept": "concept-passagem-folhas-v1.png",
+  "grid": [
+    4,
+    4
+  ],
+  "coordinates": "Origem no canto superior esquerdo; retângulos em pixels. UVs normalizadas [x, y, largura, altura].",
+  "notes": [
+    "Resolução nativa preservada; não houve ampliação artificial.",
+    "Células de materiais não foram certificadas para repetição sem emendas.",
+    "Imagens com transparência preservam o alfa gerado. Não houve certificação de dilatação, mipmaps ou halos.",
+    "Textos e valores das opções devem ser renderizados pela engine.",
+    "Banco, quadro e outros objetos são referências/sprites, não substituem modelos para movimento real de câmera."
+  ],
+  "atlases": [
+    {
+      "file": "atlas-materiais-floresta-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "cells": [
+        {
+          "id": "caminho-arenoso",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "terra-umida",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "serrapilheira",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "grama",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "casca-arvore",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "casca-galho",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "musgo-na-casca",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedra-laranja",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-quadro",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-banco",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "topo-madeira",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "latao",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "telhas-azul-marinho",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tecido-jade",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pergaminho",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedra-fundacao",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ]
+    },
+    {
+      "file": "atlas-vegetacao-floresta-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "monstera",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "folha-bananeira",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "folha-larga",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "folha-palmeira",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "samambaia-folha",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "samambaia-touceira",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "cipo",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "galho-folhas",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "hibisco",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "flores-brancas",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tufo-grama",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "arbusto",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "folha-seca",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "graveto-folhas",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "musgo-recorte",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "folhagem-pendente",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "atlas-quadro-ui-floresta-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "quadro-completo-vazio",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "telhado",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "banco",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "lanterna",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "estandarte-jade",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "cantoneira-latao",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedras",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "raiz",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "painel-pergaminho",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "botao-neutro",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "botao-selecionado",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "botao-hover",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "slider",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "toggle-ligado",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "toggle-desligado",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "selo-confirmar",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    }
+  ]
+}

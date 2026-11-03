@@ -19,17 +19,28 @@ def add_model_detail(mb, fid):
     mb.add_sphere('head',skin,(0,front+.028,head_z-.052),(.079,.052,.055),12,8)
     mb.add_sphere('head',skin,(0,front-.017,head_z-.008),(.022,.030,.034),10,6)
     mb.add_box('head',7,(0,front-.020,head_z-.063),(.050,.012,.008),bevel=0)
+    anime = fid == 'kaze'
     for sx in (-1,1):
-        mb.add_sphere('head',skin,(sx*.11,head_y,head_z-.01),(.024,.034,.040),10,8)
-        mb.add_sphere('head',0,(sx*.042,front+.002,head_z+.008),(.016,.009,.011),10,8)
-        mb.add_sphere('head',7,(sx*.042,front-.006,head_z+.009),(.006,.004,.007),8,6)
-        mb.add_box('head',5,(sx*.042,front+.002,head_z+.030),(.034,.010,.007),rot_deg=(0,0,sx*-7),bevel=0)
+        if not anime:
+            mb.add_sphere('head',skin,(sx*.11,head_y,head_z-.01),(.024,.034,.040),10,8)
+            mb.add_sphere('head',0,(sx*.042,front+.002,head_z+.008),(.016,.009,.011),10,8)
+            mb.add_sphere('head',7,(sx*.042,front-.006,head_z+.009),(.006,.004,.007),8,6)
+            mb.add_box('head',5,(sx*.042,front+.002,head_z+.030),(.034,.010,.007),rot_deg=(0,0,sx*-7),bevel=0)
+        else:
+            # Anime face (v3): large almond eyes with dark iris and a highlight, thick angled brows.
+            mb.add_box('head',0,(sx*.043,front-.004,head_z+.004),(.044,.008,.04),rot_deg=(0,sx*6,0),bevel=0)
+            mb.add_box('head',5,(sx*.04,front-.009,head_z+.001),(.024,.006,.034),bevel=0)
+            mb.add_box('head',0,(sx*.034,front-.013,head_z+.012),(.008,.004,.009),bevel=0)
+            mb.add_box('head',5,(sx*.045,front-.006,head_z+.04),(.05,.01,.012),rot_deg=(0,sx*-5,0),bevel=0)
+    if fid=='kaze':
+        # Small closed smile.
+        mb.add_box('head',7,(0,front-.022,head_z-.058),(.032,.006,.006),bevel=0)
 
     for side,sx in [('l',1),('r',-1)]:
         width={'kaze':.24,'ignis':.33,'tophia':.25,'volt':.23}[fid]
         elbow=(sx*(width+.06),-.08 if fid=='ignis' else 0,1.20 if fid in ['kaze','ignis'] else 1.18)
         zone=skin if fid!='tophia' else 3
-        radius=.105 if fid=='ignis' else .074
+        radius=.105 if fid=='ignis' else .052 if fid=='kaze' else .074
         mb.add_sphere('forearm_'+side,zone,elbow,(radius,radius,radius),12,8)
         hand_x=sx*(width+.08)
         hand_z=.78 if fid=='ignis' else .84 if fid!='tophia' else .83
@@ -40,11 +51,11 @@ def add_model_detail(mb, fid):
                 digit=['index','middle','ring','pinky'][i]
                 mb.add_limb('finger_'+digit+'_'+side,0,(x,-.09,hand_z-.025),(x,-.09,hand_z-.095+abs(i-1.5)*.009),.009,.007,8)
             mb.add_limb('finger_thumb_'+side,0,(hand_x+sx*.028,-.08,hand_z+.01),(hand_x+sx*.055,-.09,hand_z-.025),.012,.009,8)
-            # Jade wraps, folds and gold clasp stay separate readable shapes.
-            for k in range(5):
-                mb.add_limb('forearm_'+side,2 if k%2==0 else 3,(hand_x,-.03,.945+k*.026),(hand_x,-.03,.96+k*.026),.073,.073,12)
+            # Three dark jade bands on each wrist (v3).
+            for k in range(3):
+                mb.add_limb('forearm_'+side,6,(hand_x,-.032,.935+k*.03),(hand_x,-.032,.957+k*.03),.058,.058,8)
             for i in range(5):
-                mb.add_sphere('foot_'+side,0,(sx*.1365+(i-2)*.016,-.192,.04),(.011,.022,.019),8,6)
+                mb.add_sphere('foot_'+side,0,(sx*.1155+(i-2)*.014,-.17,.035),(.01,.02,.017),6,4)
         elif fid=='ignis':
             mb.add_sphere('upper_arm_'+side,1,(sx*.36,-.13,1.39),(.134,.13,.19),14,10)
             for i in range(4):
@@ -78,9 +89,7 @@ def add_model_detail(mb, fid):
             mb.add_box('forearm_'+side,2,(sx*.29,-.105,1.02),(.07,.035,.14),rot_deg=(0,sx*12,13))
             mb.add_box('thigh_'+side,6,(sx*.145,-.08,.70),(.16,.055,.065),rot_deg=(0,0,sx*10))
             mb.add_box('foot_'+side,7,(sx*.14,-.08,.016),(.13,.26,.028))
-    if fid=='kaze':
-        mb.add_box('hips',4,(0,-.187,1.0),(.075,.035,.075),rot_deg=(0,0,45))
-    elif fid=='ignis':
+    if fid=='ignis':
         # Rounded pecs in the same sunburnt tone as the arms.
         for sx in [-1,1]:
             mb.add_sphere('chest',1,(sx*.13,-.26,1.44),(.145,.10,.12),14,10)
@@ -91,7 +100,7 @@ def add_model_detail(mb, fid):
         mb.add_box('hips',3,(0,-.165,.96),(.105,.065,.10),rot_deg=(0,0,45))
         for i in range(5):
             mb.add_rock('chest',2,((i%3-1)*.12,-.22,1.33+(i//3)*.14),(.10,.055,.10),63+i)
-    else:
+    elif fid=='volt':
         # Blond cap with individual locks; only the tips are singed dark.
         mb.add_sphere('head',5,(0,.015,1.785),(.118,.125,.082),14,8)
         for i in range(9):

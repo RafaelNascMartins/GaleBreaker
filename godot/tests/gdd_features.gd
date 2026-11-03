@@ -169,6 +169,16 @@ func run() -> void:
 	root.add_child(sound)
 	check(sound.samples.size() == GaleAudio.SAMPLE_PATHS.size(), "every recorded sound effect and voice line loads")
 	check(sound.menu_music is AudioStreamMP3 and (sound.menu_music as AudioStreamMP3).loop, "menu music loads and loops")
+	check(sound.fight_music.size() == GaleAudio.FIGHT_MUSIC_PATHS.size(), "all fight tracks load")
+	sound.set_music("zephyr_dojo", true)
+	var first_track: AudioStream = sound.music.stream
+	sound.set_music("zephyr_dojo", false)
+	sound.set_music("zephyr_dojo", true)
+	check(first_track in sound.fight_music and sound.music.stream == first_track, "a match keeps its fight track through pause and resume")
+	sound.play_menu_music()
+	sound.set_music("zephyr_dojo", true)
+	check(sound.music.stream in sound.fight_music and sound.music.stream != first_track, "the next match draws a different fight track")
+	sound.music.stop()
 	sound.play("", "kaze", "light_2")
 	var last := sound.players[(sound.cursor - 1 + sound.players.size()) % sound.players.size()]
 	check(last.stream == sound.samples["kaze_light_2"], "Kaze J2 hit uses its recorded punch")
@@ -209,6 +219,15 @@ func run() -> void:
 		pause_items.append(String((item as Button).text))
 	check(pause_items == ["CONTINUAR", "REINICIAR PARTIDA", "OPÇÕES", "VOLTAR AO MENU"], "pause menu follows the concept without the move list (%s)" % [pause_items])
 	menu_app.resume_match()
+	menu_app.settings_tab = "controles"
+	menu_app.listening = [1, 6]
+	menu_app.show_settings()
+	check(menu_app.listening == [1, 6], "redrawing the options keeps the key waiting to be remapped")
+	menu_app.prefs.keys[0][0] = KEY_Z
+	menu_app.restore_default_keys()
+	check(menu_app.prefs.keys == GalePreferences.DEFAULT_KEYS and menu_app.listening.is_empty(), "restore defaults brings back the original keys")
+	menu_app.close_settings()
+	menu_app.settings_tab = "geral"
 	menu_app.prefs.arcade_run = {}
 	menu_app.show_menu()
 	var menu_items: Array[String] = []
@@ -222,6 +241,42 @@ func run() -> void:
 		check(sound.has_sample("kaze_" + strike), "Babuin " + strike + " has a recorded strike sound")
 	check(menu_app.strike_sound({"type": "light", "chain_step": 3}) == "light_3" and menu_app.strike_sound({"type": "heavy"}) == "heavy" and menu_app.strike_sound({"type": "ultimate"}) == "", "strike sounds map J1-J3 and K only")
 	check(GaleVisualCatalog.load_for("kaze").display_name == "Babuin" and String(data.fighter("kaze").name) == "Babuin", "Kaze is presented as Babuin while keeping its internal id")
+	# Options on the forest quest board.
+	menu_app.set_process(false)
+	menu_app.show_menu()
+	var beach: Node = menu_app.arena.stage_instance
+	check(beach.find_child("QuestBoardPanel", true, false) != null and beach.find_child("CamPath_0", true, false) != null and beach.find_child("BoardLook", true, false) != null, "beach scene has the forest quest board and the camera path")
+	menu_app.open_board_settings()
+	for i in 140:
+		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
+	await process_frame
+	check(menu_app.arena.board_open() and menu_app.board_ui.interactive and menu_app.board_ui.widgets.size() >= 12, "choosing Opções flies into the clearing and the options are physical pieces on the board")
+	var muted_before: bool = menu_app.prefs.muted
+	for i in menu_app.board_ui.widgets.size():
+		if String(menu_app.board_ui.widgets[i].kind) == "toggle":
+			menu_app.board_ui.activate(i)
+			break
+	check(menu_app.prefs.muted != muted_before, "pressing a 3D switch on the board changes the option")
+	menu_app.board_ui.switch_tab("controles")
+	var keycaps := 0
+	for w: Dictionary in menu_app.board_ui.widgets:
+		if String(w.kind) == "button" and (w.rect as Rect2).size.y < 0.07:
+			keycaps += 1
+	check(keycaps == 22, "the controls tab has a 3D key cap per action and player")
+	menu_app.board_ui.switch_tab("geral")
+	menu_app.close_settings()
+	for i in 140:
+		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
+	await process_frame
+	check(not menu_app.arena.board_open() and menu_app.menu.visible and not is_instance_valid(menu_app.modal), "leaving the board flies back and restores the beach menu")
+	# Arcade select on the beach.
+	menu_app.open_arcade_select()
+	check(menu_app.modal.has_meta("arcade_select") and menu_app.arena.select_view != null and menu_app.arena.select_view.fighter_id == menu_app.fighter1, "Arcade opens the beach fighter select")
+	menu_app.choose_arcade_fighter("ignis")
+	menu_app.choose_arcade_outfit(2)
+	check(menu_app.fighter1 == "ignis" and menu_app.palette1 == 2 and menu_app.arena.select_view.fighter_id == "ignis", "choosing a fighter and outfit updates the beach model")
+	menu_app.leave_arcade_select()
+	check(menu_app.arena.select_view == null and menu_app.menu.visible and not menu_app.in_arcade_select, "leaving the select returns to the beach menu")
 	menu_app.queue_free()
 	await process_frame
 	sound.queue_free()

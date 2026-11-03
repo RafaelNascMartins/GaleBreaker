@@ -36,7 +36,7 @@ var tutorial_label: Label
 var training_behavior := 0
 var command_labels: Array = []
 var in_selection := false
-var editorial_font: SystemFont
+var editorial_font: Font
 var hover_quiet_until := 0
 var attack_serials := [0, 0]
 var early_sound_serials := [-1, -1]
@@ -46,8 +46,8 @@ const STRIKE_SOUND_LEAD_FRAMES := 4
 
 func _ready() -> void:
 	DisplayServer.window_set_title("Gale Breaker")
-	editorial_font=SystemFont.new()
-	editorial_font.font_names=PackedStringArray(["Georgia","Times New Roman"])
+	# Cinzel, the roman serif of the UI concepts (assets/ui/fonts, SIL OFL).
+	editorial_font=cinzel(600)
 	get_window().min_size = Vector2i(1000, 650)
 	prefs.load_from_disk(data)
 	Input.joy_connection_changed.connect(func(_device: int, _connected: bool) -> void: prefs.install_gamepads())
@@ -143,13 +143,40 @@ func button(parent: Node, text: String, callback: Callable, primary_style: bool 
 	node.pressed.connect(func() -> void:
 		audio.play("click")
 		callback.call())
-	node.mouse_entered.connect(func() -> void: audio.play("menu_hover"))
+	node.mouse_entered.connect(func() -> void: audio.play("hover"))
 	# Keyboard/gamepad navigation; skip clicks (already hovered) and automatic focus on screen open.
 	node.focus_entered.connect(func() -> void:
 		if not node.is_hovered() and Time.get_ticks_msec() >= hover_quiet_until:
-			audio.play("menu_hover"))
+			audio.play("hover"))
+	# Soft glow while hovered or focused.
+	var glow := func(on: bool) -> void:
+		var lit := on or node.has_focus() or node.is_hovered()
+		ease_to(node, "modulate", Color(1.1, 1.1, 1.1) if lit else Color.WHITE, 0.14)
+	node.mouse_entered.connect(glow.bind(true))
+	node.focus_entered.connect(glow.bind(true))
+	node.mouse_exited.connect(glow.bind(false))
+	node.focus_exited.connect(glow.bind(false))
 	parent.add_child(node)
 	return node
+
+## Smooth UI motion helpers (all short ease-out tweens bound to the node).
+func ease_to(node: Node, property: String, value: Variant, duration: float) -> void:
+	if not is_instance_valid(node) or not node.is_inside_tree():
+		return
+	var tween := node.create_tween()
+	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(node, property, value, duration)
+
+func fade_in(node: CanvasItem, duration: float = 0.2, slide: Vector2 = Vector2.ZERO) -> void:
+	node.modulate.a = 0.0
+	var tween := node.create_tween().set_parallel(true)
+	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(node, "modulate:a", 1.0, duration)
+	if slide != Vector2.ZERO and node is Control:
+		var control := node as Control
+		var target := control.position
+		control.position = target + slide
+		tween.tween_property(control, "position", target, duration)
 
 func instantiate_ui_scene(scene_path: String, fallback_alpha: float = 0.65) -> Control:
 	var root_ctrl: Control
@@ -430,11 +457,16 @@ func build_beach_menu() -> void:
 	column.position = Vector2(64, 62)
 	column.add_theme_constant_override("separation", 0)
 	menu.add_child(column)
-	for word: String in ["GALE", "BREAKER"]:
-		var title := label(column, word, 52, Color("F8F5EE"))
-		title.add_theme_font_override("font", spaced_font(14))
-		title.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.25))
-		title.add_theme_constant_override("outline_size", 4)
+	# Title set in the golden alphabet (art-source/tools/generate_title.py).
+	var title := TextureRect.new()
+	title.texture = load("res://assets/ui/title/title.png")
+	title.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	title.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	title.custom_minimum_size = Vector2(400, 119)
+	column.add_child(title)
+	var title_gap := Control.new()
+	title_gap.custom_minimum_size.y = 6
+	column.add_child(title_gap)
 	var rule := ColorRect.new()
 	rule.color = Color("C5A059")
 	rule.custom_minimum_size = Vector2(300, 2)
@@ -443,11 +475,11 @@ func build_beach_menu() -> void:
 	gap.custom_minimum_size.y = 24
 	column.add_child(gap)
 	var items: Array = [
-		["ARCADE", open_mode.bind("arcade")],
+		["ARCADE", open_arcade_select],
 		["VERSUS LOCAL", open_mode.bind("versus")],
 		["TREINO", open_mode.bind("training")],
 		["HABILIDADES", open_player_skills],
-		["OPÇÕES", show_settings],
+		["OPÇÕES", open_board_settings],
 	]
 	if not prefs.arcade_run.is_empty():
 		items.insert(1, ["CONTINUAR ARCADE", resume_arcade])
@@ -458,6 +490,7 @@ func build_beach_menu() -> void:
 		var item := beach_item(column, String(entry[0]), entry[1])
 		if String(entry[0]) == mode_titles.get(mode, "ARCADE"):
 			call_deferred("focus_control", item)
+	fade_in(column, 0.35, Vector2(-16, 0))
 	var footer := label(menu, "↑↓  NAVEGAR        ENTER  CONFIRMAR", 13, Color("EFE8DA"))
 	footer.position = Vector2(46, 684)
 	footer.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.4))
@@ -480,12 +513,16 @@ func beach_item(parent: Control, text: String, callback: Callable) -> Button:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
 	parent.add_child(row)
+	# The jade dash grows out from the left on focus; its slot keeps the text aligned.
+	var slot := Control.new()
+	slot.custom_minimum_size = Vector2(30, 4)
+	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(slot)
 	var dash := ColorRect.new()
 	dash.color = Color("A3C9A8")
-	dash.custom_minimum_size = Vector2(30, 4)
-	dash.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dash.size = Vector2(0, 4)
 	dash.modulate.a = 0.0
-	row.add_child(dash)
+	slot.add_child(dash)
 	var item := button(row, text, callback)
 	item.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	item.custom_minimum_size = Vector2(380, 46)
@@ -498,8 +535,12 @@ func beach_item(parent: Control, text: String, callback: Callable) -> Button:
 		item.add_theme_color_override(state, Color.WHITE)
 	item.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.35))
 	item.add_theme_constant_override("outline_size", 5)
-	item.focus_entered.connect(func() -> void: dash.modulate.a = 1.0)
-	item.focus_exited.connect(func() -> void: dash.modulate.a = 0.0)
+	item.focus_entered.connect(func() -> void:
+		ease_to(dash, "size:x", 30.0, 0.18)
+		ease_to(dash, "modulate:a", 1.0, 0.18))
+	item.focus_exited.connect(func() -> void:
+		ease_to(dash, "size:x", 0.0, 0.18)
+		ease_to(dash, "modulate:a", 0.0, 0.18))
 	# Hovering moves the focus, so mouse and keyboard share one marker.
 	item.mouse_entered.connect(func() -> void: item.grab_focus())
 	return item
@@ -762,6 +803,8 @@ func pause_match() -> void:
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(center)
+	fade_in(modal, 0.18)
+	fade_in(center, 0.22, Vector2(0, 18))
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(420, 560)
 	var card_style := atlas_style("panel_pause", 30)
@@ -794,7 +837,7 @@ func pause_match() -> void:
 
 ## Pieces of concept-art/ui/pausa-atlas-v1.png (regions from pausa-atlas-v1.json).
 const PAUSE_ATLAS_PATH := "res://assets/ui/pause/pausa-atlas-v1.png"
-const PAUSE_ATLAS := {"button_focus": Rect2(394, 149, 302, 76), "button_pressed": Rect2(753, 149, 302, 76), "panel_pause": Rect2(46, 389, 281, 298), "separator": Rect2(397, 529, 297, 26)}
+const PAUSE_ATLAS := {"button_normal": Rect2(35, 149, 302, 76), "button_focus": Rect2(394, 149, 302, 76), "button_pressed": Rect2(753, 149, 302, 76), "panel_pause": Rect2(46, 389, 281, 298), "separator": Rect2(397, 529, 297, 26)}
 
 func atlas_piece(piece: String) -> AtlasTexture:
 	var texture := AtlasTexture.new()
@@ -995,82 +1038,744 @@ func show_skills() -> void:
 		show_skills())
 	button(column, "Fechar", func() -> void:
 		close_modal()
-		if in_selection: show_menu(true))
+		if in_arcade_select: show_arcade_select()
+		elif in_selection: show_menu(true))
 	focus_first(column)
 
+## Options screen from concept-art/ui/opcoes-geral-praia-v2.png and opcoes-controles-praia-v2.png.
+const OPTIONS_DIR := "res://assets/ui/options/"
+const CINZEL_PATH := "res://assets/ui/fonts/Cinzel-Variable.ttf"
+const INK := Color("23382D")
+const INK_SOFT := Color("4C5A52")
+const JADE := Color("1F5C42")
+const GOLD := Color("C6A052")
+const ACTION_LABELS := ["Pular", "Agachar", "Esquerda", "Direita", "Básico", "Forte", "Elemental", "Ultimate", "Defesa", "Dash", "Breaker"]
+const PAD_LABELS := ["A", "D-pad ↓", "D-pad ←", "D-pad →", "X", "Y", "B", "RB", "LB", "R3", "L3"]
+var settings_tab := "geral"
+# Options opened from the beach menu live on the forest quest board (see arena.focus_board).
+var settings_on_board := false
+var menu_fade: Tween
+var board_ui: GaleBoardOptions
+const SETTINGS_DESIGN := Vector2(1145, 680)
+# Tighter canvas on the board, so it is scaled down less and reads larger.
+const BOARD_DESIGN := Vector2(840, 540)
+var in_arcade_select := false
+var arcade_outfit_page := 0
+var settings_input := "teclado"
+
+func cinzel(weight: int = 700, spacing: int = 0) -> FontVariation:
+	var font := FontVariation.new()
+	font.base_font = load(CINZEL_PATH)
+	font.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): weight}
+	font.spacing_glyph = spacing
+	return font
+
+func ink_label(parent: Node, text: String, size: int, color: Color = INK, font: Font = null) -> Label:
+	var node := Label.new()
+	node.text = text
+	node.add_theme_font_size_override("font_size", size)
+	node.add_theme_color_override("font_color", color)
+	if font != null:
+		node.add_theme_font_override("font", font)
+	parent.add_child(node)
+	return node
+
+func gold_rule(parent: Node, width: float = 0.0) -> ColorRect:
+	var rule := ColorRect.new()
+	rule.color = GOLD
+	rule.custom_minimum_size = Vector2(width, 1)
+	rule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if width <= 0.0:
+		rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(rule)
+	return rule
+
+func plate_button(parent: Node, text: String, active: bool, size: Vector2, font_size: int, callback: Callable) -> Button:
+	var plate := button(parent, text, callback)
+	plate.custom_minimum_size = size
+	plate.add_theme_font_override("font", cinzel(700, 2))
+	plate.add_theme_font_size_override("font_size", font_size)
+	var face := JADE if active else Color("F3EBD8")
+	plate.add_theme_stylebox_override("normal", raised_style(face, false, false))
+	plate.add_theme_stylebox_override("hover", raised_style(face.lightened(0.08), false, false))
+	plate.add_theme_stylebox_override("focus", raised_style(face.lightened(0.08), false, true))
+	plate.add_theme_stylebox_override("pressed", raised_style(face.darkened(0.06), true, false))
+	var text_color := Color("F4EFE4") if active else JADE
+	plate.add_theme_color_override("font_color", text_color)
+	plate.add_theme_color_override("font_hover_color", text_color)
+	plate.add_theme_color_override("font_focus_color", Color("F4EFE4"))
+	plate.add_theme_color_override("font_pressed_color", Color("F4EFE4"))
+	plate.add_theme_constant_override("outline_size", 0)
+	return plate
+
+## Raised "3D" plate: a darker bottom edge gives it thickness, a light top rim catches the
+## light and a soft shadow lifts it off the parchment; pressed, it sinks onto the surface.
+func raised_style(face: Color, pressed: bool, focused: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = face
+	style.border_color = face.darkened(0.42)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 3 if pressed else 2
+	style.border_width_bottom = 2 if pressed else 6
+	style.set_corner_radius_all(8)
+	style.shadow_color = Color(0.1, 0.07, 0.03, 0.18 if pressed else 0.32)
+	style.shadow_size = 2 if pressed else 5
+	style.shadow_offset = Vector2(0, 1 if pressed else 3)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 4 + (3 if pressed else 0)
+	style.content_margin_bottom = 4
+	if focused:
+		style.border_color = GOLD
+		style.set_border_width_all(3)
+		style.border_width_bottom = 6
+	return style
+
+func section_header(parent: Node, text: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	parent.add_child(row)
+	ink_label(row, text, 25, INK, cinzel(700, 1))
+	gold_rule(row)
+
+func option_row(parent: Node, text: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size.y = 44
+	row.add_theme_constant_override("separation", 14)
+	parent.add_child(row)
+	var title := ink_label(row, text, 18)
+	title.custom_minimum_size.x = 140 if settings_on_board else 170
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return row
+
+func jade_slider(row: HBoxContainer, value: float, on_change: Callable) -> void:
+	var slider := HSlider.new()
+	slider.min_value = 0; slider.max_value = 1; slider.step = 0.05
+	slider.value = value
+	slider.custom_minimum_size = Vector2(120 if settings_on_board else 190, 30)
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color("BFC9BC")
+	track.set_corner_radius_all(4)
+	track.content_margin_top = 4; track.content_margin_bottom = 4
+	var fill := track.duplicate() as StyleBoxFlat
+	fill.bg_color = JADE
+	slider.add_theme_stylebox_override("slider", track)
+	slider.add_theme_stylebox_override("grabber_area", fill)
+	slider.add_theme_stylebox_override("grabber_area_highlight", fill)
+	var diamond := load(OPTIONS_DIR + "grabber.png")
+	slider.add_theme_icon_override("grabber", diamond)
+	slider.add_theme_icon_override("grabber_highlight", diamond)
+	row.add_child(slider)
+	var percent := ink_label(row, "%d%%" % roundi(value * 100), 18)
+	percent.custom_minimum_size.x = 48
+	percent.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	slider.value_changed.connect(func(v: float) -> void:
+		percent.text = "%d%%" % roundi(v * 100)
+		on_change.call(v))
+
+func jade_toggle(row: HBoxContainer, enabled: bool, on_change: Callable) -> void:
+	var toggle := CheckButton.new()
+	toggle.button_pressed = enabled
+	toggle.focus_mode = Control.FOCUS_ALL
+	toggle.add_theme_icon_override("checked", load(OPTIONS_DIR + "toggle_on.png"))
+	toggle.add_theme_icon_override("unchecked", load(OPTIONS_DIR + "toggle_off.png"))
+	for state: String in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		toggle.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	toggle.toggled.connect(func(value: bool) -> void:
+		audio.play("click")
+		on_change.call(value))
+	row.add_child(toggle)
+
+func key_label(code: int) -> String:
+	var names := {KEY_UP: "↑", KEY_DOWN: "↓", KEY_LEFT: "←", KEY_RIGHT: "→", KEY_SPACE: "ESPAÇO", KEY_ENTER: "ENTER", KEY_KP_ENTER: "NUM ENTER", KEY_SHIFT: "SHIFT", KEY_CTRL: "CTRL", KEY_ALT: "ALT"}
+	if names.has(code):
+		return names[code]
+	if code >= KEY_KP_0 and code <= KEY_KP_9:
+		return "NUM %d" % (code - KEY_KP_0)
+	return OS.get_keycode_string(code).to_upper()
+
+func key_pill(parent: Node, text: String, active: bool, callback: Callable) -> Button:
+	var pill := button(parent, text, callback)
+	pill.custom_minimum_size = Vector2(96 if settings_on_board else 124, 22)
+	pill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	pill.add_theme_font_size_override("font_size", 15)
+	# Keycaps: same raised look, smaller.
+	var face := JADE if active else Color("FBF7EE")
+	for state: String in ["normal", "disabled"]:
+		pill.add_theme_stylebox_override(state, keycap_style(face, false, false))
+	pill.add_theme_stylebox_override("hover", keycap_style(face.lightened(0.06), false, false))
+	pill.add_theme_stylebox_override("pressed", keycap_style(face.darkened(0.06), true, false))
+	pill.add_theme_stylebox_override("focus", keycap_style(face, false, true))
+	var text_color := Color("F4EFE4") if active else INK
+	for state: String in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color", "font_disabled_color"]:
+		pill.add_theme_color_override(state, text_color)
+	pill.add_theme_constant_override("outline_size", 0)
+	return pill
+
+func keycap_style(face: Color, pressed: bool, focused: bool) -> StyleBoxFlat:
+	var style := raised_style(face, pressed, focused)
+	style.border_width_bottom = 1 if pressed else 4
+	style.shadow_size = 1 if pressed else 3
+	style.shadow_offset = Vector2(0, 1 if pressed else 2)
+	style.set_corner_radius_all(6)
+	style.content_margin_top = 2 if pressed else 0
+	style.content_margin_bottom = 0
+	style.content_margin_left = 6
+	style.content_margin_right = 6
+	if not focused:
+		style.border_color = JADE if face.v > 0.5 else face.darkened(0.45)
+	return style
+
 func show_settings() -> void:
+	if settings_on_board and is_instance_valid(board_ui):
+		board_ui.rebuild()
+		return
 	var was_paused := (screen == "paused")
+	var redraw := is_instance_valid(modal) and modal.has_meta("settings")
+	# Redrawing must not cancel a key that is waiting to be remapped.
+	var pending := listening.duplicate()
 	close_modal()
+	listening = pending
 	if is_instance_valid(menu):
 		menu.hide()
 	if was_paused:
 		screen = "paused"
-	modal = overlay()
-	var column := centered(modal, 1000, false, 540)
-	label(column, "ÁUDIO E CONTROLES", 28, Color("A3C9A8"))
-	label(column,"Volume geral",14)
-	var slider := HSlider.new()
-	slider.min_value = 0
-	slider.max_value = 1
-	slider.step = 0.05
-	slider.value = prefs.volume
-	column.add_child(slider)
-	slider.value_changed.connect(func(value: float) -> void:
-		prefs.volume = value
-		persist())
-	button(column, "Alternar áudio (M)", func() -> void:
-		prefs.muted = not prefs.muted
-		persist())
-	for setting: String in ["music_volume","sfx_volume","shake_strength"]:
-		label(column,{"music_volume":"Música","sfx_volume":"Efeitos sonoros","shake_strength":"Intensidade da câmera"}[setting],14)
-		var control := HSlider.new()
-		control.min_value = 0; control.max_value = 1; control.step = 0.05
-		control.value = prefs.get(setting)
-		column.add_child(control)
-		control.value_changed.connect(func(value: float) -> void: prefs.set(setting,value); persist())
-	for setting: String in ["flashes","vibration"]:
-		var control := CheckButton.new()
-		control.text = "Flashes de impacto" if setting == "flashes" else "Vibração do gamepad"
-		control.button_pressed = prefs.get(setting)
-		control.toggled.connect(func(enabled: bool) -> void: prefs.set(setting,enabled);persist())
-		column.add_child(control)
-	option(column,"Dificuldade Arcade",["Tranquilo","Normal","Intenso"],prefs.difficulty,func(index: int) -> void: prefs.difficulty=index;persist())
-	label(column,"Gamepad: A pulo · X básico · Y forte · B elemental · RB ultimate · LB defesa\nAnalógico/D-pad: mover e agachar · R3 dash · L3 breaker · Start pausa · Back treino",13,Color("A3C9A8"))
-	var debug := CheckButton.new()
-	debug.text = "Mostrar hitboxes e hurtboxes"
-	debug.button_pressed = arena.show_boxes
-	debug.toggled.connect(func(enabled: bool) -> void: arena.show_boxes = enabled)
-	column.add_child(debug)
-	rebind_label = label(column, "Clique em uma tecla para remapear. Esc cancela. P, R e M são reservados.", 15, Color("F4CE75"))
-	var controls := HBoxContainer.new()
-	controls.add_theme_constant_override("separation", 30)
-	column.add_child(controls)
+	# Over the beach (main menu) the shade stays light; over a paused fight it is a bit darker.
+	modal = overlay(0.0 if settings_on_board else (0.45 if was_paused else 0.18))
+	modal.set_meta("settings", true)
+	var frame := TextureRect.new()
+	frame.texture = load(OPTIONS_DIR + "frame.png")
+	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	frame.stretch_mode = TextureRect.STRETCH_SCALE
+	frame.size = SETTINGS_DESIGN
+	frame.position = Vector2(67, 20)
+	modal.add_child(frame)
+	if not redraw:
+		fade_in(modal, 0.18)
+		fade_in(frame, 0.24, Vector2(0, 16))
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side: String in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 18 if settings_on_board else 62)
+	# The brand line sits inside the raised tab, below its gold inner rule.
+	margin.add_theme_constant_override("margin_top", 6 if settings_on_board else 31)
+	margin.add_theme_constant_override("margin_bottom", 18 if settings_on_board else 42)
+	frame.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 3)
+	margin.add_child(column)
+
+	if not settings_on_board:
+		var brand := ink_label(column, "GALE BREAKER", 15, INK, cinzel(600, 7))
+		brand.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var title := ink_label(column, "OPÇÕES", 42, INK, cinzel(700, 6))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	atlas_rule(column, 420)
+
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 0)
+	column.add_child(tabs)
+	gold_rule(tabs)
+	for tab: Array in [["geral", "GERAL"], ["controles", "CONTROLES"]]:
+		plate_button(tabs, String(tab[1]), settings_tab == tab[0], Vector2(230 if settings_on_board else 290, 40), 20, func() -> void:
+			settings_tab = tab[0]
+			show_settings())
+	gold_rule(tabs)
+
+	var body := VBoxContainer.new()
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 2)
+	column.add_child(body)
+	if settings_tab == "geral":
+		build_general_options(body)
+	else:
+		build_control_options(body)
+	if redraw:
+		fade_in(body, 0.14)
+
+	gold_rule(column)
+	var footer := HBoxContainer.new()
+	footer.add_theme_constant_override("separation", 12)
+	column.add_child(footer)
+	var esc := key_pill(footer, "ESC", false, close_settings)
+	esc.custom_minimum_size = Vector2(56, 30)
+	var back := button(footer, "VOLTAR", close_settings)
+	back.add_theme_font_override("font", cinzel(700, 2))
+	back.add_theme_font_size_override("font_size", 19)
+	for state: String in ["normal", "hover", "pressed", "focus"]:
+		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	for state: String in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		back.add_theme_color_override(state, INK)
+	back.add_theme_constant_override("outline_size", 0)
+	var middle := CenterContainer.new()
+	middle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(middle)
+	if settings_tab == "geral":
+		var italic := FontVariation.new()
+		italic.base_font = ThemeDB.fallback_font
+		italic.variation_transform = Transform2D(Vector2(1, 0), Vector2(0.2, 1), Vector2.ZERO)
+		# The hint doubles as the status line on this tab.
+		rebind_label = ink_label(middle, "Ajuste o som e o conforto da partida.", 15, INK_SOFT, italic)
+	else:
+		gamepad_legend(middle)
+	plate_button(footer, "SALVAR E VOLTAR", true, Vector2(280, 44), 18, close_settings)
+	focus_first(body)
+
+func build_general_options(body: VBoxContainer) -> void:
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 18 if settings_on_board else 28)
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(columns)
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.add_child(left)
+	var divider := ColorRect.new()
+	divider.color = GOLD
+	divider.custom_minimum_size = Vector2(1, 0)
+	columns.add_child(divider)
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	columns.add_child(right)
+	for side: VBoxContainer in [left, right]:
+		var gap := Control.new()
+		gap.custom_minimum_size.y = 22
+		side.add_child(gap)
+
+	section_header(left, "ÁUDIO")
+	jade_slider(option_row(left, "Volume geral"), prefs.volume, func(v: float) -> void: prefs.volume = v; persist())
+	jade_slider(option_row(left, "Música"), prefs.music_volume, func(v: float) -> void: prefs.music_volume = v; persist())
+	jade_slider(option_row(left, "Efeitos sonoros"), prefs.sfx_volume, func(v: float) -> void: prefs.sfx_volume = v; persist())
+	jade_toggle(option_row(left, "Áudio ativo"), not prefs.muted, func(on: bool) -> void: prefs.muted = not on; persist())
+
+	section_header(right, "JOGO E CONFORTO")
+	jade_slider(option_row(right, "Intensidade da câmera"), prefs.shake_strength, func(v: float) -> void: prefs.shake_strength = v; persist())
+	var difficulty_row := option_row(right, "Dificuldade Arcade")
+	var picker := OptionButton.new()
+	for name: String in ["Tranquilo", "Normal", "Intenso"]:
+		picker.add_item(name)
+	picker.selected = prefs.difficulty
+	picker.custom_minimum_size = Vector2(150 if settings_on_board else 210, 36)
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color("FBF7EE")
+	box.border_color = JADE
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(6)
+	box.content_margin_left = 14
+	for state: String in ["normal", "hover", "pressed", "focus"]:
+		picker.add_theme_stylebox_override(state, box)
+	for state: String in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		picker.add_theme_color_override(state, INK)
+	picker.add_theme_font_size_override("font_size", 17)
+	picker.item_selected.connect(func(index: int) -> void: prefs.difficulty = index; persist())
+	difficulty_row.add_child(picker)
+	jade_toggle(option_row(right, "Flashes de impacto"), prefs.flashes, func(on: bool) -> void: prefs.flashes = on; persist())
+	jade_toggle(option_row(right, "Vibração do gamepad"), prefs.vibration, func(on: bool) -> void: prefs.vibration = on; persist())
+	jade_toggle(option_row(right, "Mostrar áreas de colisão"), arena.show_boxes, func(on: bool) -> void: arena.show_boxes = on)
+
+func build_control_options(body: VBoxContainer) -> void:
+	var sub := HBoxContainer.new()
+	sub.add_theme_constant_override("separation", 0)
+	body.add_child(sub)
+	gold_rule(sub)
+	for tab: Array in [["teclado", "TECLADO"], ["gamepad", "GAMEPAD"]]:
+		plate_button(sub, String(tab[1]), settings_input == tab[0], Vector2(190, 30), 15, func() -> void:
+			settings_input = tab[0]
+			show_settings())
+	gold_rule(sub)
+	var hint_row := HBoxContainer.new()
+	body.add_child(hint_row)
+	var left_pad := Control.new()
+	left_pad.custom_minimum_size.x = 60 if settings_on_board else 150
+	hint_row.add_child(left_pad)
+	rebind_label = ink_label(hint_row, "Selecione uma tecla para remapear. Esc cancela." if settings_input == "teclado" else "Mapa do controle. O remapeamento do gamepad chega em uma próxima versão.", 15)
+	rebind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rebind_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var restore_slot := Control.new()
+	restore_slot.custom_minimum_size.x = 140 if settings_on_board else 150
+	hint_row.add_child(restore_slot)
+	if settings_input == "teclado":
+		var restore := button(restore_slot, "RESTAURAR PADRÕES", restore_default_keys)
+		restore.add_theme_font_size_override("font_size", 13)
+		for state: String in ["normal", "hover", "pressed", "focus"]:
+			restore.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		for state: String in ["font_color", "font_hover_color", "font_focus_color"]:
+			restore.add_theme_color_override(state, JADE)
+		restore.add_theme_constant_override("outline_size", 0)
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 26 if settings_on_board else 60)
+	body.add_child(columns)
 	for player in 2:
 		var list := VBoxContainer.new()
 		list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		controls.add_child(list)
-		label(list, "JOGADOR %d" % (player + 1), 20)
+		list.add_theme_constant_override("separation", 0)
+		columns.add_child(list)
+		var header := HBoxContainer.new()
+		header.add_theme_constant_override("separation", 14)
+		list.add_child(header)
+		ink_label(header, "JOGADOR %d" % (player + 1), 21, INK, cinzel(700, 3))
+		gold_rule(header)
 		for action in GalePreferences.ACTIONS.size():
-			var row := HBoxContainer.new()
+			var row := PanelContainer.new()
+			var stripe := StyleBoxFlat.new()
+			stripe.bg_color = Color(0.55, 0.45, 0.30, 0.07 if action % 2 == 1 else 0.0)
+			stripe.content_margin_left = 14
+			stripe.content_margin_right = 14
+			row.add_theme_stylebox_override("panel", stripe)
 			list.add_child(row)
-			var title := label(row, GalePreferences.ACTIONS[action], 14)
-			title.custom_minimum_size.x = 140
-			var key := button(row, OS.get_keycode_string(prefs.keys[player][action]), func() -> void:
-				listening = [player, action]
-				rebind_label.text = "Pressione a nova tecla. Esc cancela.")
-			key.custom_minimum_size = Vector2(240, 0)
-			key.add_theme_constant_override("outline_size", 0)
-			var compact := StyleBoxFlat.new()
-			compact.bg_color = Color(0.11, 0.20, 0.17, 0.92)
-			compact.content_margin_top = 2
-			compact.content_margin_bottom = 2
-			key.add_theme_stylebox_override("normal", compact)
-	button(column, "Salvar e voltar", func() -> void:
-		persist()
-		close_modal()
-		if screen == "paused":
-			resume_match())
-	focus_first(column)
+			var line := HBoxContainer.new()
+			line.custom_minimum_size.y = 21 if settings_on_board else 24
+			row.add_child(line)
+			var name := ink_label(line, ACTION_LABELS[action], 16)
+			name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			if settings_input == "teclado":
+				var active: bool = listening == [player, action]
+				var pill := key_pill(line, key_label(prefs.keys[player][action]), active, func() -> void:
+					listening = [player, action]
+					show_settings()
+					rebind_label.text = "Pressione a nova tecla para %s do Jogador %d. Esc cancela." % [ACTION_LABELS[action], player + 1])
+				if active:
+					var pulse := pill.create_tween().set_loops()
+					pulse.tween_property(pill, "modulate", Color(1.25, 1.25, 1.25), 0.45).set_trans(Tween.TRANS_SINE)
+					pulse.tween_property(pill, "modulate", Color.WHITE, 0.45).set_trans(Tween.TRANS_SINE)
+			else:
+				var pill := key_pill(line, PAD_LABELS[action], false, func() -> void: pass)
+				pill.disabled = true
+
+func gamepad_legend(parent: Node) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	parent.add_child(row)
+	for entry: Array in [["A", "Confirmar", Color("2E7D4F")], ["X", "Áudio", Color("2A5BA8")], ["Y", "Padrões", Color("D6A21E")], ["B", "Voltar", Color("B3322B")], ["LB/RB", "Abas", Color("4C5A52")]]:
+		var badge := PanelContainer.new()
+		var round := StyleBoxFlat.new()
+		round.bg_color = entry[2]
+		round.set_corner_radius_all(11)
+		round.content_margin_left = 7; round.content_margin_right = 7
+		badge.add_theme_stylebox_override("panel", round)
+		row.add_child(badge)
+		ink_label(badge, String(entry[0]), 12, Color.WHITE)
+		ink_label(row, String(entry[1]) + "   ", 13, INK)
+
+func restore_default_keys() -> void:
+	prefs.restore_default_keys()
+	listening.clear()
+	show_settings()
+	rebind_label.text = "Teclas padrão restauradas."
+
+func open_arcade_select() -> void:
+	mode = "arcade"
+	in_arcade_select = true
+	if is_instance_valid(menu):
+		menu.hide()
+	arena.show_select_fighter(data, fighter1, palette1)
+	show_arcade_select()
+
+func leave_arcade_select() -> void:
+	in_arcade_select = false
+	close_modal()
+	arena.hide_select_fighter()
+	show_menu()
+
+func start_arcade_from_select() -> void:
+	in_arcade_select = false
+	arcade_index = 1
+	close_modal()
+	begin_fight()
+
+func choose_arcade_fighter(id: String) -> void:
+	fighter1 = id
+	palette1 = 0
+	arcade_outfit_page = 0
+	arena.show_select_fighter(data, fighter1, palette1)
+	show_arcade_select(true)
+
+func choose_arcade_outfit(index: int) -> void:
+	palette1 = index
+	arena.show_select_fighter(data, fighter1, palette1)
+	show_arcade_select(true)
+
+func turn_select_fighter(amount: float) -> void:
+	arena.select_turn += amount
+
+func outfit_preview(parent: Node, id: String, palette: int) -> SubViewportContainer:
+	"""Live full-body render of a fighter in one palette, for the outfit cards."""
+	var holder := SubViewportContainer.new()
+	# In the tree before building: the fighter view reads global transforms.
+	parent.add_child(holder)
+	holder.stretch = true
+	holder.custom_minimum_size = Vector2(118, 132)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var viewport := SubViewport.new()
+	viewport.own_world_3d = true
+	viewport.transparent_bg = true
+	viewport.size = Vector2i(118, 132)
+	holder.add_child(viewport)
+	var camera := Camera3D.new()
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 2.25
+	camera.position = Vector3(0.9, 1.05, 4.0)
+	camera.basis = Basis.looking_at(Vector3(0, 0.98, 0) - camera.position)
+	viewport.add_child(camera)
+	var view := GaleFighterView.new()
+	viewport.add_child(view)
+	view.build(data, id, palette)
+	view.rotation.y = PI - 0.3
+	view.aura.visible = false
+	view.contact_shadow.visible = false
+	view.play_clip("idle", 0.0)
+	return holder
+
+func select_card(parent: Node, size: Vector2, selected: bool, callback: Callable) -> Button:
+	var card := Button.new()
+	card.custom_minimum_size = size
+	card.focus_mode = Control.FOCUS_ALL
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color("FBF6EA") if selected else Color("F1E9D8")
+	box.border_color = JADE if selected else Color("D9C9A6")
+	box.set_border_width_all(4 if selected else 2)
+	box.set_corner_radius_all(8)
+	var focus := box.duplicate() as StyleBoxFlat
+	focus.border_color = GOLD
+	for state: String in ["normal", "hover", "pressed"]:
+		card.add_theme_stylebox_override(state, box)
+	card.add_theme_stylebox_override("focus", focus)
+	card.pressed.connect(func() -> void:
+		audio.play("click")
+		callback.call())
+	card.mouse_entered.connect(func() -> void: audio.play("hover"))
+	parent.add_child(card)
+	if selected:
+		var seal := TextureRect.new()
+		seal.texture = load("res://assets/ui/board/selo-confirmar.png")
+		seal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		seal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		seal.size = Vector2(34, 34)
+		seal.position = Vector2(size.x - 30, -8)
+		seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(seal)
+	return card
+
+func section_plate(parent: Node, text: String) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	parent.add_child(row)
+	var plate := PanelContainer.new()
+	var style := atlas_style("button_focus", 14)
+	style.content_margin_left = 26
+	style.content_margin_right = 26
+	plate.add_theme_stylebox_override("panel", style)
+	row.add_child(plate)
+	var title := ink_label(plate, text, 16, Color("F4EFE4"), cinzel(700, 3))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	gold_rule(row)
+
+func show_arcade_select(redraw: bool = false) -> void:
+	close_modal()
+	if is_instance_valid(menu):
+		menu.hide()
+	modal = overlay(0.0)
+	modal.set_meta("arcade_select", true)
+	var cat := GaleVisualCatalog.load_for(fighter1)
+
+	# Left: the fighter's name and title over the beach, and rotate arrows.
+	var name_box := VBoxContainer.new()
+	name_box.position = Vector2(56, 452)
+	name_box.add_theme_constant_override("separation", 2)
+	modal.add_child(name_box)
+	var slanted := FontVariation.new()
+	slanted.base_font = cinzel(700, 1)
+	slanted.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.22, 1), Vector2.ZERO)
+	var big := ink_label(name_box, cat.display_name.to_upper(), 58, Color("C6A052"), slanted)
+	big.add_theme_color_override("font_outline_color", Color(0.12, 0.09, 0.05, 0.85))
+	big.add_theme_constant_override("outline_size", 6)
+	var rule := ColorRect.new()
+	rule.color = Color("C6A052")
+	rule.custom_minimum_size = Vector2(260, 2)
+	name_box.add_child(rule)
+	var italic := FontVariation.new()
+	italic.base_font = ThemeDB.fallback_font
+	italic.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.2, 1), Vector2.ZERO)
+	var subtitle := ink_label(name_box, cat.subtitle, 20, Color("FFF8EA"), italic)
+	subtitle.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55))
+	subtitle.add_theme_constant_override("outline_size", 5)
+	var turns := HBoxContainer.new()
+	turns.position = Vector2(150, 610)
+	turns.add_theme_constant_override("separation", 170)
+	modal.add_child(turns)
+	for pair: Array in [["↶", -0.6], ["↷", 0.6]]:
+		var arrow := button(turns, String(pair[0]), turn_select_fighter.bind(float(pair[1])))
+		arrow.add_theme_font_size_override("font_size", 30)
+		for state: String in ["normal", "hover", "pressed", "focus"]:
+			arrow.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		arrow.add_theme_color_override("font_color", Color("1F3B2E"))
+		arrow.add_theme_constant_override("outline_size", 0)
+
+	# Right: the selection card.
+	var card := TextureRect.new()
+	card.texture = load(OPTIONS_DIR + "frame.png")
+	card.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	card.stretch_mode = TextureRect.STRETCH_SCALE
+	card.size = Vector2(650, 618)
+	card.position = Vector2(596, 12)
+	modal.add_child(card)
+	if not redraw:
+		fade_in(card, 0.28, Vector2(24, 0))
+		fade_in(name_box, 0.35, Vector2(-20, 0))
+	var margin := MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for side: String in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 40)
+	margin.add_theme_constant_override("margin_top", 22)
+	margin.add_theme_constant_override("margin_bottom", 26)
+	card.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 6)
+	margin.add_child(column)
+	var brand := ink_label(column, "GALE BREAKER", 12, INK, cinzel(600, 6))
+	brand.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var title := ink_label(column, "ARCADE", 40, INK, cinzel(700, 6))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var sub := ink_label(column, "ESCOLHA SEU LUTADOR", 14, INK, cinzel(700, 5))
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	section_plate(column, "PERSONAGEM")
+	var roster := HBoxContainer.new()
+	roster.alignment = BoxContainer.ALIGNMENT_CENTER
+	roster.add_theme_constant_override("separation", 10)
+	column.add_child(roster)
+	var focus_target: Control = null
+	for id: String in GaleData.IDS:
+		var fighter_card := select_card(roster, Vector2(124, 138), id == fighter1, choose_arcade_fighter.bind(id))
+		var inner := VBoxContainer.new()
+		inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		inner.add_theme_constant_override("separation", 0)
+		inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		fighter_card.add_child(inner)
+		var portrait := TextureRect.new()
+		portrait.texture = load("res://assets/ui/portraits/%s.png" % id)
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		portrait.custom_minimum_size = Vector2(116, 108)
+		portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		inner.add_child(portrait)
+		var label_name := ink_label(inner, GaleVisualCatalog.load_for(id).display_name.to_upper(), 14, INK, cinzel(700, 2))
+		label_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		if id == fighter1:
+			focus_target = fighter_card
+
+	section_plate(column, "ROUPA")
+	var outfits := HBoxContainer.new()
+	outfits.alignment = BoxContainer.ALIGNMENT_CENTER
+	outfits.add_theme_constant_override("separation", 10)
+	column.add_child(outfits)
+	var count := cat.palettes.size()
+	var prev := plate_button(outfits, "‹", true, Vector2(40, 52), 24, func() -> void:
+		arcade_outfit_page = posmod(arcade_outfit_page - 1, count)
+		show_arcade_select(true))
+	prev.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	for offset in 3:
+		var index := posmod(arcade_outfit_page + offset, count)
+		var outfit_card := select_card(outfits, Vector2(128, 158), index == palette1, choose_arcade_outfit.bind(index))
+		var inner := VBoxContainer.new()
+		inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		outfit_card.add_child(inner)
+		outfit_preview(inner, fighter1, index)
+		var short_name := String(cat.palettes[index].name).split(" ")[0]
+		var outfit_label := ink_label(inner, short_name, 14, INK)
+		outfit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var next := plate_button(outfits, "›", true, Vector2(40, 52), 24, func() -> void:
+		arcade_outfit_page = posmod(arcade_outfit_page + 1, count)
+		show_arcade_select(true))
+	next.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var caption := HBoxContainer.new()
+	caption.add_theme_constant_override("separation", 12)
+	column.add_child(caption)
+	gold_rule(caption)
+	var italic_ink := FontVariation.new()
+	italic_ink.base_font = ThemeDB.fallback_font
+	italic_ink.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.2, 1), Vector2.ZERO)
+	ink_label(caption, String(cat.palettes[palette1].name), 17, INK, italic_ink)
+	gold_rule(caption)
+	var counter := ink_label(column, "%02d / %02d" % [palette1 + 1, count], 13, INK_SOFT)
+	counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	# Footer: back on the left, skills and start on the right.
+	var footer := HBoxContainer.new()
+	footer.position = Vector2(56, 650)
+	footer.size = Vector2(1170, 52)
+	footer.add_theme_constant_override("separation", 12)
+	modal.add_child(footer)
+	var esc := key_pill(footer, "ESC", false, leave_arcade_select)
+	esc.custom_minimum_size = Vector2(56, 30)
+	var back := button(footer, "VOLTAR", leave_arcade_select)
+	back.add_theme_font_override("font", cinzel(700, 2))
+	back.add_theme_font_size_override("font_size", 19)
+	for state: String in ["normal", "hover", "pressed", "focus"]:
+		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	for state: String in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
+		back.add_theme_color_override(state, Color("FFF8EA"))
+	back.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55))
+	back.add_theme_constant_override("outline_size", 5)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(spacer)
+	plate_button(footer, "HABILIDADES", false, Vector2(210, 46), 16, func() -> void:
+		skill_target_player = 0
+		skill_target_fighter = fighter1
+		show_skills())
+	var start := plate_button(footer, "INICIAR ARCADE  ↵", true, Vector2(320, 50), 20, start_arcade_from_select)
+	if not redraw:
+		fade_in(footer, 0.3)
+	call_deferred("focus_control", start if focus_target == null else focus_target)
+
+func close_settings() -> void:
+	listening.clear()
+	persist()
+	close_modal()
+	if screen == "paused":
+		resume_match()
+	elif settings_on_board:
+		# Fly back to the beach; the menu list returns once the camera arrives.
+		settings_on_board = false
+		if is_instance_valid(board_ui):
+			board_ui.interactive = false
+			board_ui.hover = -1
+			board_ui.refresh_focus()
+		if is_instance_valid(menu):
+			menu.hide()
+		arena.focus_board(false)
+		await arena.board_closed
+		if menu_fade != null and menu_fade.is_valid():
+			menu_fade.kill()
+		if is_instance_valid(menu) and screen == "menu":
+			menu.show()
+			fade_in(menu, 0.25)
+
+func open_board_settings() -> void:
+	if is_instance_valid(menu):
+		menu_fade = menu.create_tween()
+		menu_fade.tween_property(menu, "modulate:a", 0.0, 0.2)
+		menu_fade.tween_callback(menu.hide)
+	settings_on_board = true
+	if not is_instance_valid(board_ui):
+		board_ui = GaleBoardOptions.new()
+		arena.scenery.add_child(board_ui)
+		board_ui.setup(self, arena.board_panel)
+	if not is_instance_valid(rebind_label):
+		rebind_label = Label.new()
+		rebind_label.visible = false
+		ui.add_child(rebind_label)
+	rebind_label.text = ""
+	board_ui.rebuild()
+	arena.focus_board(true)
+	await arena.board_ready
+	if screen == "menu" and settings_on_board:
+		board_ui.interactive = true
+		board_ui.refresh_focus()
 
 func persist() -> void:
 	var error := prefs.save_to_disk()
@@ -1080,6 +1785,26 @@ func persist() -> void:
 		push_warning("Não foi possível salvar preferências: %s" % error_string(error))
 
 func _input(event: InputEvent) -> void:
+	if settings_on_board and is_instance_valid(board_ui) and board_ui.interactive and listening.is_empty():
+		if event.is_action_pressed("ui_cancel"):
+			get_viewport().set_input_as_handled()
+			close_settings()
+			return
+		if event is InputEventJoypadButton and event.pressed and event.button_index in [JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER, JOY_BUTTON_X, JOY_BUTTON_Y]:
+			get_viewport().set_input_as_handled()
+			match event.button_index:
+				JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER:
+					board_ui.switch_tab("controles" if settings_tab == "geral" else "geral")
+				JOY_BUTTON_X:
+					prefs.muted = not prefs.muted
+					persist()
+					board_ui.rebuild()
+				JOY_BUTTON_Y:
+					restore_default_keys()
+			return
+		if board_ui.handle_input(event):
+			get_viewport().set_input_as_handled()
+			return
 	if event is InputEventJoypadButton and event.pressed:
 		if event.button_index == JOY_BUTTON_START:
 			if is_instance_valid(modal) and screen in ["menu","selection"]:close_modal()
@@ -1092,9 +1817,25 @@ func _input(event: InputEvent) -> void:
 		elif event.button_index == JOY_BUTTON_BACK and mode == "training" and screen == "playing":
 			show_training_tools()
 			return
+		elif is_instance_valid(modal) and modal.has_meta("settings") and event.button_index in [JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER, JOY_BUTTON_X, JOY_BUTTON_Y]:
+			# Options screen pad shortcuts shown in its legend.
+			get_viewport().set_input_as_handled()
+			match event.button_index:
+				JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER:
+					settings_tab = "controles" if settings_tab == "geral" else "geral"
+					show_settings()
+				JOY_BUTTON_X:
+					prefs.muted = not prefs.muted
+					persist()
+					show_settings()
+				JOY_BUTTON_Y:
+					restore_default_keys()
+			return
 		elif event.button_index==JOY_BUTTON_B and screen!="playing":
 			if screen=="paused":resume_match()
 			elif screen in ["intro","outcome","selection"]:show_menu()
+			elif is_instance_valid(modal) and modal.has_meta("settings"):close_settings()
+			elif is_instance_valid(modal) and modal.has_meta("arcade_select"):leave_arcade_select()
 			elif is_instance_valid(modal):close_modal()
 			get_viewport().set_input_as_handled()
 			return
@@ -1105,6 +1846,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		if key_event.keycode == KEY_ESCAPE:
 			listening.clear()
+			show_settings()
 			rebind_label.text = "Remapeamento cancelado."
 			return
 		var error := prefs.remap(listening[0], listening[1], key_event.physical_keycode)
@@ -1121,6 +1863,10 @@ func _input(event: InputEvent) -> void:
 				resume_match()
 			elif screen in ["intro","outcome"]:
 				show_menu()
+			elif modal.has_meta("settings"):
+				close_settings()
+			elif modal.has_meta("arcade_select"):
+				leave_arcade_select()
 			else:
 				close_modal()
 		return

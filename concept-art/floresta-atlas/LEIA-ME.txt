@@ -1,0 +1,11 @@
+FLORESTA E QUADRO DE OPÇÕES — CONCEPT E ATLAS V1
+
+Conteúdo: uma concept 1672×941 e três atlas 1254×1254, com 16 células por prancha (48 elementos).
+Materiais em RGB; vegetação e quadro/interface em RGBA com transparência real.
+O manifest.json descreve cada célula por nome, coordenadas e UVs. As células têm aproximadamente 313–314 px.
+
+Transição sugerida: câmera avança por folhas próximas, atravessa o corredor entre troncos e desacelera ao revelar o quadro. A praia não aparece.
+Use folhas em planos separados para paralaxe; troncos, chão, quadro e banco precisam de geometria para uma passagem com profundidade real. Desfoque e raios de luz ficam na engine.
+
+Estes são atlas conceituais para referência e prototipagem. Não foram certificados como texturas repetíveis sem emendas nem para filtragem/mipmaps de produção. Os recortes preservam o alfa original gerado; revise bordas no material final. Não há modelos 3D nem animação de câmera neste pacote.
+Renderize textos e valores da interface no Godot, separados dos sprites.

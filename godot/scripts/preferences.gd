@@ -16,9 +16,10 @@ var skills2 := {"kaze":[],"ignis":[],"tophia":[],"volt":[]}
 var arcade_run := {}
 var file_path := PATH
 var skills := {"kaze": ["kaze_combo_1", "kaze_elem_1"], "ignis": ["ignis_combo_1"], "tophia": ["tophia_def_1"], "volt": ["volt_combo_1"]}
-var keys: Array = [
+const DEFAULT_KEYS := [
 	[KEY_W, KEY_S, KEY_A, KEY_D, KEY_J, KEY_K, KEY_L, KEY_U, KEY_SPACE, KEY_SHIFT, KEY_B],
 	[KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_KP_1, KEY_KP_2, KEY_KP_3, KEY_KP_4, KEY_KP_0, KEY_ENTER, KEY_KP_5]]
+var keys: Array = DEFAULT_KEYS.duplicate(true)
 
 func load_from_disk(data: GaleData) -> void:
 	var config := ConfigFile.new()
@@ -94,6 +95,11 @@ func remap(player: int, action: int, code: int) -> String:
 	install_input()
 	save_to_disk()
 	return ""
+
+func restore_default_keys() -> void:
+	keys = DEFAULT_KEYS.duplicate(true)
+	install_input()
+	save_to_disk()
 
 func install_input() -> void:
 	for player in 2:

@@ -4,7 +4,6 @@ extends Node
 const SAMPLE_PATHS := {
 	"fight_start": "res://assets/audio/sfx/fight_start_metal_punch.mp3",
 	"match_start": "res://assets/audio/sfx/match_start_sword_unsheath.mp3",
-	"menu_hover": "res://assets/audio/sfx/menu_hover.mp3",
 	"countdown": "res://assets/audio/voice/countdown_three_two_one_fight.mp3",
 	"victory": "res://assets/audio/voice/victory_male.mp3",
 	"lose": "res://assets/audio/voice/you_lose.mp3",
@@ -15,10 +14,21 @@ const SAMPLE_PATHS := {
 	"kaze_elemental": "res://assets/audio/fighters/kaze/elemental_iced_magic.mp3",
 }
 const MENU_MUSIC_PATH := "res://assets/audio/music/menu_deep_house_instrumental.mp3"
+# Fight playlist: one track is drawn per match (never the same twice in a row).
+const FIGHT_MUSIC_PATHS := [
+	"res://assets/audio/music/techtheist-exdnbd-224289.mp3",
+	"res://assets/audio/music/aberrantrealities-bid-or-stay-in-queue-303808.mp3",
+	"res://assets/audio/music/aberrantrealities-deed-journey-dupe-303806.mp3",
+	"res://assets/audio/music/u_199xuihodk-celestial-butterfly-496427.mp3",
+]
 # Recorded tracks are mastered louder than the synthesized arena loops.
 const MENU_MUSIC_OFFSET_DB := -10.0
 const ARENA_MUSIC_OFFSET_DB := -18.0
 const STEP_GAIN_DB := -6.0
+const HOVER_GAIN_DB := -9.0
+# Sweeping the mouse over a list should not machine-gun the hover tick.
+const HOVER_MIN_GAP_MS := 70
+var last_hover_ms := -1000
 
 var players: Array[AudioStreamPlayer] = []
 var music: AudioStreamPlayer
@@ -27,6 +37,8 @@ var tones: Dictionary = {}
 var samples: Dictionary = {}
 var songs: Dictionary = {}
 var menu_music: AudioStream
+var fight_music: Array[AudioStream] = []
+var last_fight_track := -1
 var cursor := 0
 var sfx_volume := 0.85
 var music_volume := 0.7
@@ -49,9 +61,15 @@ func _ready() -> void:
 	menu_music = load(MENU_MUSIC_PATH) as AudioStream
 	if menu_music is AudioStreamMP3:
 		(menu_music as AudioStreamMP3).loop = true
+	for path: String in FIGHT_MUSIC_PATHS:
+		var track := load(path) as AudioStream
+		if track is AudioStreamMP3:
+			(track as AudioStreamMP3).loop = true
+			fight_music.append(track)
 	for kind: String in ["hit", "heavy", "block", "parry", "clash", "ultimate", "ko", "click"]:
 		var frequency: float = {"hit": 140.0, "heavy": 75.0, "block": 280.0, "parry": 880.0, "clash": 620.0, "ultimate": 110.0, "ko": 440.0, "click": 700.0}[kind]
 		tones[kind] = synth(frequency, 0.32 if kind in ["ko", "ultimate"] else 0.1)
+	tones["hover"] = soft_tick()
 	for id: String in ["kaze","ignis","tophia","volt"]:
 		for kind: String in ["hit","heavy","elemental","ultimate","step"]:
 			tones[id+"_"+kind] = signature(id,kind)
@@ -76,6 +94,23 @@ func signature(id: String, kind: String) -> AudioStreamWAV:
 			"tophia": sample = tone*0.35+noise*exp(-t*18.0)*0.65+sin(TAU*frequency*2.73*t)*0.2
 			"volt": sample = sin(TAU*frequency*t*(1.0-t*1.5))*0.5+sin(TAU*frequency*1.013*t)*0.3+noise*0.12
 		bytes.encode_s16(i*2,int(clampf(sample*envelope,-1,1)*13000))
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = 22050
+	stream.data = bytes
+	return stream
+
+## Short, soft wooden tick for menu hover (two damped sines, no click at the start).
+func soft_tick() -> AudioStreamWAV:
+	var duration := 0.045
+	var count := int(22050 * duration)
+	var bytes := PackedByteArray()
+	bytes.resize(count * 2)
+	for i in count:
+		var t := float(i) / 22050.0
+		var envelope := minf(t / 0.003, 1.0) * exp(-t * 95.0)
+		var sample := sin(TAU * 1180.0 * t) * 0.6 + sin(TAU * 1770.0 * t) * 0.25
+		bytes.encode_s16(i * 2, int(sample * envelope * 7000))
 	var stream := AudioStreamWAV.new()
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	stream.mix_rate = 22050
@@ -111,6 +146,13 @@ func play(kind: String, fighter: String = "", variant: String = "") -> void:
 	if not fighter.is_empty() and tones.has(fighter+"_"+category):
 		kind = fighter+"_"+category
 	if not tones.has(kind):
+		return
+	if kind == "hover":
+		var now := Time.get_ticks_msec()
+		if now - last_hover_ms < HOVER_MIN_GAP_MS:
+			return
+		last_hover_ms = now
+		_play_stream(tones[kind], HOVER_GAIN_DB)
 		return
 	_play_stream(tones[kind], STEP_GAIN_DB if category == "step" else 0.0)
 
@@ -149,6 +191,21 @@ func set_music(stage: String, playing: bool) -> void:
 	if not playing:
 		music.stream_paused = true
 		return
+	if not fight_music.is_empty():
+		# Keep the match's track through rounds, pauses and restarts.
+		if music.stream not in fight_music:
+			var pick := randi() % fight_music.size()
+			if fight_music.size() > 1 and pick == last_fight_track:
+				pick = (pick + 1 + randi() % (fight_music.size() - 1)) % fight_music.size()
+			last_fight_track = pick
+			music.stream = fight_music[pick]
+			music.play()
+		elif not music.playing:
+			music.play()
+		music.stream_paused = false
+		_apply_music_volume()
+		return
+	# Fallback: the synthesized arena loop.
 	if not songs.has(stage):
 		songs[stage] = compose(stage)
 	if music.stream != songs[stage]:
@@ -174,7 +231,8 @@ func play_menu_music() -> void:
 func _apply_music_volume() -> void:
 	if not is_instance_valid(music):
 		return
-	var offset := MENU_MUSIC_OFFSET_DB if music.stream != null and music.stream == menu_music else ARENA_MUSIC_OFFSET_DB
+	# Recorded tracks (menu and fight playlist) are mastered louder than the synthesized loops.
+	var offset := ARENA_MUSIC_OFFSET_DB if music.stream is AudioStreamWAV else MENU_MUSIC_OFFSET_DB
 	music.volume_db = linear_to_db(maxf(0.001,music_volume)) + offset
 
 func compose(stage: String) -> AudioStreamWAV:
