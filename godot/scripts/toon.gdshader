@@ -4,7 +4,7 @@ render_mode unshaded, cull_back;
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform bool glow = false;
 uniform bool use_textures = false;
-uniform sampler2D albedo_tex : source_color, filter_linear_mipmap;
+uniform sampler2D albedo_tex : source_color, filter_linear_mipmap, repeat_enable;
 uniform sampler2D mask_tex : hint_default_black, filter_linear_mipmap;
 uniform sampler2D normal_tex : hint_normal, filter_linear_mipmap;
 uniform vec4 palette_primary : source_color = vec4(0.16, 0.40, 0.31, 1.0);

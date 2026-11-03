@@ -24,6 +24,9 @@ var socket_bones := {}
 var state_elapsed := 0.0
 var last_state := ""
 var locomotion_phase := 0.0
+# Set when a foot lands during the walk cycle; main.gd plays the step and clears it.
+var footfall_pending := false
+const IDLE_SPEED := 0.5
 var flashes_enabled := true
 var shake_strength := 0.65
 var contact_shadow: MeshInstance3D
@@ -305,10 +308,14 @@ func sync(f: Dictionary, time: float) -> void:
 		var forward: bool = float(f.vx) * float(f.facing) >= 0.0
 		var w_clip := "walk_forward" if forward else "walk_back"
 		var cycle := GaleAnimTiming.state_sec(fighter_id, "walk")
-		locomotion_phase = fmod(locomotion_phase + absf(float(f.vx)) * presentation_delta * cycle / 0.85, cycle)
+		var previous := locomotion_phase
+		locomotion_phase = fmod(locomotion_phase + absf(float(f.vx)) * presentation_delta * cycle / GaleAnimTiming.stride(fighter_id), cycle)
+		# Two footfalls per cycle: when the phase wraps and when it crosses the middle.
+		if locomotion_phase < previous or (previous < cycle * 0.5 and locomotion_phase >= cycle * 0.5):
+			footfall_pending = true
 		play_clip(w_clip, locomotion_phase)
 	else:
-		play_clip("idle", fmod(time * 0.65, GaleAnimTiming.state_sec(fighter_id, "idle")))
+		play_clip("idle", fmod(time * IDLE_SPEED, GaleAnimTiming.state_sec(fighter_id, "idle")))
 	_update_motion_fx(f, attack_clip)
 
 	aura.scale = Vector3.ONE * (1.2 + sin(time * 6.0) * 0.1 if f.boss else 1.0)

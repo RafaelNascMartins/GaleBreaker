@@ -14,6 +14,10 @@ LEGACY_ATTACK = {"wind": 4, "contact": 6, "hold": 10, "follow": 12, "recover": 1
 LEGACY_STATES = {"idle": 40, "walk": 24, "dash": 10, "guard_high": 10, "parry": 16, "hit": 16,
                  "knockdown": 24, "ko": 30, "victory": 40}
 
+# World units travelled per walk cycle (two steps). Chosen so each walk clip
+# plays at most ~1.3x its authored speed at full walk speed.
+STRIDE = {"kaze": 1.8, "ignis": 1.8, "tophia": 1.55, "volt": 1.9}
+
 ATTACK_CLIPS = ["light_1", "light_2", "light_3", "heavy", "elemental", "ultimate", "down_punch", "air_punch", "sweep"]
 
 
@@ -65,6 +69,7 @@ def export_json(path: Path):
         out[fid] = {
             "attacks": {c: attack(fid, c) for c in ATTACK_CLIPS},
             "states": {s: state(fid, s) for s in LEGACY_STATES},
+            "stride": STRIDE[fid],
         }
     path.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
 

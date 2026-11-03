@@ -186,7 +186,7 @@ class Page:
 
 icons=json.loads((ROOT/'concept-art/attack-icons/manifest.json').read_text(encoding='utf-8'))['icons']
 fighter_info=[
-    dict(id='kaze',name='Kaze',color=GREEN,art='personagens-v2.png',crop=(0,.03,.245,.63),
+    dict(id='kaze',name='Babuin',color=GREEN,art='personagens-v2.png',crop=(0,.03,.245,.63),
          desc='Monge alto e careca, postura ereta, roupas verdes de jade e pés descalços.',
          identity='Silhueta vertical e calma. O vento aparece no movimento do tecido e na direção dos golpes.',
          pending='Jogável: combo de palmas e chute, onda de vento e tornado com quatro impactos. Validar facilidade de aprendizado e mobilidade.'),
@@ -315,13 +315,13 @@ p.finish()
 p=Page('07  Interface','Menu principal minimalista','Referência visual escolhida: menu principal v3.')
 p.image('menu-principal-v3.png',48,145,756,425)
 p.note(830,153,'Direção','Lista textual, bastante respiro e destaque discreto de jade.',202)
-p.note(830,296,'No jogo','Título apenas Gale Breaker, sem subtítulo. Santuário vazio, sem Kaze ou outros personagens.',202)
+p.note(830,296,'No jogo','Título apenas Gale Breaker, sem subtítulo. Santuário vazio, sem Babuin ou outros personagens.',202)
 p.note(830,470,'A preservar','Legibilidade e navegação por teclado e mouse.',202)
 p.para(48,591,'Concept de referência; menu nativo implementado. Captura real na página 32.',756,12,MUTED)
 p.finish()
 
 # 12 — Updated pause and combat HUD concepts
-p=Page('07  Interface','Pausa e combate, na mesma linguagem','Concepts atuais: Kaze monge careca, Ignis cowboy e interface minimalista com detalhes de jade e marfim.')
+p=Page('07  Interface','Pausa e combate, na mesma linguagem','Concepts atuais: Babuin monge careca, Ignis cowboy e interface minimalista com detalhes de jade e marfim.')
 p.text(48,143,'01  PAUSA',11,GREEN,True)
 p.text(552,143,'02  HUD DE COMBATE',11,RED,True)
 p.image('menu-pausa-v2.png',48,167,480,270)
@@ -409,7 +409,7 @@ for i,(title,subtitle) in enumerate(stages):
     if i<4:p.arrow(x+183,194,14)
 p.note(48,287,'Marco entregue','Quatro lutadores jogáveis, três arenas e menu minimalista. Cada personagem tem rig e 27 clips exportados do Blender.',460)
 p.note(570,287,'Autoridade do combate','Movimento e dano continuam na simulação. A animação acompanha preparação, contato, recuperação, cancelamentos e hitstop.',460)
-p.note(48,426,'Animação integrada','Transições, apoio de mãos e pés, canhão estabilizado e hitstop. Kaze e Ignis preservam a direção dos esboços do autor.',460)
+p.note(48,426,'Animação integrada','Transições, apoio de mãos e pés, canhão estabilizado e hitstop. Babuin e Ignis preservam a direção dos esboços do autor.',460)
 p.note(570,426,'Critério de teste','O jogador entende o que acontece, encontra uma resposta e quer revanche. Observar legibilidade, tempo sem agir e desempenho.',460)
 p.para(48,563,'Build Windows de avaliação disponível. 158 verificações passaram e 16 confrontos automáticos terminaram. Acabamento artístico e balanceamento competitivo exigem avaliação humana.',980,13,MUTED)
 p.finish()

@@ -2,7 +2,8 @@ class_name GaleCombat
 extends RefCounted
 
 const DT := 1.0 / 60.0
-const EDGE := 9.5
+# Half-width of the fighting area; stage blockers sit just beyond it.
+const EDGE := 6.5
 const GRAVITY := 28.0
 # Long enough for the full "three, two, one, FIGHT" announcer line.
 const COUNTDOWN_FRAMES := 216
@@ -77,7 +78,8 @@ func reset_hazards() -> void:
 	hazards.clear()
 	var count := int(data.stage(stage_id).hazardCount)
 	for i in count:
-		hazards.append({"x": -7.5 + float(i) * 15.0 / float(count - 1),
+		var span := EDGE - 2.0
+		hazards.append({"x": -span + float(i) * 2.0 * span / float(count - 1),
 			"vx": 0.0, "hp": 100, "owner": -1, "respawn": 0})
 
 func announce(text: String, duration: int = 80) -> void:
@@ -179,7 +181,7 @@ func ai_input(force: bool = false) -> Dictionary:
 			p2.ai_wait = 35
 		return result
 	var ideal_range:=4.0 if p2.id=="volt" else 2.1
-	result.axis=direction if distance>ideal_range else (-direction if p2.id=="volt" and distance<2.7 and absf(float(p2.x))<8.5 else 0.0)
+	result.axis=direction if distance>ideal_range else (-direction if p2.id=="volt" and distance<2.7 and absf(float(p2.x))<EDGE-1.0 else 0.0)
 	if p2.ai_wait > 0:
 		return result
 	p2.ai_wait = maxi(10, 42 - arcade_index * 3 - difficulty * 10)
@@ -343,7 +345,7 @@ func update_fighter(f: Dictionary, opponent: Dictionary, inp: Dictionary) -> voi
 			if inp.jump and f.grounded:
 				f.vy = float(data.fighter(f.id).jumpVelocity)
 				f.grounded = false
-			f.vx = inp.axis * float(data.fighter(f.id).walkSpeed) * (0.4 if f.crouch else 1.0)
+			f.vx = 0.0 if f.crouch and f.grounded else inp.axis * float(data.fighter(f.id).walkSpeed)
 			f.action = "jump" if not f.grounded else ("crouch" if f.crouch else ("walk" if inp.axis != 0 else "idle"))
 	if f.action == "knockdown" and f.grounded and not f.hard_down and f.frames <= 14 and inp.axis != 0:
 		f.vx = signf(inp.axis) * 9.5

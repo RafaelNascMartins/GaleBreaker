@@ -60,7 +60,7 @@ static func build_default(id: String) -> GaleVisualCatalog:
 	}
 	match id:
 		"kaze":
-			cat.display_name = "Kaze"
+			cat.display_name = "Babuin"
 			cat.subtitle = "Monge do Vento Jade"
 			cat.element_label = "VENTO"
 			cat.accent_color = Color("28654F")

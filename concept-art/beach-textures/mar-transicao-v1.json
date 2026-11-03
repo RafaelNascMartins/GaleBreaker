@@ -1,0 +1,46 @@
+{
+  "image": "mar-transicao-v1.png",
+  "size": [
+    1774,
+    887
+  ],
+  "layout": "two connected square regions, shallow left to deep right",
+  "uv_origin": "top_left",
+  "seam": "Continuous source pixels; no separately generated edge to match. Do not flip or rotate either region.",
+  "center_adjacent_column_mean_rgb_delta": 1.489,
+  "regions": {
+    "mar_raso": {
+      "label": "Orla e mar raso",
+      "region": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "uv_rect": [
+        0,
+        0,
+        0.5,
+        1
+      ],
+      "connects_right_to": "mar_profundo"
+    },
+    "mar_profundo": {
+      "label": "Mar profundo",
+      "region": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "uv_rect": [
+        0.5,
+        0,
+        0.5,
+        1
+      ],
+      "connects_left_to": "mar_raso"
+    }
+  },
+  "repeat_note": "Connection is between A right and B left. No guarantee of seamless repeating at other borders."
+}

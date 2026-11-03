@@ -84,7 +84,8 @@
       "knockdown": 30,
       "ko": 40,
       "victory": 48
-    }
+    },
+    "stride": 1.8
   },
   "ignis": {
     "attacks": {
@@ -171,7 +172,8 @@
       "knockdown": 32,
       "ko": 44,
       "victory": 56
-    }
+    },
+    "stride": 1.8
   },
   "tophia": {
     "attacks": {
@@ -258,7 +260,8 @@
       "knockdown": 24,
       "ko": 30,
       "victory": 40
-    }
+    },
+    "stride": 1.55
   },
   "volt": {
     "attacks": {
@@ -345,6 +348,7 @@
       "knockdown": 24,
       "ko": 30,
       "victory": 40
-    }
+    },
+    "stride": 1.9
   }
 }

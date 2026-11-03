@@ -2,7 +2,7 @@
   "fighters": {
     "kaze": {
       "id": "kaze",
-      "name": "Kaze Hayabusa",
+      "name": "Babuin",
       "title": "Shoto Wind Shinobi",
       "element": "wind",
       "martialStyle": "Karate Shoto & Kenpo",
@@ -20,7 +20,7 @@
       "hairColor": "#e2e8f0",
       "outfitColor": "#059669",
       "baseHp": 1000,
-      "walkSpeed": 7.2,
+      "walkSpeed": 5.4,
       "dashSpeed": 15.5,
       "jumpVelocity": 12,
       "passiveName": "Slipstream Shoto",
@@ -307,7 +307,7 @@
       "hairColor": "#ef4444",
       "outfitColor": "#b91c1c",
       "baseHp": 1200,
-      "walkSpeed": 5.6,
+      "walkSpeed": 4.2,
       "dashSpeed": 13.2,
       "jumpVelocity": 11,
       "passiveName": "Molten Juggernaut",
@@ -596,7 +596,7 @@
       "hairColor": "#1e293b",
       "outfitColor": "#d97706",
       "baseHp": 1160,
-      "walkSpeed": 5.8,
+      "walkSpeed": 4.4,
       "dashSpeed": 13,
       "jumpVelocity": 10.8,
       "passiveName": "Golden Bastion Zoning",
@@ -885,7 +885,7 @@
       "hairColor": "#facc15",
       "outfitColor": "#0891b2",
       "baseHp": 920,
-      "walkSpeed": 8.4,
+      "walkSpeed": 6.3,
       "dashSpeed": 17.5,
       "jumpVelocity": 12.5,
       "passiveName": "Overclocked Rushdown",
@@ -1162,7 +1162,7 @@
       "fogColor": "#7dd3fc",
       "groundColor": "#e2e8f0",
       "accentColor": "#0284c7",
-      "hazardCount": 6,
+      "hazardCount": 0,
       "spectatorDescription": "Mountain monks cheering beneath the pagoda eaves and bright blue sky",
       "climaxEventName": "Alpine Gale — Mountain Winds & Sanctuary Banners Awakened!"
     },
@@ -1174,7 +1174,7 @@
       "fogColor": "#1a0707",
       "groundColor": "#1c1917",
       "accentColor": "#ef4444",
-      "hazardCount": 6,
+      "hazardCount": 0,
       "spectatorDescription": "Master smiths roaring around the chained colossal anvil and lava sea",
       "climaxEventName": "Eclipse Eruption — Lava Lake Surge & Red Sun Flare!"
     },
@@ -1186,7 +1186,7 @@
       "fogColor": "#d97706",
       "groundColor": "#b45309",
       "accentColor": "#fde047",
-      "hazardCount": 7,
+      "hazardCount": 0,
       "spectatorDescription": "Bazaar merchants cheering under golden vaulted arches and chandeliers",
       "climaxEventName": "Golden Souk Festival — Brass Chandeliers & Spice Crates Unleashed!"
     }
@@ -1606,14 +1606,14 @@
       },
       {
         "stageIndex": 4,
-        "title": "FINAL STAGE • OVERCHARGED KAZE HAYABUSA",
+        "title": "FINAL STAGE • OVERCHARGED BABUIN",
         "opponentId": "kaze",
         "stageId": "zephyr_dojo",
         "aiArchetype": "rushdown",
         "aiTempo": 0.72,
         "opponentPalette": 3,
         "isBoss": true,
-        "rivalryBanner": "FINAL BOSS — OVERCHARGED KAZE HAYABUSA AWAKENS!",
+        "rivalryBanner": "FINAL BOSS — OVERCHARGED BABUIN AWAKENS!",
         "unlockedSkills": [
           "kaze_combo_1",
           "kaze_combo_2",

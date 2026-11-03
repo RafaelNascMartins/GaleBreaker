@@ -14,11 +14,11 @@ func reset(id: String) -> void:
 	select_event()
 
 func select_event() -> void:
-	x=[-4.0,0.0,4.0][event_index%3]
+	x=[-3.0,0.0,3.0][event_index%3]
 	width=1.8 if stage=="molten_forge" else 1.4
 	label="FORNALHA" if stage=="molten_forge" else "CARGA CAINDO"
 	if stage=="zephyr_dojo":
-		x=0.0;width=19.0;label="RAJADA DA ARENA"
+		x=0.0;width=GaleCombat.EDGE*2.0;label="RAJADA DA ARENA"
 
 func visible_now() -> bool: return clock>=810
 func active_now() -> bool: return clock>=900

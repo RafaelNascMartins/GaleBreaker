@@ -91,6 +91,23 @@ func run() -> void:
 		view.sync(state, 6.0 / 60.0)
 		view.sync(state, 7.0 / 60.0)
 		check(view.current_clip == "ko" and view.current_anim_time > 0.0, id + " knockout plays its fall timeline")
+		# One full walk cycle of travel produces exactly two footsteps.
+		state.hp = state.max_hp
+		state.action = "walk"
+		state.grounded = true
+		state.crouch = false
+		state.vx = float(data.fighter(id).walkSpeed)
+		view.sync(state, 8.0 / 60.0)
+		view.footfall_pending = false
+		view.locomotion_phase = 0.001
+		var steps := 0
+		var cycle_frames := ceili(GaleAnimTiming.stride(id) / float(state.vx) * 60.0) + 1
+		for frame in cycle_frames:
+			view.sync(state, float(9 + frame) / 60.0)
+			if view.footfall_pending:
+				steps += 1
+				view.footfall_pending = false
+		check(steps == 2, id + " walking one stride plays two footsteps (got %d)" % steps)
 		view.queue_free()
 		await process_frame
 	check(GaleAnimTiming.attack("kaze", "heavy").contact < GaleAnimTiming.attack("ignis", "heavy").contact, "Ignis winds up heavier than Kaze")

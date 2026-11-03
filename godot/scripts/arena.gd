@@ -24,6 +24,15 @@ var danger: MeshInstance3D
 var stage_effect: MeshInstance3D
 var warning_label: Label3D
 var sky_material: ProceduralSkyMaterial
+# Living stage pieces exported by art-source/tools/stage_builder.py.
+var crowd: Array = []
+var banners: Array = []
+var barriers: Array = []
+var crowd_excitement := 0.0
+var water_materials: Array[StandardMaterial3D] = []
+# Main menu beach (concept-art/ui/menu-principal-praia-v1.png), built by stage_builder.build_beach.
+const MENU_SCENE := "res://assets/environments/beach/stage.glb"
+var menu_scene_active := false
 
 func _ready() -> void:
 	attack_renderer = AttackRenderer.new()
@@ -79,6 +88,16 @@ func _ready() -> void:
 
 func build(data: GaleData, sim: GaleCombat) -> void:
 	attack_renderer.reset()
+	if menu_scene_active:
+		# Restore the fight lighting after the lit menu beach.
+		sun.rotation_degrees = Vector3(-46, -28, 0)
+		sun.light_energy = 0.85
+		sun.light_color = Color.WHITE
+		fill.light_energy = 0.22
+		world_env.environment.ambient_light_color = Color("c6e7ff")
+		world_env.environment.ambient_light_energy = 0.42
+	menu_scene_active = false
+	water_materials.clear()
 	if is_instance_valid(scenery):
 		remove_child(scenery)
 		scenery.queue_free()
@@ -108,14 +127,15 @@ func build(data: GaleData, sim: GaleCombat) -> void:
 		stage_instance = packed_stage.instantiate() as Node3D
 		scenery.add_child(stage_instance)
 		_style_environment(stage_instance, {})
+		_collect_living_pieces(stage_instance)
 	else:
 		var stone := GaleFighterView.mat(Color(stage.groundColor))
 		GaleFighterView.box(scenery, Vector3(22, 0.5, 9), Vector3(0, -0.28, 0), stone)
 
-	# Floor fight-line markings at Z=0, Y=0, X in [-9.5, +9.5]
+	# Floor fight-line markings at Z=0, Y=0, X in [-EDGE, +EDGE]
 	var trim := GaleFighterView.mat(Color(stage.accentColor), sim.stage_id == "molten_forge")
 	var dark := GaleFighterView.mat(Color("182536"))
-	GaleFighterView.box(scenery, Vector3(19.0, 0.018, 0.025), Vector3(0, 0.01, -1.7), trim)
+	GaleFighterView.box(scenery, Vector3(GaleCombat.EDGE * 2.0, 0.018, 0.025), Vector3(0, 0.01, -1.7), trim)
 
 	for f: Dictionary in [sim.p1, sim.p2]:
 		var view := GaleFighterView.new()
@@ -161,7 +181,7 @@ func build(data: GaleData, sim: GaleCombat) -> void:
 
 	focused_x = 0
 
-func _style_environment(node: Node, cache: Dictionary) -> void:
+func _style_environment(node: Node, cache: Dictionary, lit: bool = false) -> void:
 	# The imported PBR stage was clipping to white on Compatibility. Use the
 	# same bounded toon lighting as the fighters so their silhouettes stay clear.
 	if node is MeshInstance3D:
@@ -170,12 +190,168 @@ func _style_environment(node: Node, cache: Dictionary) -> void:
 			var source := mesh_node.get_active_material(surface) as StandardMaterial3D
 			if source == null:
 				continue
+			if String(mesh_node.name).begins_with("Backdrop"):
+				# The painted far background keeps its own colours, unlit, and casts no shadow.
+				var painting := StandardMaterial3D.new()
+				painting.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				painting.albedo_texture = source.albedo_texture
+				mesh_node.set_surface_override_material(surface, painting)
+				mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				continue
+			if source.resource_name.begins_with("glint_"):
+				# Sunlight sparkling on the water: additive, drifting with the waves.
+				var glint := StandardMaterial3D.new()
+				glint.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				glint.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				glint.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+				glint.albedo_texture = source.albedo_texture
+				glint.texture_repeat = true
+				mesh_node.set_surface_override_material(surface, glint)
+				mesh_node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+				water_materials.append(glint)
+				continue
+			if lit and not source.resource_name.begins_with("glow_"):
+				# Lit scene (menu beach): real sun light and shadows, including leaf shadows on the sand.
+				var key_lit := source.get_instance_id()
+				if not cache.has(key_lit):
+					var surface_mat := StandardMaterial3D.new()
+					surface_mat.albedo_color = source.albedo_color
+					surface_mat.albedo_texture = source.albedo_texture
+					surface_mat.texture_repeat = true
+					surface_mat.roughness = 0.35 if source.resource_name.begins_with("water_") else 1.0
+					surface_mat.metallic_specular = 0.3 if source.resource_name.begins_with("water_") else 0.0
+					if source.resource_name.begins_with("cutout_"):
+						surface_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+						surface_mat.alpha_scissor_threshold = 0.5
+						surface_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+					if source.resource_name.begins_with("water_"):
+						water_materials.append(surface_mat)
+					cache[key_lit] = surface_mat
+				mesh_node.set_surface_override_material(surface, cache[key_lit])
+				continue
+			if source.resource_name.begins_with("cutout_"):
+				# Foliage, flowers and corals: hard alpha edge, visible from both sides.
+				var leaf := StandardMaterial3D.new()
+				leaf.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				leaf.albedo_texture = source.albedo_texture
+				leaf.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				leaf.alpha_scissor_threshold = 0.5
+				leaf.cull_mode = BaseMaterial3D.CULL_DISABLED
+				mesh_node.set_surface_override_material(surface, leaf)
+				continue
+			if source.resource_name.begins_with("water_"):
+				# Painted water drifts slowly (see _animate_living_pieces).
+				var water := StandardMaterial3D.new()
+				water.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				water.albedo_texture = source.albedo_texture
+				water.texture_repeat = true
+				mesh_node.set_surface_override_material(surface, water)
+				water_materials.append(water)
+				continue
+			if String(mesh_node.name).begins_with("Barrier"):
+				# Heat curtain: invisible until a fighter nears the precipice.
+				var curtain := StandardMaterial3D.new()
+				curtain.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				curtain.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				curtain.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+				curtain.cull_mode = BaseMaterial3D.CULL_DISABLED
+				curtain.albedo_color = Color(1.0, 0.45, 0.12, 0.0)
+				mesh_node.set_surface_override_material(surface, curtain)
+				continue
 			var key := source.get_instance_id()
+			if not cache.has(key) and source.resource_name.begins_with("glow_"):
+				# Lava, fire, lamps and stained glass keep their full brightness.
+				var glow := StandardMaterial3D.new()
+				glow.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				glow.albedo_color = source.albedo_color
+				glow.albedo_texture = source.albedo_texture
+				glow.texture_repeat = true
+				cache[key] = glow
 			if not cache.has(key):
-				cache[key] = GaleFighterView.mat(source.albedo_color.darkened(0.12), source.emission_enabled)
+				var toon := GaleFighterView.mat(source.albedo_color.darkened(0.12), source.emission_enabled)
+				if source.albedo_texture != null:
+					toon.set_shader_parameter("use_textures", true)
+					toon.set_shader_parameter("albedo_tex", source.albedo_texture)
+				cache[key] = toon
 			mesh_node.set_surface_override_material(surface, cache[key])
 	for child in node.get_children():
-		_style_environment(child, cache)
+		_style_environment(child, cache, lit)
+
+func _collect_living_pieces(root_node: Node) -> void:
+	crowd.clear()
+	banners.clear()
+	barriers.clear()
+	crowd_excitement = 0.0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	for node: Node in root_node.find_children("*", "Node3D", true, false):
+		var piece := node as Node3D
+		var label := String(piece.name)
+		if label.begins_with("Crowd_"):
+			crowd.append({"node": piece, "base": piece.position, "phase": rng.randf() * TAU, "rate": rng.randf_range(2.2, 3.4)})
+		elif label.begins_with("Banner_"):
+			banners.append({"node": piece, "base": piece.rotation, "phase": rng.randf() * TAU})
+		elif label.begins_with("Barrier_") and piece is MeshInstance3D:
+			barriers.append(piece)
+
+func show_menu_scene() -> void:
+	if menu_scene_active:
+		return
+	attack_renderer.reset()
+	if is_instance_valid(scenery):
+		remove_child(scenery)
+		scenery.queue_free()
+	scenery = Node3D.new()
+	scenery.name = "Scenery"
+	add_child(scenery)
+	fighters.clear()
+	props.clear()
+	broken_props.clear()
+	boxes.clear()
+	water_materials.clear()
+	stage_instance = (load(MENU_SCENE) as PackedScene).instantiate() as Node3D
+	scenery.add_child(stage_instance)
+	_style_environment(stage_instance, {}, true)
+	# Afternoon sun from behind the bay: the canopy shadow falls on the foreground sand.
+	sun.rotation_degrees = Vector3(-50, 150, 0)
+	# Compatibility renderer: a little sun goes a long way on the pale sand.
+	sun.light_energy = 0.13
+	sun.light_color = Color("fff3dd")
+	sun.directional_shadow_max_distance = 70.0
+	fill.light_energy = 0.12
+	world_env.environment.ambient_light_color = Color("cfe9ff")
+	world_env.environment.ambient_light_energy = 0.32
+	_collect_living_pieces(stage_instance)
+	sky_material.sky_top_color = Color("1f6fe0")
+	sky_material.sky_horizon_color = Color("bfe8fb")
+	sky_material.ground_horizon_color = Color("bfe8fb")
+	sky_material.ground_bottom_color = Color("2a7fb8")
+	menu_scene_active = true
+	set_menu_mode(true, true)
+
+func _animate_living_pieces(delta: float, sim: GaleCombat) -> void:
+	for water: StandardMaterial3D in water_materials:
+		water.uv1_offset = Vector3(sin(clock * 0.21) * 0.012, clock * 0.006, 0)
+	crowd_excitement = maxf(0.0, crowd_excitement - delta * 0.55)
+	for person: Dictionary in crowd:
+		var t: float = clock * float(person.rate) + float(person.phase)
+		var hop := absf(sin(t)) * (0.02 + crowd_excitement * 0.24)
+		var node: Node3D = person.node
+		node.position = person.base + Vector3(0, hop, 0)
+		node.rotation.z = sin(t * 0.5) * 0.04 * (1.0 + crowd_excitement * 2.0)
+	for cloth: Dictionary in banners:
+		var node: Node3D = cloth.node
+		node.rotation = cloth.base + Vector3(sin(clock * 1.4 + float(cloth.phase)) * 0.07, 0, sin(clock * 0.9 + float(cloth.phase)) * 0.04)
+	for barrier: MeshInstance3D in barriers:
+		var side := signf(barrier.global_position.x)
+		var nearest := 99.0
+		if not sim.p1.is_empty() and not menu_scene_active:
+			for f: Dictionary in [sim.p1, sim.p2]:
+				nearest = minf(nearest, GaleCombat.EDGE - float(f.x) * side)
+		var glow := clampf(1.0 - nearest / 1.4, 0.0, 1.0) * (0.75 + 0.25 * sin(clock * 9.0))
+		var curtain := barrier.get_surface_override_material(0) as StandardMaterial3D
+		if curtain != null:
+			curtain.albedo_color.a = glow * 0.45
 
 func set_menu_mode(enabled: bool, hide_fighters: bool = true) -> void:
 	menu_mode = enabled
@@ -208,6 +384,7 @@ func render(sim: GaleCombat, delta: float) -> void:
 			stage_effect.position.y=0.4+maxf(0.0,float(900-cycle.clock)/90.0)*5.0
 	var step_delta := 0.0 if sim.freeze > 0 else delta
 	clock += step_delta
+	_animate_living_pieces(step_delta, sim)
 	for i in fighters.size():
 		var state: Dictionary = sim.p1 if i == 0 else sim.p2
 		var visual_state := state.duplicate()
@@ -246,16 +423,23 @@ func render(sim: GaleCombat, delta: float) -> void:
 		camera.look_at(Vector3(0.4, 2.3, -4.0))
 		camera.h_offset = 0.0
 	else:
-		focused_x = lerpf(focused_x, (sim.p1.x + sim.p2.x) * 0.5, 1 - exp(-6 * delta))
+		# Close camera; it stops short of the walls so the corner blockers stay framed.
+		var limit := GaleCombat.EDGE - 2.2
+		focused_x = lerpf(focused_x, clampf((sim.p1.x + sim.p2.x) * 0.5, -limit, limit), 1 - exp(-6 * delta))
 		var distance: float = absf(sim.p1.x - sim.p2.x)
-		var z := clampf(6.4 + distance * 0.55, 7.0, 18.0)
+		var z := clampf(5.0 + distance * 0.5, 6.0, 10.5)
 		if sim.winner>0:z+=1.0
 		shake = maxf(0, shake - delta * 2)
-		camera.position = camera.position.lerp(Vector3(focused_x, 2.65 + maxf(sim.p1.y, sim.p2.y) * 0.4, z), 1 - exp(-8 * delta))
+		camera.position = camera.position.lerp(Vector3(focused_x, 2.4 + maxf(sim.p1.y, sim.p2.y) * 0.4, z), 1 - exp(-8 * delta))
 		camera.look_at(Vector3(focused_x, 1.05 + maxf(sim.p1.y, sim.p2.y) * 0.4, 0))
 		camera.h_offset = sin(clock * 65.0) * shake * 0.12 * shake_strength
 
 func impact(event: Dictionary) -> void:
+	# The bazaar crowd reacts to big moments.
+	if event.kind in ["heavy", "ultimate", "ko", "clash"]:
+		crowd_excitement = 1.0
+	elif event.kind == "hit":
+		crowd_excitement = maxf(crowd_excitement, 0.35)
 	var node := Node3D.new()
 	add_child(node)
 	node.position = event.position

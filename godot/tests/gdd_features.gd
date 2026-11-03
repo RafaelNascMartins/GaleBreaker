@@ -90,7 +90,7 @@ func run() -> void:
 	check(data.move("tophia","heavy",[]).armorHits==0,"Tophia armor is visual and does not grant automatic super armor")
 	sim=fresh("ignis")
 	sim.stage_id="molten_forge";sim.arena_cycle.reset(sim.stage_id)
-	sim.p1.x=-4;sim.p2.x=5
+	sim.p1.x=-3;sim.p2.x=5
 	sim.arena_cycle.clock=809
 	advance(sim,1)
 	check(sim.arena_cycle.visible_now() and sim.p1.hp==sim.p1.max_hp,"arena danger is announced before it can damage players")
@@ -100,7 +100,7 @@ func run() -> void:
 	sim=fresh("ignis");sim.mode="training";advance(sim,950)
 	check(sim.arena_cycle.clock==0,"training disables disruptive arena events")
 	sim=fresh("kaze");sim.stage_id="molten_forge";sim.arena_cycle.reset(sim.stage_id)
-	sim.p1.x=-4;sim.p1.y=2;sim.p1.grounded=false;sim.arena_cycle.clock=899
+	sim.p1.x=-3;sim.p1.y=2;sim.p1.grounded=false;sim.arena_cycle.clock=899
 	advance(sim,1)
 	check(sim.p1.hp==sim.p1.max_hp,"jumping above a warned floor eruption avoids damage")
 	sim=fresh("volt")
@@ -173,6 +173,57 @@ func run() -> void:
 	var last := sound.players[(sound.cursor - 1 + sound.players.size()) % sound.players.size()]
 	check(last.stream == sound.samples["kaze_light_2"], "Kaze J2 hit uses its recorded punch")
 	check(float(GaleCombat.COUNTDOWN_FRAMES) / 60.0 >= 3.4, "countdown leaves room for the full announcer line")
+	var crouch_sim := fresh("kaze")
+	var crouch_walk := GaleCombat.idle_input()
+	crouch_walk.crouch = true
+	crouch_walk.axis = 1.0
+	var crouch_x := float(crouch_sim.p1.x)
+	advance(crouch_sim, 30, crouch_walk)
+	check(is_equal_approx(float(crouch_sim.p1.x), crouch_x) and crouch_sim.p1.crouch, "crouching fighters cannot walk")
+	for id: String in GaleData.IDS:
+		var walk_rate := float(data.fighter(id).walkSpeed) * GaleAnimTiming.state_sec(id, "walk") / GaleAnimTiming.stride(id)
+		check(walk_rate <= 1.35, id + " walk clip plays near its authored speed (%.2fx)" % walk_rate)
+	for stage: String in GaleData.STAGES:
+		var stage_scene: Node3D = (load("res://scenes/stages/%s.tscn" % stage) as PackedScene).instantiate()
+		var left := stage_scene.find_children("Blocker_L*", "MeshInstance3D", true, false)
+		var right := stage_scene.find_children("Blocker_R*", "MeshInstance3D", true, false)
+		check(left.size() == 1 and right.size() == 1, stage + " has an obstacle in each corner")
+		if left.size() == 1 and right.size() == 1:
+			var l_box: AABB = (left[0] as MeshInstance3D).get_aabb()
+			var r_box: AABB = (right[0] as MeshInstance3D).get_aabb()
+			check(l_box.end.x <= -GaleCombat.EDGE - 0.2 and r_box.position.x >= GaleCombat.EDGE + 0.2, stage + " corner obstacles sit just beyond the walls")
+		if stage == "storm_market":
+			check(stage_scene.find_children("Crowd_*", "MeshInstance3D", true, false).size() >= 20, "bazaar corridor has a watching crowd")
+		if stage == "molten_forge":
+			check(stage_scene.find_children("Barrier_*", "MeshInstance3D", true, false).size() == 2, "forge precipice has a barrier on both sides")
+		stage_scene.free()
+	var menu_app: Node = load("res://scenes/main.tscn").instantiate()
+	root.add_child(menu_app)
+	await process_frame
+	menu_app.prefs.file_path = "user://gdd-pause-regression.cfg"
+	menu_app.mode = "versus"; menu_app.stage = "zephyr_dojo"
+	menu_app.start_match()
+	menu_app.pause_match()
+	var pause_items: Array[String] = []
+	for item: Node in menu_app.modal.find_children("*", "Button", true, false):
+		pause_items.append(String((item as Button).text))
+	check(pause_items == ["CONTINUAR", "REINICIAR PARTIDA", "OPÇÕES", "VOLTAR AO MENU"], "pause menu follows the concept without the move list (%s)" % [pause_items])
+	menu_app.resume_match()
+	menu_app.prefs.arcade_run = {}
+	menu_app.show_menu()
+	var menu_items: Array[String] = []
+	for item: Node in menu_app.menu.find_children("*", "Button", true, false):
+		menu_items.append(String((item as Button).text))
+	check(menu_app.arena.menu_scene_active and menu_app.arena.stage_instance != null, "main menu shows the 3D beach scene")
+	check(menu_items == ["ARCADE", "VERSUS LOCAL", "TREINO", "HABILIDADES", "OPÇÕES", "TUTORIAL", "SAIR"], "main menu follows the beach concept list (%s)" % [menu_items])
+	menu_app.open_mode("versus")
+	check(not menu_app.arena.menu_scene_active and menu_app.arena.fighters.size() == 2, "choosing a mode leaves the beach for the fighter preview")
+	for strike: String in ["light_1", "light_2", "light_3", "heavy"]:
+		check(sound.has_sample("kaze_" + strike), "Babuin " + strike + " has a recorded strike sound")
+	check(menu_app.strike_sound({"type": "light", "chain_step": 3}) == "light_3" and menu_app.strike_sound({"type": "heavy"}) == "heavy" and menu_app.strike_sound({"type": "ultimate"}) == "", "strike sounds map J1-J3 and K only")
+	check(GaleVisualCatalog.load_for("kaze").display_name == "Babuin" and String(data.fighter("kaze").name) == "Babuin", "Kaze is presented as Babuin while keeping its internal id")
+	menu_app.queue_free()
+	await process_frame
 	sound.queue_free()
 
 	print("GDD TESTS: %d checks, %d failures"%[checks,failures])

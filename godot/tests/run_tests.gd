@@ -56,8 +56,8 @@ func run() -> void:
 	check(sim.p1.combo == 1 and sim.p1.chain == 2, "jab advances punch chain")
 	check(sim.p1.meter > 25, "connected jab gains meter")
 	sim = fresh()
-	sim.p1.x = -8
-	sim.p2.x = 8
+	sim.p1.x = -GaleCombat.EDGE + 0.5
+	sim.p2.x = GaleCombat.EDGE - 0.5
 	sim.step(attack_input("light"), GaleCombat.idle_input())
 	advance(sim, 30)
 	check(sim.p2.hp == sim.p2.max_hp, "out of range attacks do not teleport or damage")
@@ -154,13 +154,11 @@ func run() -> void:
 	sim.step(attack_input("light"), attack_input("light"))
 	advance(sim, 5)
 	check(sim.p1.hp == sim.p1.max_hp and sim.p2.hp == sim.p2.max_hp and sim.p1.meter >= 50, "simultaneous overlapping attacks clash without HP loss")
-	sim = fresh()
-	sim.reset_hazards()
-	sim.hazards[0].x = sim.p2.x - 0.8
-	sim.hazards[0].vx = 25
-	sim.hazards[0].owner = 0
-	advance(sim, 3)
-	check(sim.p2.hp < sim.p2.max_hp and sim.hazards[0].hp == 0, "launched prop damages defender and shatters")
+	for stage: String in GaleData.STAGES:
+		sim = fresh()
+		sim.stage_id = stage
+		sim.reset_hazards()
+		check(sim.hazards.is_empty(), stage + " has no throwable props")
 	sim = fresh("arcade")
 	for i in 20000:
 		var ai := sim.ai_input()

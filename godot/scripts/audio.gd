@@ -18,6 +18,7 @@ const MENU_MUSIC_PATH := "res://assets/audio/music/menu_deep_house_instrumental.
 # Recorded tracks are mastered louder than the synthesized arena loops.
 const MENU_MUSIC_OFFSET_DB := -10.0
 const ARENA_MUSIC_OFFSET_DB := -18.0
+const STEP_GAIN_DB := -6.0
 
 var players: Array[AudioStreamPlayer] = []
 var music: AudioStreamPlayer
@@ -111,16 +112,16 @@ func play(kind: String, fighter: String = "", variant: String = "") -> void:
 		kind = fighter+"_"+category
 	if not tones.has(kind):
 		return
-	_play_stream(tones[kind])
+	_play_stream(tones[kind], STEP_GAIN_DB if category == "step" else 0.0)
 
 func has_sample(key: String) -> bool:
 	return samples.has(key)
 
-func _play_stream(stream: AudioStream) -> void:
+func _play_stream(stream: AudioStream, gain_db: float = 0.0) -> void:
 	var player := players[cursor]
 	cursor = (cursor + 1) % players.size()
 	player.stream = stream
-	player.volume_db = linear_to_db(maxf(0.001,sfx_volume))
+	player.volume_db = linear_to_db(maxf(0.001,sfx_volume)) + gain_db
 	player.play()
 
 func play_voice(key: String, from_sec: float = 0.0) -> void:

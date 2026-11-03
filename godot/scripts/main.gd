@@ -37,9 +37,12 @@ var training_behavior := 0
 var command_labels: Array = []
 var in_selection := false
 var editorial_font: SystemFont
-var step_distance := [0.0, 0.0]
 var hover_quiet_until := 0
 var attack_serials := [0, 0]
+var early_sound_serials := [-1, -1]
+# Recorded strike sounds start this many frames before the active window so
+# their transient lands on the contact frame.
+const STRIKE_SOUND_LEAD_FRAMES := 4
 
 func _ready() -> void:
 	DisplayServer.window_set_title("Gale Breaker")
@@ -251,8 +254,15 @@ func show_menu(selection: bool = false) -> void:
 	screen = "selection" if selection else "menu"
 	audio.stop_voice()
 	audio.play_menu_music()
-	# Sanctuary background without characters per GDD v0.9 page 11 & IMPLEMENTATION_PLAN Section 6
-	arena.set_menu_mode(not selection, not selection)
+	if not selection:
+		# Beach scene from concept-art/ui/menu-principal-praia-v1.png.
+		arena.show_menu_scene()
+		menu = instantiate_ui_scene("res://scenes/ui/main_menu.tscn", 0.0)
+		build_beach_menu()
+		return
+	if arena.menu_scene_active:
+		preview()
+	arena.set_menu_mode(false, false)
 
 	menu = instantiate_ui_scene("res://scenes/ui/main_menu.tscn", 0.38)
 	var margin := MarginContainer.new()
@@ -400,6 +410,105 @@ func show_menu(selection: bool = false) -> void:
 	var footer_row := HBoxContainer.new()
 	main_vbox.add_child(footer_row)
 	label(footer_row, "↑ ↓  NAVEGAR        ENTER  CONFIRMAR        P / ESC  PAUSA        R  REINICIAR        M  ÁUDIO", 13, Color("D7D0C2"))
+
+func build_beach_menu() -> void:
+	# Soft shade on the left keeps the list readable over the bright beach.
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(0.02, 0.06, 0.06, 0.58))
+	gradient.set_color(1, Color(0.02, 0.06, 0.06, 0.0))
+	var shade_tex := GradientTexture2D.new()
+	shade_tex.gradient = gradient
+	shade_tex.fill_to = Vector2(1, 0)
+	var shade := TextureRect.new()
+	shade.texture = shade_tex
+	shade.stretch_mode = TextureRect.STRETCH_SCALE
+	shade.position = Vector2.ZERO
+	shade.size = Vector2(640, 720)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	menu.add_child(shade)
+	var column := VBoxContainer.new()
+	column.position = Vector2(64, 62)
+	column.add_theme_constant_override("separation", 0)
+	menu.add_child(column)
+	for word: String in ["GALE", "BREAKER"]:
+		var title := label(column, word, 52, Color("F8F5EE"))
+		title.add_theme_font_override("font", spaced_font(14))
+		title.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.25))
+		title.add_theme_constant_override("outline_size", 4)
+	var rule := ColorRect.new()
+	rule.color = Color("C5A059")
+	rule.custom_minimum_size = Vector2(300, 2)
+	column.add_child(rule)
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 24
+	column.add_child(gap)
+	var items: Array = [
+		["ARCADE", open_mode.bind("arcade")],
+		["VERSUS LOCAL", open_mode.bind("versus")],
+		["TREINO", open_mode.bind("training")],
+		["HABILIDADES", open_player_skills],
+		["OPÇÕES", show_settings],
+	]
+	if not prefs.arcade_run.is_empty():
+		items.insert(1, ["CONTINUAR ARCADE", resume_arcade])
+	items.append(["TUTORIAL", start_tutorial])
+	items.append(["SAIR", quit_game])
+	var mode_titles := {"arcade": "ARCADE", "versus": "VERSUS LOCAL", "training": "TREINO"}
+	for entry: Array in items:
+		var item := beach_item(column, String(entry[0]), entry[1])
+		if String(entry[0]) == mode_titles.get(mode, "ARCADE"):
+			call_deferred("focus_control", item)
+	var footer := label(menu, "↑↓  NAVEGAR        ENTER  CONFIRMAR", 13, Color("EFE8DA"))
+	footer.position = Vector2(46, 684)
+	footer.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.4))
+	footer.add_theme_constant_override("outline_size", 4)
+
+func open_mode(selected_mode: String) -> void:
+	mode = selected_mode
+	show_menu(true)
+
+func open_player_skills() -> void:
+	skill_target_player = 0
+	skill_target_fighter = fighter1
+	show_skills()
+
+func quit_game() -> void:
+	get_tree().quit()
+
+## Concept menu entry: letter-spaced serif text; a jade dash marks the focused item.
+func beach_item(parent: Control, text: String, callback: Callable) -> Button:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	parent.add_child(row)
+	var dash := ColorRect.new()
+	dash.color = Color("A3C9A8")
+	dash.custom_minimum_size = Vector2(30, 4)
+	dash.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dash.modulate.a = 0.0
+	row.add_child(dash)
+	var item := button(row, text, callback)
+	item.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	item.custom_minimum_size = Vector2(380, 46)
+	item.add_theme_font_override("font", spaced_font(5))
+	item.add_theme_font_size_override("font_size", 23)
+	for state: String in ["normal", "hover", "focus", "pressed", "hover_pressed"]:
+		item.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	item.add_theme_color_override("font_color", Color("EFE8DA"))
+	for state: String in ["font_hover_color", "font_focus_color", "font_pressed_color"]:
+		item.add_theme_color_override(state, Color.WHITE)
+	item.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.35))
+	item.add_theme_constant_override("outline_size", 5)
+	item.focus_entered.connect(func() -> void: dash.modulate.a = 1.0)
+	item.focus_exited.connect(func() -> void: dash.modulate.a = 0.0)
+	# Hovering moves the focus, so mouse and keyboard share one marker.
+	item.mouse_entered.connect(func() -> void: item.grab_focus())
+	return item
+
+func spaced_font(spacing: int) -> FontVariation:
+	var font := FontVariation.new()
+	font.base_font = editorial_font
+	font.spacing_glyph = spacing
+	return font
 
 func option(parent: Node, title: String, values: Array, selected: int, callback: Callable) -> void:
 	var row := HBoxContainer.new()
@@ -648,24 +757,86 @@ func pause_match() -> void:
 	screen = "paused"
 	audio.set_music(sim.stage_id, false)
 	audio.pause_voice(true)
-	# Instantiate pause_menu.tscn with warm ivory card matching menu-pausa-v2.png while keeping fighters visible!
+	# Tall ivory card from concept-art/menu-pausa-v2.png, drawn with the pause atlas.
 	modal = instantiate_ui_scene("res://scenes/ui/pause_menu.tscn", 0.45)
-	var column := centered(modal, 380, true)
-	var title := label(column, "P A U S A", 28, Color("27372F"))
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	modal.add_child(center)
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(420, 560)
+	var card_style := atlas_style("panel_pause", 30)
+	card_style.content_margin_left = 46
+	card_style.content_margin_right = 46
+	card_style.content_margin_top = 54
+	card_style.content_margin_bottom = 40
+	card.add_theme_stylebox_override("panel", card_style)
+	center.add_child(card)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 8)
+	card.add_child(column)
+	var title := label(column, "P A U S A", 34, Color("27372F"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var sep := ColorRect.new()
-	sep.custom_minimum_size = Vector2(0, 1)
-	sep.color = Color("C5A059")
-	column.add_child(sep)
-
-	button(column, "CONTINUAR", resume_match, true)
-	button(column, "LISTA DE GOLPES", show_moves)
-	button(column, "REINICIAR PARTIDA", start_match)
-	button(column, "OPÇÕES", show_settings)
-	button(column, "VOLTAR AO MENU", show_menu)
-
+	atlas_rule(column, 260)
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 18
+	column.add_child(gap)
+	pause_item(column, "CONTINUAR", resume_match)
+	pause_item(column, "REINICIAR PARTIDA", start_match)
+	pause_item(column, "OPÇÕES", show_settings)
+	atlas_rule(column, 200)
+	pause_item(column, "VOLTAR AO MENU", show_menu)
+	var filler := Control.new()
+	filler.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(filler)
 	var hint := label(column, "ESC  •  CONTINUAR", 12, Color("62695F"))
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	focus_first(column)
+
+## Pieces of concept-art/ui/pausa-atlas-v1.png (regions from pausa-atlas-v1.json).
+const PAUSE_ATLAS_PATH := "res://assets/ui/pause/pausa-atlas-v1.png"
+const PAUSE_ATLAS := {"button_focus": Rect2(394, 149, 302, 76), "button_pressed": Rect2(753, 149, 302, 76), "panel_pause": Rect2(46, 389, 281, 298), "separator": Rect2(397, 529, 297, 26)}
+
+func atlas_piece(piece: String) -> AtlasTexture:
+	var texture := AtlasTexture.new()
+	texture.atlas = load(PAUSE_ATLAS_PATH)
+	texture.region = PAUSE_ATLAS[piece]
+	return texture
+
+func atlas_style(piece: String, margin: float) -> StyleBoxTexture:
+	var style := StyleBoxTexture.new()
+	style.texture = atlas_piece(piece)
+	style.texture_margin_left = margin
+	style.texture_margin_right = margin
+	style.texture_margin_top = margin
+	style.texture_margin_bottom = margin
+	return style
+
+func atlas_rule(parent: Control, width: float) -> void:
+	var rule := TextureRect.new()
+	rule.texture = atlas_piece("separator")
+	rule.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rule.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rule.custom_minimum_size = Vector2(width, 22)
+	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	parent.add_child(rule)
+
+## Concept style: plain text items; the focused one becomes the jade plate.
+func pause_item(parent: Control, text: String, callback: Callable) -> Button:
+	var item := button(parent, text, callback)
+	item.custom_minimum_size.y = 56
+	item.add_theme_font_size_override("font_size", 17)
+	item.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	item.add_theme_stylebox_override("disabled", StyleBoxEmpty.new())
+	for state: String in ["hover", "focus"]:
+		var plate := atlas_style("button_focus", 18)
+		plate.content_margin_left = 16
+		plate.content_margin_right = 16
+		item.add_theme_stylebox_override(state, plate)
+	item.add_theme_stylebox_override("pressed", atlas_style("button_pressed", 18))
+	item.add_theme_color_override("font_color", Color("27372F"))
+	for state: String in ["font_hover_color", "font_focus_color", "font_pressed_color", "font_hover_pressed_color"]:
+		item.add_theme_color_override(state, Color("F4EFE4"))
+	return item
 
 func resume_match() -> void:
 	if tutorial!=null and tutorial.complete:
@@ -975,7 +1146,6 @@ func _physics_process(_delta: float) -> void:
 		return
 	var input1 := GalePreferences.input_for(1)
 	var input2 := GalePreferences.input_for(2) if mode == "versus" else (training_input() if mode == "training" else sim.ai_input())
-	var old_positions := [float(sim.p1.x),float(sim.p2.x)]
 	if sim.countdown == GaleCombat.COUNTDOWN_FRAMES:
 		audio.play_voice("countdown")
 	var countdown_before := sim.countdown
@@ -988,21 +1158,19 @@ func _physics_process(_delta: float) -> void:
 			attack_serials[player] = int(attacker.attack_serial)
 			if String(attacker.move.get("type", "")) == "elemental":
 				audio.play("", attacker.id, "elemental")
-	for player in 2:
-		var fighter:Dictionary=sim.p1 if player==0 else sim.p2
-		if fighter.action=="walk" and fighter.grounded and sim.freeze==0 and sim.countdown==0:
-			step_distance[player]+=absf(float(fighter.x)-old_positions[player])
-			if step_distance[player]>=0.55:
-				step_distance[player]=0.0
-				audio.play("step",fighter.id)
-		else:step_distance[player]=0.0
+		var strike := strike_sound(attacker.move)
+		if attacker.action == "startup" and int(attacker.frames) <= STRIKE_SOUND_LEAD_FRAMES 				and early_sound_serials[player] != int(attacker.attack_serial) and audio.has_sample(String(attacker.id) + "_" + strike):
+			early_sound_serials[player] = int(attacker.attack_serial)
+			audio.play("", attacker.id, strike)
 	for event: Dictionary in sim.events:
 		arena.impact(event)
-		var variant := ""
+		var played_early := false
 		if event.kind in ["hit", "heavy"] and not bool(event.get("entity", true)):
-			var move_type := String(event.get("move_type", ""))
-			variant = "light_%d" % clampi(int(event.get("chain_step", 1)), 1, 3) if move_type == "light" else move_type
-		audio.play(event.kind,event.get("fighter",""),variant)
+			var strike := strike_sound({"type": event.get("move_type", ""), "chain_step": event.get("chain_step", 1)})
+			# The recorded strike already played just before contact.
+			played_early = audio.has_sample(String(event.get("fighter", "")) + "_" + strike)
+		if not played_early:
+			audio.play(event.kind,event.get("fighter",""))
 		if prefs.vibration and event.kind in ["hit","heavy","ko"]:
 			var devices := Input.get_connected_joypads()
 			var player := 0 if absf(float(sim.p1.x)-event.position.x)<absf(float(sim.p2.x)-event.position.x) else 1
@@ -1019,9 +1187,24 @@ func _physics_process(_delta: float) -> void:
 		update_hud()
 		show_outcome()
 
+## Recorded-sound key for a melee strike ("light_1".."light_3", "heavy"), or "".
+func strike_sound(move: Dictionary) -> String:
+	match String(move.get("type", "")):
+		"light":
+			return "light_%d" % clampi(int(move.get("chain_step", 1)), 1, 3)
+		"heavy":
+			return "heavy"
+	return ""
+
 func _process(delta: float) -> void:
 	if is_instance_valid(arena) and not sim.p1.is_empty():
 		arena.render(sim, delta)
+		# Footsteps follow the walk animation, two per cycle.
+		for view: GaleFighterView in arena.fighters:
+			if view.footfall_pending:
+				view.footfall_pending = false
+				if screen == "playing":
+					audio.play("step", view.fighter_id)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and screen == "playing":

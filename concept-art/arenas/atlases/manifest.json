@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "atlas_count": 3,
+  "material_count": 36,
+  "atlases": [
+    {
+      "arena": "santuario",
+      "title": "Santuário",
+      "image": "atlas-santuario-v1.png",
+      "map": "atlas-santuario-v1.json",
+      "size": [
+        1448,
+        1086
+      ],
+      "materials": 12
+    },
+    {
+      "arena": "bazaar",
+      "title": "Bazaar fechado",
+      "image": "atlas-bazaar-v1.png",
+      "map": "atlas-bazaar-v1.json",
+      "size": [
+        1448,
+        1086
+      ],
+      "materials": 12
+    },
+    {
+      "arena": "forja",
+      "title": "Forja do sol vermelho",
+      "image": "atlas-forja-v1.png",
+      "map": "atlas-forja-v1.json",
+      "size": [
+        1448,
+        1086
+      ],
+      "materials": 12
+    }
+  ]
+}

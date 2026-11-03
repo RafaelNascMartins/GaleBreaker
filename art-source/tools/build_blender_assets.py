@@ -708,7 +708,7 @@ def animate_fighter(arm_obj, fighter_id: str):
                 key_all(f, 'base')
             else:
                 # Lumbering stomp: the body drops on every planted step and swings side to side.
-                sw = math.sin(p) * 26.0 * s
+                sw = math.sin(p) * 31.0 * s
                 set_rot("thigh_l", sw + 10, 0, -6)
                 set_rot("shin_l", -abs(sw) * 0.8 - 14, 0, 0)
                 set_rot("thigh_r", -sw + 10, 0, 6)
@@ -1698,71 +1698,18 @@ def build_and_export_stages():
         ("zephyr", "zephyr_dojo"),
         ("forge", "molten_forge"),
         ("bazaar", "storm_market"),
+        ("beach", "beach"),  # main menu scene
     ]
     for blend_folder, stage_id in stages:
         clear_scene()
         out_dir = GODOT / "assets" / "environments" / stage_id
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        if stage_id == "zephyr_dojo":
-            stone = make_simple_mat("stone", (0.76, 0.79, 0.83))
-            trim = make_simple_mat("trim", (0.16, 0.40, 0.31))
-            wood = make_simple_mat("wood", (0.52, 0.20, 0.22))
-            roof = make_simple_mat("roof", (0.14, 0.22, 0.26))
-            blossom = make_simple_mat("blossom", (0.96, 0.66, 0.78), 0.15)
-            mountain = make_simple_mat("mountain", (0.34, 0.46, 0.58))
-
-            # Sanctuary stone floor (Y=0 top surface in Godot -> Z=0 top surface in Blender)
-            add_stage_box("Floor", (0, 0, -0.28), (22.5, 9.2, 0.56), stone)
-            add_stage_box("FrontTrim", (0, -4.2, -0.02), (22.6, 0.25, 0.18), trim)
-            add_stage_box("BackSteps", (0, 3.8, 0.25), (22.5, 1.4, 0.50), stone)
-            # Torii Gate in background (+Y in Blender = -Z in Godot)
-            for sx in (-6.5, 6.5):
-                add_stage_cyl(f"ToriiPillar_{sx}", (sx, 4.2, 2.6), 0.32, 0.28, 5.2, wood)
-            add_stage_box("ToriiLint1", (0, 4.2, 4.8), (15.5, 0.5, 0.42), wood)
-            add_stage_box("ToriiLint2", (0, 4.2, 5.35), (17.2, 0.85, 0.36), roof)
-            # Cherry trees & pagoda silhouette
-            for sx in (-10.2, -4.5, 4.8, 10.2):
-                add_stage_cyl(f"Trunk_{sx}", (sx, 5.2, 1.6), 0.22, 0.16, 3.2, wood)
-                add_stage_cyl(f"Crown_{sx}", (sx, 5.2, 3.6), 1.65, 0.4, 1.8, blossom)
-            for idx, (mx, my, mh) in enumerate([(-11, 14, 7.5), (-3, 16, 9.0), (5, 15, 8.2), (12, 14, 7.0)]):
-                add_stage_cyl(f"Mountain_{idx}", (mx, my, mh * 0.4), mh * 0.7, 0.4, mh, mountain, 8)
-
-        elif stage_id == "molten_forge":
-            basalt = make_simple_mat("basalt", (0.14, 0.13, 0.14))
-            lava = make_simple_mat("lava", (0.96, 0.30, 0.08), 0.85)
-            iron = make_simple_mat("iron", (0.20, 0.18, 0.20))
-            eclipse = make_simple_mat("eclipse", (0.82, 0.12, 0.10), 0.9)
-
-            add_stage_box("ForgeFloor", (0, 0, -0.28), (22.5, 9.2, 0.56), basalt)
-            add_stage_box("LavaTrim", (0, -4.2, -0.02), (22.6, 0.25, 0.18), lava)
-            add_stage_box("LavaLake", (0, 8.0, -0.65), (48.0, 28.0, 0.15), lava)
-            # Colossal Anvil in background
-            add_stage_box("AnvilBase", (0, 5.5, 1.3), (3.4, 1.8, 2.6), iron)
-            add_stage_box("AnvilTop", (0, 5.5, 3.1), (6.2, 2.2, 1.3), iron)
-            for sx in (-9.0, -4.8, 4.8, 9.0):
-                add_stage_box(f"ForgePillar_{sx}", (sx, 4.5, 2.8), (0.85, 0.85, 5.6), iron)
-                add_stage_cyl(f"ForgeFlame_{sx}", (sx, 4.5, 5.8), 0.55, 0.1, 0.9, lava, 8)
-            add_stage_cyl("BloodSun", (0, 16.0, 8.5), 2.6, 2.6, 0.3, eclipse, 16)
-
-        else:  # storm_market (Golden Bazaar)
-            sand = make_simple_mat("sand", (0.78, 0.56, 0.30))
-            tile = make_simple_mat("tile", (0.14, 0.36, 0.56))
-            gold = make_simple_mat("gold", (0.94, 0.74, 0.26), 0.2)
-            carpet = make_simple_mat("carpet", (0.58, 0.16, 0.24))
-
-            add_stage_box("BazaarFloor", (0, 0, -0.28), (22.5, 9.2, 0.56), sand)
-            add_stage_box("TileTrim", (0, -4.2, -0.02), (22.6, 0.28, 0.18), tile)
-            for rx in (-6.0, 0.0, 6.0):
-                add_stage_box(f"Carpet_{rx}", (rx, 0, 0.02), (3.2, 5.5, 0.04), carpet)
-            for ax in range(-10, 11, 5):
-                add_stage_box(f"Col_{ax}", (ax, 4.4, 2.6), (0.65, 0.65, 5.2), sand)
-                add_stage_box(f"Arch_{ax}", (ax, 4.4, 5.0), (4.4, 0.8, 0.65), tile)
-                add_stage_cyl(f"Lamp_{ax}", (ax, 3.2, 4.1), 0.28, 0.15, 0.65, gold, 10)
-
-        from stage_polish import enhance_stage
-        enhance_stage(stage_id,add_stage_box,add_stage_cyl,make_simple_mat)
+        # Concept-faithful arena (cenarios-v1.png); see stage_builder.py.
+        from stage_builder import build_stage
+        build_stage(stage_id)
         blend_path = ART_SRC / "environments" / blend_folder / f"{blend_folder}.blend"
+        blend_path.parent.mkdir(parents=True, exist_ok=True)
         bpy.ops.wm.save_as_mainfile(filepath=str(blend_path))
         bpy.ops.export_scene.gltf(
             filepath=str(out_dir / "stage.glb"),
@@ -1771,44 +1718,7 @@ def build_and_export_stages():
             export_materials='EXPORT',
         )
 
-        # Build intact prop (`prop_intact.glb`)
-        clear_scene()
-        if stage_id == "zephyr_dojo":
-            pmat = make_simple_mat("prop_jade", (0.20, 0.55, 0.42), 0.25)
-            wmat = make_simple_mat("prop_wood", (0.48, 0.34, 0.20))
-            add_stage_box("CrateBody", (0, 0, 0.38), (0.58, 0.58, 0.72), wmat)
-            add_stage_cyl("LanternTop", (0, 0, 0.82), 0.38, 0.12, 0.22, pmat, 8)
-        elif stage_id == "molten_forge":
-            imat = make_simple_mat("prop_iron", (0.22, 0.20, 0.22))
-            fmat = make_simple_mat("prop_fire", (0.98, 0.38, 0.10), 0.8)
-            add_stage_cyl("BrazierBase", (0, 0, 0.32), 0.32, 0.24, 0.64, imat, 10)
-            add_stage_cyl("BrazierBowl", (0, 0, 0.68), 0.24, 0.38, 0.25, fmat, 10)
-        else:
-            gmat = make_simple_mat("prop_brass", (0.90, 0.68, 0.22), 0.25)
-            smat = make_simple_mat("prop_spice", (0.72, 0.22, 0.28))
-            add_stage_box("SpiceCrate", (0, 0, 0.35), (0.60, 0.56, 0.68), gmat)
-            add_stage_cyl("SpiceMound", (0, 0, 0.75), 0.26, 0.05, 0.22, smat, 10)
-
-        bpy.ops.export_scene.gltf(
-            filepath=str(out_dir / "prop_intact.glb"),
-            export_format='GLB',
-            export_yup=True,
-            export_materials='EXPORT',
-        )
-
-        # Build broken prop (`prop_broken.glb`)
-        clear_scene()
-        bmat = make_simple_mat("broken_mat", (0.45, 0.38, 0.32))
-        for i, (dx, dy, rz) in enumerate([(-0.22, -0.12, 25), (0.20, 0.14, -35), (0.0, -0.18, 50)]):
-            obj = add_stage_box(f"Shard_{i}", (dx, dy, 0.08), (0.26, 0.14, 0.10), bmat)
-            obj.rotation_euler = (0.2, -0.15, math.radians(rz))
-        bpy.ops.export_scene.gltf(
-            filepath=str(out_dir / "prop_broken.glb"),
-            export_format='GLB',
-            export_yup=True,
-            export_materials='EXPORT',
-        )
-        print(f"Exported stage & props for {stage_id}")
+        print(f"Exported stage for {stage_id}")
 
     # Also save standardized `art-source/renders/portraits.blend`
     clear_scene()

@@ -28,6 +28,10 @@ static func state_frames(id: String, state: String) -> int:
 static func state_sec(id: String, state: String) -> float:
 	return float(state_frames(id, state)) / 60.0
 
+## Distance covered by one walk cycle; drives walk playback speed and footsteps.
+static func stride(id: String) -> float:
+	return float(_table().get(id, {}).get("stride", 1.6))
+
 static func contact_sec(id: String, clip: String) -> float:
 	return float(attack(id, clip).contact) / 60.0
 

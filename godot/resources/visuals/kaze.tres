@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_ix4jw")
 fighter_id = "kaze"
-display_name = "Kaze"
+display_name = "Babuin"
 subtitle = "Monge do Vento Jade"
 element_label = "VENTO"
 scene_path = "res://scenes/fighters/kaze.tscn"

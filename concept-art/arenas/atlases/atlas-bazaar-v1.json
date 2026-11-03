@@ -1,0 +1,330 @@
+{
+  "arena": "bazaar",
+  "title": "Bazaar fechado",
+  "image": "atlas-bazaar-v1.png",
+  "reference": "../bazaar-fechado-v1.png",
+  "size": [
+    1448,
+    1086
+  ],
+  "grid": [
+    4,
+    3
+  ],
+  "tile_size": [
+    362,
+    362
+  ],
+  "map_type": "stylized_albedo",
+  "color_space": "sRGB",
+  "uv_origin": "top_left",
+  "alpha_mode": "opaque_ignore_alpha",
+  "regions": {
+    "piso_calcario": {
+      "label": "Piso de calcário",
+      "row": 1,
+      "column": 1,
+      "region": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.0013812154696132596,
+        0.001841620626151013
+      ],
+      "uv_safe_max": [
+        0.24861878453038674,
+        0.3314917127071823
+      ]
+    },
+    "parede_arenito": {
+      "label": "Parede de arenito",
+      "row": 1,
+      "column": 2,
+      "region": [
+        362,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.2513812154696133,
+        0.001841620626151013
+      ],
+      "uv_safe_max": [
+        0.4986187845303867,
+        0.3314917127071823
+      ]
+    },
+    "azulejo_cobalto": {
+      "label": "Azulejo cobalto e marfim",
+      "row": 1,
+      "column": 3,
+      "region": [
+        724,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.5013812154696132,
+        0.001841620626151013
+      ],
+      "uv_safe_max": [
+        0.7486187845303868,
+        0.3314917127071823
+      ]
+    },
+    "latao": {
+      "label": "Latão envelhecido",
+      "row": 1,
+      "column": 4,
+      "region": [
+        1086,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.7513812154696132,
+        0.001841620626151013
+      ],
+      "uv_safe_max": [
+        0.9986187845303868,
+        0.3314917127071823
+      ]
+    },
+    "tapete_central": {
+      "label": "Tapete central",
+      "row": 2,
+      "column": 1,
+      "region": [
+        0,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.0013812154696132596,
+        0.3351749539594843
+      ],
+      "uv_safe_max": [
+        0.24861878453038674,
+        0.6648250460405156
+      ]
+    },
+    "tecido_carmesim": {
+      "label": "Tecido carmesim",
+      "row": 2,
+      "column": 2,
+      "region": [
+        362,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.2513812154696133,
+        0.3351749539594843
+      ],
+      "uv_safe_max": [
+        0.4986187845303867,
+        0.6648250460405156
+      ]
+    },
+    "tecido_azul_marinho": {
+      "label": "Tecido azul-marinho",
+      "row": 2,
+      "column": 3,
+      "region": [
+        724,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.5013812154696132,
+        0.3351749539594843
+      ],
+      "uv_safe_max": [
+        0.7486187845303868,
+        0.6648250460405156
+      ]
+    },
+    "madeira_carrinhos": {
+      "label": "Madeira dos carrinhos",
+      "row": 2,
+      "column": 4,
+      "region": [
+        1086,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.7513812154696132,
+        0.3351749539594843
+      ],
+      "uv_safe_max": [
+        0.9986187845303868,
+        0.6648250460405156
+      ]
+    },
+    "vitral": {
+      "label": "Vitral geométrico",
+      "row": 3,
+      "column": 1,
+      "region": [
+        0,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.0013812154696132596,
+        0.6685082872928176
+      ],
+      "uv_safe_max": [
+        0.24861878453038674,
+        0.998158379373849
+      ]
+    },
+    "friso_azul_dourado": {
+      "label": "Friso azul e dourado",
+      "row": 3,
+      "column": 2,
+      "region": [
+        362,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.2513812154696133,
+        0.6685082872928176
+      ],
+      "uv_safe_max": [
+        0.4986187845303867,
+        0.998158379373849
+      ]
+    },
+    "juta": {
+      "label": "Juta dos sacos",
+      "row": 3,
+      "column": 3,
+      "region": [
+        724,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.5013812154696132,
+        0.6685082872928176
+      ],
+      "uv_safe_max": [
+        0.7486187845303868,
+        0.998158379373849
+      ]
+    },
+    "especiaria_amarela": {
+      "label": "Especiaria amarela",
+      "row": 3,
+      "column": 4,
+      "region": [
+        1086,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "uv_safe_min": [
+        0.7513812154696132,
+        0.6685082872928176
+      ],
+      "uv_safe_max": [
+        0.9986187845303868,
+        0.998158379373849
+      ]
+    }
+  },
+  "notes": [
+    "Regiões em pixels [x,y,largura,altura]. UVs em origem superior esquerda.",
+    "Ajustar V conforme o fluxo de UV do Blender.",
+    "Emendas de repetição, mipmaps e escala UV precisam de validação no modelo.",
+    "Albedo pintado; não inclui mapas normal, roughness, metallic ou emissão separados."
+  ]
+}

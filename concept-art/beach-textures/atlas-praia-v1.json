@@ -1,0 +1,326 @@
+{
+  "image": "atlas-praia-v1.png",
+  "size": [
+    1448,
+    1086
+  ],
+  "grid": [
+    4,
+    3
+  ],
+  "tile_size": [
+    362,
+    362
+  ],
+  "uv_origin": "top_left",
+  "color_space": "sRGB",
+  "map_type": "stylized_albedo",
+  "tiles": {
+    "agua": {
+      "label": "Água",
+      "region": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.0013812154696132596,
+        0.001841620626151013
+      ],
+      "safe_uv_max": [
+        0.24861878453038674,
+        0.3314917127071823
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "areia": {
+      "label": "Areia",
+      "region": [
+        362,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.2513812154696133,
+        0.001841620626151013
+      ],
+      "safe_uv_max": [
+        0.4986187845303867,
+        0.3314917127071823
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "pedras": {
+      "label": "Pedras",
+      "region": [
+        724,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.5013812154696132,
+        0.001841620626151013
+      ],
+      "safe_uv_max": [
+        0.7486187845303868,
+        0.3314917127071823
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "tijolos_brancos": {
+      "label": "Tijolos brancos",
+      "region": [
+        1086,
+        0,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.0,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.7513812154696132,
+        0.001841620626151013
+      ],
+      "safe_uv_max": [
+        0.9986187845303868,
+        0.3314917127071823
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "palmeira_tronco": {
+      "label": "Tronco da palmeira",
+      "region": [
+        0,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.0013812154696132596,
+        0.3351749539594843
+      ],
+      "safe_uv_max": [
+        0.24861878453038674,
+        0.6648250460405156
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "arvore_tronco": {
+      "label": "Tronco da árvore",
+      "region": [
+        362,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.2513812154696133,
+        0.3351749539594843
+      ],
+      "safe_uv_max": [
+        0.4986187845303867,
+        0.6648250460405156
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "madeira_barco": {
+      "label": "Madeira do barco",
+      "region": [
+        724,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.5013812154696132,
+        0.3351749539594843
+      ],
+      "safe_uv_max": [
+        0.7486187845303868,
+        0.6648250460405156
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "grama": {
+      "label": "Grama",
+      "region": [
+        1086,
+        362,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.3333333333333333,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.7513812154696132,
+        0.3351749539594843
+      ],
+      "safe_uv_max": [
+        0.9986187845303868,
+        0.6648250460405156
+      ],
+      "cutout": false,
+      "alpha_mode": "opaque_ignore_alpha"
+    },
+    "flores": {
+      "label": "Flores",
+      "region": [
+        0,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.0,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.0013812154696132596,
+        0.6685082872928176
+      ],
+      "safe_uv_max": [
+        0.24861878453038674,
+        0.998158379373849
+      ],
+      "cutout": true,
+      "alpha_mode": "scissor_0.5"
+    },
+    "folhas": {
+      "label": "Folhas",
+      "region": [
+        362,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.25,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.2513812154696133,
+        0.6685082872928176
+      ],
+      "safe_uv_max": [
+        0.4986187845303867,
+        0.998158379373849
+      ],
+      "cutout": true,
+      "alpha_mode": "scissor_0.5"
+    },
+    "palmeira_folhas": {
+      "label": "Folhas da palmeira",
+      "region": [
+        724,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.5,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.5013812154696132,
+        0.6685082872928176
+      ],
+      "safe_uv_max": [
+        0.7486187845303868,
+        0.998158379373849
+      ],
+      "cutout": true,
+      "alpha_mode": "scissor_0.5"
+    },
+    "corais": {
+      "label": "Corais",
+      "region": [
+        1086,
+        724,
+        362,
+        362
+      ],
+      "uv_rect": [
+        0.75,
+        0.6666666666666666,
+        0.25,
+        0.3333333333333333
+      ],
+      "safe_uv_min": [
+        0.7513812154696132,
+        0.6685082872928176
+      ],
+      "safe_uv_max": [
+        0.9986187845303868,
+        0.998158379373849
+      ],
+      "cutout": true,
+      "alpha_mode": "scissor_0.5"
+    }
+  },
+  "notes": [
+    "Albedo pintado; não inclui normal/roughness/height.",
+    "UVs em origem superior esquerda; inverter V se o fluxo Blender exigir.",
+    "Materiais de superfície devem ignorar alfa; folhas/flores/corais usam recorte alfa.",
+    "Repetição sem emendas e mipmaps ainda precisam de validação no modelo."
+  ]
+}

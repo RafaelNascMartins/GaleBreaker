@@ -1,0 +1,181 @@
+{
+  "image": "pausa-atlas-v1.png",
+  "size": [
+    1448,
+    1086
+  ],
+  "columns": 4,
+  "rows": 3,
+  "transparent": true,
+  "regions": {
+    "button_normal": {
+      "cell": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "region": [
+        35,
+        149,
+        302,
+        76
+      ]
+    },
+    "button_focus": {
+      "cell": [
+        362,
+        0,
+        362,
+        362
+      ],
+      "region": [
+        394,
+        149,
+        302,
+        76
+      ]
+    },
+    "button_pressed": {
+      "cell": [
+        724,
+        0,
+        362,
+        362
+      ],
+      "region": [
+        753,
+        149,
+        302,
+        76
+      ]
+    },
+    "button_disabled": {
+      "cell": [
+        1086,
+        0,
+        362,
+        362
+      ],
+      "region": [
+        1112,
+        149,
+        301,
+        76
+      ]
+    },
+    "panel_pause": {
+      "cell": [
+        0,
+        362,
+        362,
+        362
+      ],
+      "region": [
+        46,
+        389,
+        281,
+        298
+      ]
+    },
+    "separator": {
+      "cell": [
+        362,
+        362,
+        362,
+        362
+      ],
+      "region": [
+        397,
+        529,
+        297,
+        26
+      ]
+    },
+    "selection_arrow": {
+      "cell": [
+        724,
+        362,
+        362,
+        362
+      ],
+      "region": [
+        873,
+        503,
+        66,
+        79
+      ]
+    },
+    "close": {
+      "cell": [
+        1086,
+        362,
+        362,
+        362
+      ],
+      "region": [
+        1220,
+        500,
+        88,
+        86
+      ]
+    },
+    "header": {
+      "cell": [
+        0,
+        724,
+        362,
+        362
+      ],
+      "region": [
+        34,
+        860,
+        304,
+        80
+      ]
+    },
+    "icon_resume": {
+      "cell": [
+        362,
+        724,
+        362,
+        362
+      ],
+      "region": [
+        497,
+        852,
+        96,
+        95
+      ]
+    },
+    "icon_moves": {
+      "cell": [
+        724,
+        724,
+        362,
+        362
+      ],
+      "region": [
+        854,
+        844,
+        101,
+        109
+      ]
+    },
+    "icon_menu": {
+      "cell": [
+        1086,
+        724,
+        362,
+        362
+      ],
+      "region": [
+        1206,
+        843,
+        118,
+        108
+      ]
+    }
+  },
+  "notes": "Regioes em pixels [x,y,width,height]. Textos sao renderizados pelo jogo; manter separados da textura."
+}
