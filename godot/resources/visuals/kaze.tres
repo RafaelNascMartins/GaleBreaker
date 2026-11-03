@@ -18,8 +18,8 @@ normal_path = "res://assets/characters/kaze/textures/normal.png"
 palettes = [{
 "accent": "#4AD69D",
 "name": "Jade Monástico",
-"primary": "#28654F",
-"secondary": "#84A98C"
+"primary": "#357A57",
+"secondary": "#C6D1A8"
 }, {
 "accent": "#FB7185",
 "name": "Tempestade Carmesim",
