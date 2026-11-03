@@ -48,6 +48,11 @@ const TRAIL_LIMBS := {
 	"ignis": {"light_2": "socket_hand_l", "elemental": "socket_foot_r", "ultimate": "socket_chest"},
 }
 const MoveEffects = preload("res://scripts/move_effects.gd")
+# Cells of the expression atlas drawn on the flat face (art-source/tools/generate_faces.py).
+enum Face { NEUTRAL, BLINK, SHOUT, HURT, KO, VICTORY, EFFORT, FOCUS }
+const BLINK_EVERY := 3.4
+const BLINK_SEC := 0.12
+var face: int = Face.NEUTRAL
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
 	var result := ShaderMaterial.new()
@@ -112,6 +117,11 @@ func build(data: GaleData, id: String, palette: int) -> void:
 		material.set_shader_parameter("normal_tex", load(catalog.normal_path))
 
 	apply_palette(palette_index, data)
+	var face_path := "res://assets/characters/%s/textures/face.png" % id
+	if ResourceLoader.exists(face_path):
+		material.set_shader_parameter("use_face", true)
+		material.set_shader_parameter("face_tex", load(face_path))
+		material.set_shader_parameter("face_cell", float(Face.NEUTRAL))
 
 	var packed: PackedScene = load(catalog.scene_path) as PackedScene
 	scene_instance = packed.instantiate() as Node3D
@@ -327,7 +337,30 @@ func sync(f: Dictionary, time: float) -> void:
 	if material != null:
 		material.set_shader_parameter("flash_amount", 1.0 if flashes_enabled and int(f.flash) > 0 else 0.0)
 		material.set_shader_parameter("base_color", Color.WHITE if flashes_enabled and int(f.flash) > 0 else primary)
+		set_face(_face_for(f, state_key, time))
 	syncing = false
+
+func set_face(expression: int) -> void:
+	if expression != face and material != null:
+		face = expression
+		material.set_shader_parameter("face_cell", float(face))
+
+func _face_for(f: Dictionary, state_key: String, time: float) -> int:
+	match state_key:
+		"victory":
+			return Face.VICTORY
+		"ko":
+			return Face.KO
+		"hitstun", "knockdown":
+			return Face.HURT
+		"guard", "blockstun", "parry":
+			return Face.EFFORT
+		"startup", "active":
+			var move: Dictionary = f.get("move", {})
+			if not move.is_empty():
+				return Face.FOCUS if String(move.get("type", "light")) in ["elemental", "ultimate"] else Face.SHOUT
+	# Each fighter blinks on its own beat.
+	return Face.BLINK if fmod(time + float(get_instance_id() % 7) * 0.37, BLINK_EVERY) < BLINK_SEC else Face.NEUTRAL
 
 
 func _update_motion_fx(f: Dictionary, attack_clip: String) -> void:

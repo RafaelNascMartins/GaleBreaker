@@ -11,6 +11,11 @@ uniform vec4 palette_primary : source_color = vec4(0.16, 0.40, 0.31, 1.0);
 uniform vec4 palette_secondary : source_color = vec4(0.52, 0.66, 0.55, 1.0);
 uniform vec4 palette_accent : source_color = vec4(0.29, 0.84, 0.62, 1.0);
 uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
+// Expression atlas over the flat face (UV2 from model_rig.flat_face; UV2 < 0 elsewhere).
+uniform bool use_face = false;
+uniform sampler2D face_tex : source_color, filter_linear_mipmap, repeat_disable;
+uniform vec2 face_grid = vec2(4.0, 2.0);
+uniform float face_cell = 0.0;
 
 void fragment() {
 	vec3 n = NORMAL;
@@ -37,6 +42,11 @@ void fragment() {
 		surface = mix(surface, palette_secondary.rgb * detail_factor * (0.45 + lum * 0.75), clamp(m.g, 0.0, 1.0));
 		surface = mix(surface, palette_accent.rgb * detail_factor * (0.55 + lum * 0.65), clamp(m.b, 0.0, 1.0));
 		accent_mask = clamp(m.b, 0.0, 1.0);
+	}
+	if (use_face && UV2.x >= 0.0) {
+		vec2 cell = vec2(mod(face_cell, face_grid.x), floor(face_cell / face_grid.x));
+		vec4 face = texture(face_tex, (cell + clamp(UV2, 0.002, 0.998)) / face_grid);
+		surface = mix(surface, face.rgb, face.a);
 	}
 
 	vec3 shaded = surface * (0.52 + band * 0.48) + surface * rim * 0.14;

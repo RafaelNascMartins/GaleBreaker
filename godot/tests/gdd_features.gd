@@ -241,6 +241,16 @@ func run() -> void:
 		check(sound.has_sample("kaze_" + strike), "Babuin " + strike + " has a recorded strike sound")
 	check(menu_app.strike_sound({"type": "light", "chain_step": 3}) == "light_3" and menu_app.strike_sound({"type": "heavy"}) == "heavy" and menu_app.strike_sound({"type": "ultimate"}) == "", "strike sounds map J1-J3 and K only")
 	check(GaleVisualCatalog.load_for("kaze").display_name == "Babuin" and String(data.fighter("kaze").name) == "Babuin", "Kaze is presented as Babuin while keeping its internal id")
+	var face_view := GaleFighterView.new()
+	root.add_child(face_view)
+	face_view.build(data, "kaze", 0)
+	check(bool(face_view.material.get_shader_parameter("use_face")) and face_view.material.get_shader_parameter("face_tex") != null, "Babuin's flat face draws the expression atlas")
+	var face_state := {"move": {"type": "light"}}
+	check(face_view._face_for(face_state, "active", 1.0) == GaleFighterView.Face.SHOUT and face_view._face_for({"move": {"type": "ultimate"}}, "startup", 1.0) == GaleFighterView.Face.FOCUS, "attacks shout and specials focus")
+	check(face_view._face_for({}, "hitstun", 1.0) == GaleFighterView.Face.HURT and face_view._face_for({}, "ko", 1.0) == GaleFighterView.Face.KO and face_view._face_for({}, "victory", 1.0) == GaleFighterView.Face.VICTORY and face_view._face_for({}, "guard", 1.0) == GaleFighterView.Face.EFFORT, "hurt, KO, victory and guard have their own faces")
+	face_view.set_face(GaleFighterView.Face.HURT)
+	check(is_equal_approx(float(face_view.material.get_shader_parameter("face_cell")), float(GaleFighterView.Face.HURT)), "changing expression picks the atlas cell")
+	face_view.queue_free()
 	# Options on the forest quest board.
 	menu_app.set_process(false)
 	menu_app.show_menu()
@@ -250,19 +260,19 @@ func run() -> void:
 	for i in 140:
 		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
 	await process_frame
-	check(menu_app.arena.board_open() and menu_app.board_ui.interactive and menu_app.board_ui.widgets.size() >= 12, "choosing Opções flies into the clearing and the options are physical pieces on the board")
+	check(menu_app.arena.board_open() and menu_app.board_ui.interactive and menu_app.board_ui.widgets.size() >= 12, "choosing Opções flies into the clearing and the options are paper notes and ink drawings on the board")
 	var muted_before: bool = menu_app.prefs.muted
 	for i in menu_app.board_ui.widgets.size():
 		if String(menu_app.board_ui.widgets[i].kind) == "toggle":
 			menu_app.board_ui.activate(i)
 			break
-	check(menu_app.prefs.muted != muted_before, "pressing a 3D switch on the board changes the option")
+	check(menu_app.prefs.muted != muted_before, "circling the other answer on the board changes the option")
 	menu_app.board_ui.switch_tab("controles")
 	var keycaps := 0
 	for w: Dictionary in menu_app.board_ui.widgets:
 		if String(w.kind) == "button" and (w.rect as Rect2).size.y < 0.07:
 			keycaps += 1
-	check(keycaps == 22, "the controls tab has a 3D key cap per action and player")
+	check(keycaps == 22, "the controls tab circles a key per action and player")
 	menu_app.board_ui.switch_tab("geral")
 	menu_app.close_settings()
 	for i in 140:

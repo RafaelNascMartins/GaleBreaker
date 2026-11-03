@@ -4,7 +4,10 @@ Run with system Python + Pillow. Writes godot/assets/ui/options/:
   frame.png       ivory card, double jade border, concave corners, raised top tab
   toggle_on.png / toggle_off.png, grabber.png (gold diamond slider handle)
 Drawn at 2x and shown scaled down for clean edges.
+Also cuts the paper-and-pen pieces of the forest quest board (concept-art/ui/atlas-opcoes-psx-v1,
+concept opcoes-papel-caneta-psx-v4.png) into godot/assets/ui/board/paper/<id>.png.
 """
+import json
 import math
 import random
 from pathlib import Path
@@ -118,7 +121,25 @@ def grabber():
     return img
 
 
+def paper_pieces():
+    """One PNG per atlas cell, cropped to its opaque content plus a transparent margin."""
+    src = ROOT / "concept-art" / "ui" / "atlas-opcoes-psx-v1"
+    out = ROOT / "godot" / "assets" / "ui" / "board" / "paper"
+    out.mkdir(parents=True, exist_ok=True)
+    atlas = json.loads((src / "manifest.json").read_text(encoding="utf-8"))["atlases"][0]
+    sheet = Image.open(src / atlas["file"]).convert("RGBA")
+    for cell in atlas["cells"]:
+        x, y, w, h = cell["opaque_content_rect_px"]
+        piece = sheet.crop((x - 3, y - 3, x + w + 3, y + h + 3))
+        # Clear the faint specks around the drawing that the generator left in the empty margin.
+        alpha = piece.getchannel("A").point(lambda a: 0 if a < 24 else a)
+        piece.putalpha(alpha)
+        piece.save(out / f"{cell['id']}.png")
+    print("paper pieces:", len(atlas["cells"]))
+
+
 def main():
+    paper_pieces()
     OUT.mkdir(parents=True, exist_ok=True)
     frame().save(OUT / "frame.png")
     # Icons are drawn at 2x and saved at their on-screen size.

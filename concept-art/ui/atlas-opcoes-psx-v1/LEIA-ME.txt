@@ -1,0 +1,11 @@
+ATLAS DE OPÇÕES — PAPEL E CANETA / PSX — V1
+
+2 PNGs, 16 células por atlas (32 regiões), sem textos embutidos.
+Interface: papéis normal/selecionado/hover, painel, trilho e marcador separados, ovais, setas, confirmar/cancelar, divisor, sublinhado e pino.
+Materiais: madeiras, latão, telhas, tecidos, vidro âmbar, papéis, ferro, corda, casca, musgo, folhagem e pedra.
+O manifest.json contém resolução real, modo de cor, retângulos em pixels e UVs. Interface RGBA com alfa; materiais RGB.
+
+No Godot, use AtlasTexture com a region indicada. Renderize rótulos e valores separadamente. Recorte o marcador separado do trilho e mova-o conforme o valor. O retângulo opaque_content_rect_px indica o conteúdo principal, sem a margem transparente; rect_px preserva a célula inteira.
+Para manter o PSX, comece com filtro Nearest e UI sem mipmaps. Regiões dentro de atlas não repetem independentemente: recorte o material ou use shader de remapeamento UV ao repetir.
+
+Resolução nativa preservada: não houve ampliação artificial. Estes atlas são fontes artísticas para prototipagem; repetição sem emendas, dilatação de bordas e mipmaps de produção não foram certificados. Vidro é albedo opaco; transparência e emissão da lanterna são configuradas no material. Não inclui modelos 3D ou implementação da tela.

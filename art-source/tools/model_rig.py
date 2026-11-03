@@ -10,6 +10,7 @@ import json
 import math
 from pathlib import Path
 
+import bmesh
 import bpy
 from mathutils import Vector
 
@@ -58,6 +59,92 @@ def import_model(fid, height):
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     mesh.name = f"{fid}_Body"
     return mesh
+
+
+def flat_face(mesh, fid):
+    """Replace the sculpted eyes, brows and nose with one flat skin patch, then project a second UV
+    (FaceUV) from the front so the expression atlas can be drawn over the face in Godot."""
+    face = json.loads((ROOT / "art-source" / "characters" / fid / "rig_joints.json").read_text(encoding="utf-8"))["face"]
+    half, patch_half, front_y = face["half_width"], face["patch_half_width"], face["front_y"]
+    z0, z1 = face["z"]
+    bm = bmesh.new()
+    bm.from_mesh(mesh.data)
+    # The generated mesh is split at every UV seam; weld it so the face hole has one border.
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    uv = bm.loops.layers.uv.active
+
+    def in_face(co):
+        return z0 < co.z < z1 and abs(co.x) < patch_half and co.y < front_y
+
+    # Plain skin: the forehead just above the patch.
+    forehead = min((f for f in bm.faces if abs(f.calc_center_median().x) < 0.03 and f.calc_center_median().z > z1
+                    and f.normal.y < -0.5), key=lambda f: f.calc_center_median().z)
+    skin_uv = sum((l[uv].uv for l in forehead.loops), Vector((0, 0))) / len(forehead.loops)
+
+    # Eyes, eye frames and brows are separate pieces laid over the shell: drop every piece that sits
+    # entirely inside the face box, then close the holes they leave in the shell.
+    parts, seen = [], set()
+    for v in bm.verts:
+        if v in seen:
+            continue
+        stack, part = [v], []
+        seen.add(v)
+        while stack:
+            x = stack.pop()
+            part.append(x)
+            for e in x.link_edges:
+                o = e.other_vert(x)
+                if o not in seen:
+                    seen.add(o)
+                    stack.append(o)
+        parts.append(part)
+    pieces = [p for p in parts if all(in_face(v.co) for v in p)]
+    bmesh.ops.delete(bm, geom=[v for p in pieces for v in p], context="VERTS")
+    border = [e for e in bm.edges if e.is_boundary and all(in_face(v.co) for v in e.verts)]
+    filled = bmesh.ops.holes_fill(bm, edges=border, sides=0)["faces"]
+    patch = bmesh.ops.triangulate(bm, faces=filled, quad_method="BEAUTY", ngon_method="BEAUTY")["faces"]
+
+    # Pull the front of the face onto one plane (fitted to the shell's face verts) so expressions
+    # read cleanly; the blend fades out toward the cheeks and the jaw.
+    face_verts = [v for v in bm.verts if in_face(v.co)]
+    plane_y = sum(v.co.y for v in face_verts) / max(len(face_verts), 1)
+    for v in face_verts:
+        edge = min(1.0, (patch_half - abs(v.co.x)) / 0.03, (v.co.z - z0) / 0.03, (z1 - v.co.z) / 0.03)
+        v.co.y += (plane_y - v.co.y) * max(edge, 0.0)
+    for f in {f for v in face_verts for f in v.link_faces} | set(patch):
+        f.smooth = False
+
+    # Every front face triangle becomes plain skin (the generated texture paints eyes and brows on
+    # the shell too); the features come only from the expression atlas.
+    face_uv = bm.loops.layers.uv.new("FaceUV")
+    flat = bm.faces.layers.int.new("flat_face")
+    for f in bm.faces:
+        c = f.calc_center_median()
+        facing = f.normal.y < -0.2 and c.y < 0 and abs(c.x) < half and c.z > face["decal_bottom"]
+        front = facing and c.z < face["decal_bottom"] + 2 * half
+        f[flat] = int(facing)
+        for l in f.loops:
+            p = l.vert.co
+            l[face_uv].uv = ((p.x + half) / (2 * half), (p.z - face["decal_bottom"]) / (2 * half)) if front else (-1.0, -1.0)
+            if facing:  # the forehead too: the generated texture paints light streaks there
+                l[uv].uv = skin_uv
+    bm.to_mesh(mesh.data)
+    bm.free()
+    mesh.data.uv_layers.active_index = 0
+    print(f"flat face: {len(patch)} triangles, {len(border)} border edges")
+
+
+def face_normals(mesh):
+    """Point every corner of the face and forehead straight forward so the toon bands never cut
+    across them (the head keeps its facets on the top and sides)."""
+    me = mesh.data
+    flat = me.attributes["flat_face"].data
+    normals = [Vector(c.vector) for c in me.corner_normals]
+    for poly in me.polygons:
+        if flat[poly.index].value:
+            for li in poly.loop_indices:
+                normals[li] = Vector((0.0, -1.0, 0.0))
+    me.normals_split_custom_set(normals)
 
 
 def fit_skeleton(arm_obj, j):
@@ -189,6 +276,7 @@ def arms_to_rest(mesh, arm_obj):
 def build_model_fighter(fid, arm_obj, material, height):
     j = joints(fid, height)
     mesh = import_model(fid, height)
+    flat_face(mesh, fid)
     fit_skeleton(arm_obj, j)
     mesh.data.materials.clear()
     mesh.data.materials.append(material)
@@ -197,4 +285,5 @@ def build_model_fighter(fid, arm_obj, material, height):
     mod = mesh.modifiers.new(name="Armature", type="ARMATURE")
     mod.object = arm_obj
     arms_to_rest(mesh, arm_obj)
+    face_normals(mesh)
     return mesh

@@ -1,6 +1,7 @@
 {
   "note": "Joint circles read from concept-art/characters/kaze/kaze-rig-cores-v1-frente.png (x, y) and -perfil.png (y) in pixels; build_blender_assets converts them to metres on the generated model.",
   "front_image": {"bbox_x": [122, 899], "top": 41, "sole": 1462},
+  "face": {"note": "Flat face patch in metres on the scaled model: half width, bottom/top Z, front Y cut. The expression atlas (godot/assets/characters/<id>/textures/face.png) is projected from the front over the square x in [-half, half], z in [bottom, bottom + 2*half].", "half_width": 0.12, "patch_half_width": 0.105, "z": [1.6, 1.815], "front_y": -0.045, "decal_bottom": 1.585},
   "side_image": {"bbox_x": [357, 666], "top": 48, "sole": 1471},
   "front": {
     "head_top": [510, 70], "neck_head": [510, 262], "neck_base": [510, 292], "chest_top": [510, 385],

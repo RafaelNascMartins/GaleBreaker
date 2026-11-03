@@ -1,0 +1,680 @@
+{
+  "version": 1,
+  "grid": [
+    4,
+    4
+  ],
+  "origin": "top-left",
+  "filter_recommended": "nearest",
+  "notes": [
+    "Textos e valores ficam na engine.",
+    "Atlas com regiões: repetição da textura inteira mistura materiais.",
+    "Não foi certificado para repetição sem emendas ou mipmaps."
+  ],
+  "atlases": [
+    {
+      "file": "atlas-ui-opcoes-psx-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "painel-pergaminho",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            26,
+            96,
+            265,
+            180
+          ]
+        },
+        {
+          "id": "papel-botao-normal",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            344,
+            128,
+            255,
+            106
+          ]
+        },
+        {
+          "id": "papel-botao-selecionado",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            656,
+            128,
+            255,
+            110
+          ]
+        },
+        {
+          "id": "papel-botao-hover",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            966,
+            129,
+            261,
+            108
+          ]
+        },
+        {
+          "id": "slider-trilho",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            40,
+            456,
+            234,
+            33
+          ]
+        },
+        {
+          "id": "slider-marcador",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            443,
+            450,
+            53,
+            52
+          ]
+        },
+        {
+          "id": "oval-contorno",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            700,
+            436,
+            166,
+            78
+          ]
+        },
+        {
+          "id": "oval-preenchido",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            1013,
+            435,
+            168,
+            79
+          ]
+        },
+        {
+          "id": "seta-esquerda",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            123,
+            726,
+            60,
+            105
+          ]
+        },
+        {
+          "id": "seta-direita",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            444,
+            727,
+            61,
+            101
+          ]
+        },
+        {
+          "id": "confirmar",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            720,
+            722,
+            127,
+            109
+          ]
+        },
+        {
+          "id": "cancelar",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            1049,
+            724,
+            100,
+            104
+          ]
+        },
+        {
+          "id": "divisor-vertical",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            151,
+            981,
+            11,
+            230
+          ]
+        },
+        {
+          "id": "sublinhado-duplo",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            354,
+            1086,
+            235,
+            28
+          ]
+        },
+        {
+          "id": "pino-latao",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            731,
+            1045,
+            101,
+            104
+          ]
+        },
+        {
+          "id": "papel-acao-largo",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "opaque_content_rect_px": [
+            962,
+            1046,
+            269,
+            98
+          ]
+        }
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "atlas-materiais-opcoes-psx-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "cells": [
+        {
+          "id": "madeira-pranchas",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "madeira-vigas",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "madeira-topo",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "latao",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "telhas-azul-marinho",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "tecido-jade",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "tecido-marfim",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "vidro-ambar",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "papel-marfim",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "papel-envelhecido",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "ferro-escuro",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "corda",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "casca-arvore",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "musgo",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "folhagem",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "id": "pedra-base",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ]
+        }
+      ]
+    }
+  ]
+}
