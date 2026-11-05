@@ -3,22 +3,23 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3hbpoffyl4rh"
-path="res://.godot/imported/stage_casca-arvore.png-a37c0b266f1cd9897b90683dde14c7f1.ctex"
+path.s3tc="res://.godot/imported/stage_casca-arvore.png-a37c0b266f1cd9897b90683dde14c7f1.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "23b3977bcd496da6c05d659b8b117696"
+"md5": "b2c7aa6407d13a8909d6d45d25bca46b"
 }
 
 [deps]
 
 source_file="res://assets/environments/beach/stage_casca-arvore.png"
-dest_files=["res://.godot/imported/stage_casca-arvore.png-a37c0b266f1cd9897b90683dde14c7f1.ctex"]
+dest_files=["res://.godot/imported/stage_casca-arvore.png-a37c0b266f1cd9897b90683dde14c7f1.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

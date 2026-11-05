@@ -1,0 +1,713 @@
+{
+  "version": 1,
+  "grid": [
+    4,
+    4
+  ],
+  "origin": "top-left",
+  "atlases": [
+    {
+      "file": "atlas-materiais-treino-garagem-v1.png",
+      "type": "material",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "cells": [
+        {
+          "id": "portao-canelado",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "aco-gasto",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-tabua",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-viga",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "concreto",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tijolo",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "reboco",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "telhado-metal",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tatame-jade",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "couro-saco-pancadas",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "borracha-pneu",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tecido-jade",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "latao",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "ferro",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "papelao",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "vidro-ambar",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ]
+    },
+    {
+      "file": "atlas-inscricoes-treino-garagem-v1.png",
+      "type": "decal",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "treino",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            21,
+            127,
+            282,
+            80
+          ]
+        },
+        {
+          "id": "lutador",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            352,
+            140,
+            240,
+            49
+          ]
+        },
+        {
+          "id": "adversario",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            647,
+            130,
+            273,
+            56
+          ]
+        },
+        {
+          "id": "comportamento",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            958,
+            143,
+            278,
+            37
+          ]
+        },
+        {
+          "id": "exibir-hitboxes",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            18,
+            449,
+            278,
+            37
+          ]
+        },
+        {
+          "id": "iniciar-treino",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            332,
+            446,
+            277,
+            42
+          ]
+        },
+        {
+          "id": "esc-voltar",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            653,
+            448,
+            261,
+            40
+          ]
+        },
+        {
+          "id": "kaze",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            999,
+            436,
+            196,
+            64
+          ]
+        },
+        {
+          "id": "ignis",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            48,
+            748,
+            221,
+            72
+          ]
+        },
+        {
+          "id": "passivo",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            334,
+            751,
+            270,
+            63
+          ]
+        },
+        {
+          "id": "nao",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            651,
+            709,
+            263,
+            151
+          ]
+        },
+        {
+          "id": "sim",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            964,
+            709,
+            263,
+            153
+          ]
+        },
+        {
+          "id": "seta-esquerda",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            113,
+            1044,
+            74,
+            122
+          ]
+        },
+        {
+          "id": "seta-direita",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            440,
+            1044,
+            73,
+            123
+          ]
+        },
+        {
+          "id": "indicador-selecao",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            672,
+            1043,
+            213,
+            133
+          ]
+        },
+        {
+          "id": "sublinhado",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            958,
+            1085,
+            274,
+            39
+          ]
+        }
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    }
+  ],
+  "notes": [
+    "Inscrições são tinta com transparência para aplicação sobre o portão.",
+    "Materiais não foram certificados como repetíveis sem emendas.",
+    "Sem mapas de normal, emissão ou modelos 3D neste pacote."
+  ]
+}

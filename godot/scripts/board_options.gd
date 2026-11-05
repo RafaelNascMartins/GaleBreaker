@@ -70,8 +70,7 @@ func rebuild() -> void:
 		build_general()
 	else:
 		build_controls()
-	note("ESC  VOLTAR", Vector2(-0.55, FOOTER_Y), Vector2(0.68, 0.2), false, 24, func() -> void: main.close_settings(), "papel-botao-normal")
-	note("SALVAR E VOLTAR", Vector2(0.4, FOOTER_Y), Vector2(1.04, 0.22), true, 25, func() -> void: main.close_settings(), "papel-acao-largo")
+	note("SALVAR E VOLTAR", Vector2(0.0, FOOTER_Y), Vector2(1.04, 0.22), true, 25, func() -> void: main.close_settings(), "papel-acao-largo")
 	status_label = text("", Vector2(0, -0.52), 17, INK_FADED, false)
 	focus = clampi(keep, 0, widgets.size() - 1)
 	refresh_focus()
@@ -88,7 +87,7 @@ func build_general() -> void:
 	toggle_row("Áudio ativo", Vector2(left, -0.27), -0.45, not p.muted, func(on: bool) -> void: p.muted = not on)
 	slider_row("Intensidade da câmera", Vector2(right, 0.15), Vector2(1.04, 1.4), p.shake_strength, func(v: float) -> void: p.shake_strength = v)
 	cycle_row("Dificuldade Arcade", Vector2(right, 0.03), 1.04, ["Tranquilo", "Normal", "Intenso"], p.difficulty, func(i: int) -> void: p.difficulty = i)
-	toggle_row("Flashes de impacto", Vector2(right, -0.1), 1.04, p.flashes, func(on: bool) -> void: p.flashes = on)
+	toggle_row("Tela cheia (1920×1080)", Vector2(right, -0.1), 1.04, p.fullscreen, func(on: bool) -> void: p.fullscreen = on)
 	toggle_row("Vibração do gamepad", Vector2(right, -0.22), 1.04, p.vibration, func(on: bool) -> void: p.vibration = on)
 	toggle_row("Mostrar áreas de colisão", Vector2(right, -0.34), 1.04, main.arena.show_boxes, func(on: bool) -> void: main.arena.show_boxes = on)
 	sprite("divisor-vertical", 0.02, Vector3(-0.05, -0.04, 0.004), self, 0.76)

@@ -1,0 +1,14 @@
+{
+  "key": "santuario_latao-envelhecido",
+  "source": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\art-source\\textures-v2\\sources\\santuario\\santuario_latao-envelhecido.png",
+  "native_size": [
+    1254,
+    1254
+  ],
+  "native_mode": "RGB",
+  "generator": "built-in image_gen",
+  "requested_size": [
+    1024,
+    1024
+  ]
+}

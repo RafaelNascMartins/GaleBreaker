@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctfp1n5pxdrup"
-path="res://.godot/imported/stage_medalhao_piso.png-598b963c761fbd7a6c04c3dc9d7f9a8e.ctex"
+path.s3tc="res://.godot/imported/stage_medalhao_piso.png-598b963c761fbd7a6c04c3dc9d7f9a8e.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "1704d98c9b1bd4bce0015ffafc6e6005"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/environments/zephyr_dojo/stage_medalhao_piso.png"
-dest_files=["res://.godot/imported/stage_medalhao_piso.png-598b963c761fbd7a6c04c3dc9d7f9a8e.ctex"]
+dest_files=["res://.godot/imported/stage_medalhao_piso.png-598b963c761fbd7a6c04c3dc9d7f9a8e.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -1,0 +1,219 @@
+{
+  "ttf": "StardosStencil-Bold.ttf",
+  "bitmap": "PortaoStencil-Desgastado.fnt",
+  "bitmap_page": "PortaoStencil-Desgastado_0.png",
+  "glyphs": 191,
+  "source_size": 64,
+  "base": 68,
+  "lineHeight": 84,
+  "unicode": [
+    32,
+    255
+  ],
+  "family": "Stardos Stencil Bold",
+  "license": "StardosStencil-OFL.txt",
+  "note": "A TTF mantém a fonte original. A bitmap usa os mesmos desenhos com pequenos desgastes pintados; não é uma identificação exata da tipografia gerada nas concepts.",
+  "word_sheet": {
+    "file": "palavras-portao.png",
+    "grid": [
+      4,
+      5
+    ],
+    "size_px": [
+      1680,
+      640
+    ],
+    "words": [
+      {
+        "text": "BABUIN",
+        "file": "palavras/01.png",
+        "rect_px": [
+          0,
+          0,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "TOPHIA",
+        "file": "palavras/02.png",
+        "rect_px": [
+          420,
+          0,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "VOLT",
+        "file": "palavras/03.png",
+        "rect_px": [
+          840,
+          0,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "IGNIS",
+        "file": "palavras/04.png",
+        "rect_px": [
+          1260,
+          0,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "KAZE",
+        "file": "palavras/05.png",
+        "rect_px": [
+          0,
+          128,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "PASSIVO",
+        "file": "palavras/06.png",
+        "rect_px": [
+          420,
+          128,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "DEFENDE ALTO",
+        "file": "palavras/07.png",
+        "rect_px": [
+          840,
+          128,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "DEFENDE BAIXO",
+        "file": "palavras/08.png",
+        "rect_px": [
+          1260,
+          128,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "PULA",
+        "file": "palavras/09.png",
+        "rect_px": [
+          0,
+          256,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "IA",
+        "file": "palavras/10.png",
+        "rect_px": [
+          420,
+          256,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "SIM",
+        "file": "palavras/11.png",
+        "rect_px": [
+          840,
+          256,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "NÃO",
+        "file": "palavras/12.png",
+        "rect_px": [
+          1260,
+          256,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "TREINO",
+        "file": "palavras/13.png",
+        "rect_px": [
+          0,
+          384,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "LUTADOR",
+        "file": "palavras/14.png",
+        "rect_px": [
+          420,
+          384,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "ADVERSÁRIO",
+        "file": "palavras/15.png",
+        "rect_px": [
+          840,
+          384,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "COMPORTAMENTO",
+        "file": "palavras/16.png",
+        "rect_px": [
+          1260,
+          384,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "EXIBIR HITBOXES",
+        "file": "palavras/17.png",
+        "rect_px": [
+          0,
+          512,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "INICIAR TREINO",
+        "file": "palavras/18.png",
+        "rect_px": [
+          420,
+          512,
+          420,
+          128
+        ]
+      },
+      {
+        "text": "ESC VOLTAR",
+        "file": "palavras/19.png",
+        "rect_px": [
+          840,
+          512,
+          420,
+          128
+        ]
+      }
+    ]
+  }
+}

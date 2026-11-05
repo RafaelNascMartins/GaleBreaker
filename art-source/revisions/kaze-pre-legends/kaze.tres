@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_jet1a"]
+[ext_resource type="Texture2D" path="res://assets/characters/kaze/textures/albedo.png" id="2_uhcvb"]
+[ext_resource type="Texture2D" path="res://assets/characters/kaze/textures/mask.png" id="3_x77gn"]
+[ext_resource type="Texture2D" path="res://assets/characters/kaze/textures/normal.png" id="4_1iy8p"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_jet1a")
+shader_parameter/base_color = null
+shader_parameter/glow = null
+shader_parameter/use_textures = true
+shader_parameter/albedo_tex = ExtResource("2_uhcvb")
+shader_parameter/mask_tex = ExtResource("3_x77gn")
+shader_parameter/normal_tex = ExtResource("4_1iy8p")
+shader_parameter/palette_primary = Color(0.15686275, 0.39607844, 0.30980393, 1)
+shader_parameter/palette_secondary = Color(0.5176471, 0.6627451, 0.54901963, 1)
+shader_parameter/palette_accent = Color(0.2901961, 0.8392157, 0.6156863, 1)
+shader_parameter/flash_amount = null

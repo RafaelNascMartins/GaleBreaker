@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_tr7as"]
+
+[resource]
+script = ExtResource("1_tr7as")
+fighter_id = "ignis"
+display_name = "Ignis"
+subtitle = "Brutamontes do Sol escaldante"
+element_label = "FOGO"
+accent_color = Color(0.64705884, 0.2627451, 0.19607843, 1)
+scene_path = "res://scenes/fighters/ignis.tscn"
+glb_path = "res://assets/characters/ignis/ignis.glb"
+material_path = "res://materials/characters/ignis.tres"
+portrait_path = "res://assets/ui/portraits/ignis.png"
+albedo_path = "res://assets/characters/ignis/textures/albedo.png"
+mask_path = "res://assets/characters/ignis/textures/mask.png"
+normal_path = "res://assets/characters/ignis/textures/normal.png"
+palettes = [{
+"accent": "#F97316",
+"name": "Sol do Meio-Dia",
+"primary": "#5B7088",
+"secondary": "#5C4028"
+}, {
+"accent": "#38BDF8",
+"name": "Chama Azul",
+"primary": "#1E293B",
+"secondary": "#334155"
+}, {
+"accent": "#C084FC",
+"name": "Cinza da Forja",
+"primary": "#3F2E3E",
+"secondary": "#18181B"
+}, {
+"accent": "#FACC15",
+"name": "Poeira Dourada",
+"primary": "#78350F",
+"secondary": "#D97706"
+}]
+attack_icons = {
+"elemental": "res://assets/ui/icons/ignis_elemental.png",
+"heavy": "res://assets/ui/icons/ignis_heavy.png",
+"light": "res://assets/ui/icons/ignis_light.png",
+"ultimate": "res://assets/ui/icons/ignis_ultimate.png"
+}
+gdd_moves = {
+"elemental": {
+"behavior": "Explosão baixa próxima ao pé que afasta oponentes e objetos.",
+"counter": "Pular na preparação ou manter distância do círculo de calor.",
+"name": "Pisada da Fornalha",
+"sequence": "Ergue o joelho concentrando calor na bota; pisa espalhando fogo e poeira."
+},
+"heavy": {
+"behavior": "Golpe único descendente com alto impacto e super armor.",
+"counter": "Sair do alcance; punir quando os punhos chegam ao chão.",
+"name": "Marreta Caipira",
+"sequence": "Trava os pés e junta os punhos; ergue os braços; desce a marretada no chão."
+},
+"light": {
+"behavior": "Curto alcance. Três entradas pesadas; o último contato empurra para baixo.",
+"counter": "Bloquear ou recuar; a marretada expõe recuperação maior.",
+"name": "Soco de Roça",
+"sequence": "J1 direito; J2 esquerdo com direito oculto; J3 marretada descendente com os dois braços."
+},
+"ultimate": {
+"behavior": "Investida frontal comprometida com impacto explosivo de calor.",
+"counter": "Saltar sobre a investida ou evitar a linha sinalizada.",
+"name": "Fúria do Meio-Dia",
+"sequence": "Ajusta o chapéu e agacha; avança com o ombro em explosão solar."
+}
+}
+clips = {
+"air_punch": "air_punch",
+"breaker": "breaker",
+"crouch": "crouch",
+"dash": "dash",
+"down_punch": "down_punch",
+"elemental": "elemental",
+"get_up": "get_up",
+"guard_high": "guard_high",
+"guard_low": "guard_low",
+"heavy": "heavy",
+"hit": "hit",
+"idle": "idle",
+"jump_air": "jump_air",
+"jump_land": "jump_land",
+"jump_start": "jump_start",
+"knockdown": "knockdown",
+"ko": "ko",
+"light_1": "light_1",
+"light_2": "light_2",
+"light_3": "light_3",
+"parry": "parry",
+"select": "select",
+"sweep": "sweep",
+"ultimate": "ultimate",
+"victory": "victory",
+"walk_back": "walk_back",
+"walk_forward": "walk_forward"
+}

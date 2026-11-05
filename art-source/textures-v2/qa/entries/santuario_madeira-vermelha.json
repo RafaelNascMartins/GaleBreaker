@@ -1,0 +1,31 @@
+{
+  "key": "santuario_madeira-vermelha",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793660571.8605626,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 4.4804443359375,
+    "y": 13.216740608215332
+  },
+  "entries": [
+    {
+      "file": "textures-v2/santuario/santuario_madeira-vermelha_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_madeira-vermelha_albedo.png"
+    }
+  ]
+}

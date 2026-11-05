@@ -1,0 +1,27 @@
+{
+  "key": "santuario_ramo-cerejeira",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793662287.2563481,
+  "pipeline_version": 4,
+  "cut_scores": {},
+  "entries": [
+    {
+      "file": "textures-v2/santuario/santuario_ramo-cerejeira_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1.5,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight"
+    }
+  ]
+}

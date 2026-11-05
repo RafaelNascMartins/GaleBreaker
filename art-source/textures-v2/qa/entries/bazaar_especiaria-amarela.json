@@ -1,0 +1,31 @@
+{
+  "key": "bazaar_especiaria-amarela",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661131.7566395,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 64.24674072265626,
+    "y": 53.43817901611328
+  },
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_especiaria-amarela_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.5,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_especiaria-amarela_albedo.png"
+    }
+  ]
+}

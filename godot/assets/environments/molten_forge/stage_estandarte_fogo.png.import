@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpkiqsfrdn73q"
-path="res://.godot/imported/stage_estandarte_fogo.png-082f86d3e6680a89756908437de339df.ctex"
+path.s3tc="res://.godot/imported/stage_estandarte_fogo.png-082f86d3e6680a89756908437de339df.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "5824524de985c9af7ea2ce44498597c0"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/environments/molten_forge/stage_estandarte_fogo.png"
-dest_files=["res://.godot/imported/stage_estandarte_fogo.png-082f86d3e6680a89756908437de339df.ctex"]
+dest_files=["res://.godot/imported/stage_estandarte_fogo.png-082f86d3e6680a89756908437de339df.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

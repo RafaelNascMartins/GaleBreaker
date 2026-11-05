@@ -166,6 +166,29 @@ func run() -> void:
 		if sim.winner != 0:
 			break
 	check(sim.winner == 2, "AI can complete a full match against an idle player")
+	sim = fresh()
+	sim.p1.x = -3.0
+	var x0: float = sim.p1.x
+	sim.attack(sim.p1, "light", false)
+	sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+	var stepped_back: bool = sim.p1.x < x0
+	advance(sim, 20)
+	check(stepped_back and sim.p1.x > x0 + 0.1, "Babuin J1 hesitates back, then advances with the punch")
+	sim = fresh()
+	sim.attack(sim.p1, "light", false)
+	var froze := 0
+	for i in 30:
+		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+		froze = maxi(froze, sim.freeze)
+	check(froze >= 3, "Babuin J1 holds a visible hitstop on connect")
+	sim = fresh()
+	var kick_steps: Array = []
+	for press in 3:
+		sim.p1.action = "idle"
+		sim.p1.frames = 0
+		sim.attack(sim.p1, "heavy", false)
+		kick_steps.append(int(sim.p1.move.chain_step))
+	check(kick_steps == [1, 2, 3] and String(sim.p1.move.name) == "Chute Giratório", "Babuin K presses chain K1 low kick, K2 front kick, K3 spinning back kick")
 	# Instantiate the actual scene and exercise menus and all arena/model combinations.
 	var app: Node = load("res://scenes/main.tscn").instantiate()
 	root.add_child(app)
@@ -228,7 +251,7 @@ func run() -> void:
 	app.sim.p2.x = -2.0
 	app.sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
 	app.arena.render(app.sim, 1.0 / 60.0)
-	check(app.sim.p1.facing < 0 and is_equal_approx(kaze_view.rotation.y, PI / 2.0), "side switch updates facing and visual rotation")
+	check(app.sim.p1.facing < 0 and kaze_view.basis.determinant() < 0.0, "side switch mirrors the Legends fighter like a 2.5D fighter")
 	# Round reset animation test
 	app.sim.next_round()
 	app.arena.render(app.sim, 1.0 / 60.0)

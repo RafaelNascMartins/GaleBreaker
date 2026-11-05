@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dlc2ix621lqyr"]
+
+[ext_resource type="PackedScene" uid="uid://bawc4eqj7phil" path="res://assets/environments/storm_market/stage.glb" id="1_6eo5e"]
+
+[node name="stage" unique_id=572095076 instance=ExtResource("1_6eo5e")]
+
+[node name="Stage_tapete_central" parent="." index="39" unique_id=1337998366]
+transform = Transform3D(0.99265707, 0, -0.120962806, 0, 1, 0, 0.120962806, 0, 0.99265707, 0.06968522, 0.10309545, -0.11518413)

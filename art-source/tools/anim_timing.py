@@ -18,7 +18,7 @@ LEGACY_STATES = {"idle": 40, "walk": 24, "dash": 10, "guard_high": 10, "parry": 
 # plays at most ~1.3x its authored speed at full walk speed.
 STRIDE = {"kaze": 1.8, "ignis": 1.8, "tophia": 1.55, "volt": 1.9}
 
-ATTACK_CLIPS = ["light_1", "light_2", "light_3", "heavy", "elemental", "ultimate", "down_punch", "air_punch", "sweep"]
+ATTACK_CLIPS = ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "down_punch", "air_punch", "sweep"]
 
 
 def _attack(wind, contact, hold, follow, recover, end):
@@ -32,7 +32,10 @@ TIMING = {
             "light_1": _attack(5, 7, 9, 12, 17, 22),
             "light_2": _attack(5, 7, 9, 12, 17, 22),
             "light_3": _attack(7, 10, 13, 16, 22, 28),
-            "heavy": _attack(10, 13, 16, 20, 28, 36),
+            # K chain (Legends Babuin): K1 low shin kick, K2 front push kick, K3 jumping side kick.
+            "heavy": _attack(6, 9, 12, 15, 21, 26),
+            "heavy_2": _attack(8, 11, 14, 18, 25, 32),
+            "heavy_3": _attack(10, 13, 16, 20, 28, 36),
             "elemental": _attack(11, 14, 18, 22, 29, 36),
             "ultimate": _attack(18, 24, 30, 35, 44, 54),
         },

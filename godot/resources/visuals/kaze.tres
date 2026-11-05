@@ -21,20 +21,26 @@ palettes = [{
 "primary": "#357A57",
 "secondary": "#C6D1A8"
 }, {
-"accent": "#FB7185",
-"name": "Tempestade Carmesim",
-"primary": "#9F1239",
-"secondary": "#E2E8F0"
-}, {
-"accent": "#38BDF8",
-"name": "Vento Noturno",
-"primary": "#1E3A5F",
-"secondary": "#94A3B8"
-}, {
 "accent": "#FACC15",
-"name": "Zéfiro Dourado",
-"primary": "#854D0E",
-"secondary": "#FEF08A"
+"name": "Jade Dourado",
+"page": "res://assets/characters/kaze/textures/page_dourado.png",
+"primary": "#8A6A12",
+"secondary": "#F2D27A"
+}, {
+"accent": "#F08A7A",
+"body": "kaze_PeixeBody",
+"hand": "res://assets/characters/kaze/textures/hand_peixao.png",
+"name": "Peixão",
+"page": "res://assets/characters/kaze/textures/page_peixao.png",
+"primary": "#2E8C7E",
+"secondary": "#E9DDB8"
+}, {
+"accent": "#D62828",
+"body": "kaze_ExecBody",
+"name": "Executivo",
+"page": "res://assets/characters/kaze/textures/page_executivo.png",
+"primary": "#2B2B2E",
+"secondary": "#F2F2F2"
 }]
 attack_icons = {
 "elemental": "res://assets/ui/icons/kaze_elemental.png",

@@ -1,0 +1,27 @@
+{
+  "key": "praia_coral-roxo",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793662228.0520308,
+  "pipeline_version": 4,
+  "cut_scores": {},
+  "entries": [
+    {
+      "file": "textures-v2/praia/praia_coral-roxo_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.65,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight"
+    }
+  ]
+}

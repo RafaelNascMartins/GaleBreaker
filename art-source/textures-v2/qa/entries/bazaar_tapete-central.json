@@ -1,0 +1,30 @@
+{
+  "key": "bazaar_tapete-central",
+  "status": "processed",
+  "source_native_size": [
+    1774,
+    887
+  ],
+  "source_mtime": 1793661743.7255034,
+  "pipeline_version": 4,
+  "cut_scores": {},
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_tapete-central_albedo.png",
+      "type": "decal",
+      "size_px": [
+        2048,
+        1024
+      ],
+      "world_size_m": [
+        4,
+        2
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    }
+  ]
+}

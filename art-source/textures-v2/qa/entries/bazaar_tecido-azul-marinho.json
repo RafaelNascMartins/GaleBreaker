@@ -1,0 +1,31 @@
+{
+  "key": "bazaar_tecido-azul-marinho",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661247.6942322,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 31.585894775390624,
+    "y": 32.35492706298828
+  },
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_tecido-azul-marinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_tecido-azul-marinho_albedo.png"
+    }
+  ]
+}

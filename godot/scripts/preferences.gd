@@ -10,6 +10,8 @@ var music_volume := 0.7
 var sfx_volume := 0.85
 var shake_strength := 0.65
 var flashes := true
+# Fullscreen at 1920x1080 (off: the 1280x720 window).
+var fullscreen := false
 var vibration := true
 var difficulty := 1
 var skills2 := {"kaze":[],"ignis":[],"tophia":[],"volt":[]}
@@ -36,7 +38,7 @@ func load_from_disk(data: GaleData) -> void:
 		var value: Variant = config.get_value("options",field,get(field))
 		if (value is float or value is int) and is_finite(float(value)):
 			set(field,clampf(float(value),0,1))
-	for field: String in ["flashes","vibration"]:
+	for field: String in ["flashes","vibration","fullscreen"]:
 		var value: Variant = config.get_value("options",field,get(field))
 		if value is bool:
 			set(field,value)
@@ -74,7 +76,7 @@ func save_to_disk() -> Error:
 	config.set_value("save", "version", 1)
 	config.set_value("audio", "volume", volume)
 	config.set_value("audio", "muted", muted)
-	for field: String in ["music_volume","sfx_volume","shake_strength","flashes","vibration","difficulty"]:
+	for field: String in ["music_volume","sfx_volume","shake_strength","flashes","vibration","fullscreen","difficulty"]:
 		config.set_value("options",field,get(field))
 	config.set_value("arcade","run",arcade_run)
 	for id: String in GaleData.IDS:

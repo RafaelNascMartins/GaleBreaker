@@ -1,0 +1,26 @@
+"""Build a local texture review page from the actual manifest and audit."""
+from pathlib import Path
+import html,json
+from catalog import ROOT,WORK
+
+manifest=json.loads((WORK/'package/manifest-v2.json').read_text(encoding='utf-8'))
+report=json.loads((WORK/'qa/validation.json').read_text(encoding='utf-8'))
+cards=[]
+for texture in manifest['textures']:
+    file=texture['file'];arena=file.split('/')[1];name=Path(file).stem
+    escaped=html.escape(name)
+    size=' × '.join(map(str,texture['size_px']))
+    preview=texture.get('preview',file)
+    pair=texture.get('pair')
+    pair_link=f'<a href="package/{pair}">Par albedo/emissão</a>' if pair else ''
+    cards.append(f'''<article data-arena="{arena}" data-type="{texture['type']}"><div class="swatch"><img src="package/{file}" data-original="package/{file}" data-repeat="package/{preview}" alt="{escaped}" loading="lazy"></div><h3>{escaped}</h3><p>{texture['type']} · {size} · repetir {texture['repeat']}<br>Cobertura: {texture['world_size_m']} m</p><nav><a href="package/{file}" download>PNG</a>{pair_link}</nav></article>''')
+style='''*{box-sizing:border-box}body{margin:0;background:#f8f5ee;color:#27372f;font:15px/1.5 system-ui,sans-serif}main{max-width:1480px;margin:auto;padding:36px 24px}h1,h2{font-family:Georgia,serif;font-weight:400}h1{font-size:44px;margin:12px 0}h2{margin-top:36px}p{color:#62695f}a{color:#28654f}nav,.controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.controls{position:sticky;top:0;background:#f8f5eef5;padding:16px 0;z-index:4;border-bottom:1px solid #d7d0c2}select,button{font:inherit;background:#fffdf8;color:#27372f;border:1px solid #b9c5b9;border-radius:4px;padding:8px 12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}article{border:1px solid #d7d0c2;background:#fdfbf6;padding:10px;border-radius:5px;min-width:0}article[hidden]{display:none}h3{font-size:13px;overflow-wrap:anywhere;margin:10px 0 4px}article p{font-size:12px;margin:6px 0}article nav{font-size:13px;gap:12px}.swatch{aspect-ratio:1;background-color:#d7ddd4;background-image:repeating-conic-gradient(#d7ddd4 0% 25%,#bcc8bc 0% 50%);background-size:24px 24px;display:grid;place-items:center}.swatch img{width:100%;height:100%;object-fit:contain;max-height:340px}.qa{width:100%;height:auto;margin:12px 0}.status{border-left:3px solid #28654f;padding-left:14px}.small{font-size:13px}@media(max-width:1050px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:32px}}'''
+script='''function filter(){let arena=document.querySelector('#arena').value,type=document.querySelector('#type').value;document.querySelectorAll('article').forEach(e=>e.hidden=(arena!=='all'&&e.dataset.arena!==arena)||(type!=='all'&&e.dataset.type!==type))}function repeatTiles(){let enabled=document.querySelector('#repeat').checked;document.querySelectorAll('article img').forEach(e=>e.src=enabled?e.dataset.repeat:e.dataset.original)}'''
+doc=f'''<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gale Breaker · Texturas v2</title><style>{style}</style><main><nav><a href="/concept-art/beach-textures/index.html">← Texturas v1</a><a href="Gale_Breaker_Textures_v2.zip" download>Baixar ZIP v2</a><a href="package/manifest-v2.json">Manifesto</a><a href="qa/validation.json">Auditoria técnica</a></nav><h1>Texturas individuais v2</h1><p>61 arquivos de textura · 36 prévias de repetição 2×2 · Quatro ambientes</p><p class="status">Auditoria: {len(report['failures'])} falhas em {report['files']} texturas. RGB sem alfa nas superfícies; peças transparentes com alfa reto e dilatação de cor. Prévia de repetição e offset de 50% conferidos separadamente.</p><div class="controls"><label>Arena <select id="arena" onchange="filter()"><option value="all">Todas</option><option value="santuario">Santuário</option><option value="bazaar">Bazaar</option><option value="forja">Forja</option><option value="praia">Praia</option></select></label><label>Tipo <select id="type" onchange="filter()"><option value="all">Todos</option><option>tileable</option><option>strip</option><option>decal</option><option>cutout</option><option>emission</option><option>backdrop</option></select></label><label><input id="repeat" type="checkbox" onchange="repeatTiles()"> Mostrar repetição 2×2</label></div><div class="grid">{''.join(cards)}</div><h2>Inspeção das repetições</h2>'''
+for arena in ['santuario','bazaar','forja','praia']:
+    if (WORK/'qa'/f'contact-offset-{arena}.png').exists():
+        doc+=f'<h3>{arena} · Offset 50%</h3><img class="qa" src="qa/contact-offset-{arena}.png" alt="Inspeção de offset das texturas {arena}" loading="lazy">'
+if (WORK/'qa/contact-alpha.png').exists():doc+='<h2>Recortes sobre fundos claros e escuros</h2><img class="qa" src="qa/contact-alpha.png" loading="lazy" alt="Inspeção de alfa e halos">'
+doc+='<p class="small">Os fundos distantes são pinturas em planos de referência, sem piso ou primeiro plano. A resolução nativa das fontes e a escala sugerida constam no manifesto. V1 preservada.</p></main><script>'+script+'</script></html>'
+(WORK/'index.html').write_text(doc,encoding='utf-8')
+print('Texture-v2 review gallery saved')

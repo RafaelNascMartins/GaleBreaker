@@ -24,6 +24,9 @@ var danger: MeshInstance3D
 var stage_effect: MeshInstance3D
 var warning_label: Label3D
 var sky_material: ProceduralSkyMaterial
+# Beach menu: cartoon sky shader (arenas keep the procedural sky).
+var sky: Sky
+var toon_sky: ShaderMaterial
 # Living stage pieces exported by art-source/tools/stage_builder.py.
 var crowd: Array = []
 var banners: Array = []
@@ -45,6 +48,25 @@ var board_look := Vector3.ZERO
 var board_panel: MeshInstance3D
 var board_flight := 0.0
 var board_target := 0.0
+# Training garage behind the menu camera: the camera turns 180 degrees to its gate.
+signal garage_ready
+signal garage_closed
+const GARAGE_TURN_TIME := 1.8
+var garage_cam := Vector3.ZERO
+var garage_look := Vector3.ZERO
+var garage_panel: MeshInstance3D
+var garage_flight := 0.0
+var garage_target := 0.0
+# The heavy bag hangs from this pivot (top of its chain) and sways gently.
+var bag_pivot: Node3D
+const BAG_TOP := Vector3(-0.75, 3.64, 21.6)
+# Arcade select in the village patio (reached by a fade to black): camera, fighter spot and the
+# stall anchors where the menu texts and the outfits on hangers go.
+var patio_cam := Vector3.ZERO
+var patio_look := Vector3.ZERO
+var patio_spot := Vector3.ZERO
+var patio_anchors := {}
+var patio_shot := false
 # Arcade select: camera and fighter spot on the beach.
 var select_shot := false
 var select_view: GaleFighterView
@@ -81,7 +103,7 @@ func _ready() -> void:
 	sky_material.sky_horizon_color=Color("d6b6a5")
 	sky_material.ground_bottom_color=Color("253c43")
 	sky_material.ground_horizon_color=Color("d6b6a5")
-	var sky:=Sky.new()
+	sky=Sky.new()
 	sky.sky_material=sky_material
 	env.sky=sky
 	env.background_color = Color("102235")
@@ -146,6 +168,8 @@ func build(data: GaleData, sim: GaleCombat) -> void:
 		world_env.environment.background_color = Color(stage.skyColor).darkened(0.35)
 		# Only a hint of the stage tint: the cel shadow side is lit by ambient alone.
 		world_env.environment.ambient_light_color = Color(stage.fogColor).lerp(Color("f2ece2"), 0.8)
+		sky.sky_material = sky_material
+		_apply_menu_lighting(false)
 		sky_material.sky_top_color=Color(stage.skyColor).darkened(0.22)
 		sky_material.sky_horizon_color=Color(stage.fogColor).lightened(0.10)
 		sky_material.ground_horizon_color=Color(stage.fogColor)
@@ -364,6 +388,16 @@ func show_menu_scene() -> void:
 	world_env.environment.ambient_light_energy = 0.32
 	_collect_living_pieces(stage_instance)
 	_collect_board_markers(stage_instance)
+	if toon_sky == null:
+		toon_sky = ShaderMaterial.new()
+		toon_sky.shader = load("res://shaders/sky/toon_sky.gdshader")
+		toon_sky.set_shader_parameter("sky_color", Color("1f6fe0"))
+		toon_sky.set_shader_parameter("horizon_color", Color("bfe8fb"))
+		toon_sky.set_shader_parameter("sun_color", Color("fff3dd"))
+		# Smaller, more numerous clouds (closer to the beach concept).
+		toon_sky.set_shader_parameter("cloud_scale", 4.5)
+		toon_sky.set_shader_parameter("cloud_threshold", 0.56)
+	sky.sky_material = toon_sky
 	sky_material.sky_top_color = Color("1f6fe0")
 	sky_material.sky_horizon_color = Color("bfe8fb")
 	sky_material.ground_horizon_color = Color("bfe8fb")
@@ -392,8 +426,163 @@ func _collect_board_markers(root_node: Node) -> void:
 		if board_path.point_count > 1:
 			board_path.set_point_position(board_path.point_count - 1, board_look + BOARD_VIEW_OFFSET)
 	board_panel = root_node.find_child("QuestBoardPanel", true, false) as MeshInstance3D
+	garage_flight = 0.0
+	garage_target = 0.0
+	garage_panel = root_node.find_child("GaragePanel", true, false) as MeshInstance3D
+	var cam_mark := root_node.find_child("CamGarage", true, false) as Node3D
+	var look_mark := root_node.find_child("GarageLook", true, false) as Node3D
+	if cam_mark != null and look_mark != null:
+		garage_cam = cam_mark.global_position
+		garage_look = look_mark.global_position
+	_light_garage()
+	patio_anchors.clear()
+	patio_cam = Vector3.ZERO
+	for node in root_node.find_children("Patio*", "Node3D", true, false):
+		patio_anchors[String(node.name)] = (node as Node3D).global_position
+		patio_anchors[String(node.name) + ":basis"] = (node as Node3D).global_basis
+	var cam_patio := root_node.find_child("CamPatio", true, false) as Node3D
+	if cam_patio != null and patio_anchors.has("PatioLook") and patio_anchors.has("PatioSpot"):
+		patio_cam = cam_patio.global_position
+		patio_look = patio_anchors.PatioLook
+		patio_spot = patio_anchors.PatioSpot
 
 ## Fly into the clearing (on = true) or back to the beach menu view.
+## Forward+ lighting for the menu scene: ambient occlusion, bounced light, glow, and inside the
+## garage late sun through the windows (volumetric shafts) plus the pendant lamp.
+func _apply_menu_lighting(on: bool) -> void:
+	var env := world_env.environment
+	env.ssao_enabled = on
+	env.ssao_radius = 1.2
+	env.ssao_intensity = 2.2
+	env.ssil_enabled = on
+	env.ssil_intensity = 1.2
+	env.glow_enabled = on
+	env.glow_intensity = 0.7
+	env.glow_bloom = 0.05
+	env.glow_hdr_threshold = 1.1
+	env.volumetric_fog_enabled = on
+	env.volumetric_fog_density = 0.0
+	env.volumetric_fog_albedo = Color("ffe4b8")
+	env.volumetric_fog_length = 16.0
+	env.volumetric_fog_detail_spread = 1.5
+	env.volumetric_fog_temporal_reprojection_enabled = true
+
+func _light_garage() -> void:
+	_apply_menu_lighting(true)
+	if garage_cam == Vector3.ZERO:
+		return
+	var lights := Node3D.new()
+	lights.name = "GarageLights"
+	scenery.add_child(lights)
+	# Soft late sun through the two windows left of the gate: wide, gentle cones slanting
+	# down across the room toward the right, with blurred shadows; the dust shows the rays.
+	for x: float in [-0.1, 0.9]:
+		var sun_in := SpotLight3D.new()
+		sun_in.light_color = Color("ffcf8a")
+		sun_in.light_energy = 4.0
+		sun_in.spot_range = 11.0
+		sun_in.spot_angle = 11.0
+		sun_in.spot_angle_attenuation = 2.0
+		sun_in.spot_attenuation = 0.6
+		sun_in.light_size = 0.6
+		sun_in.shadow_enabled = true
+		sun_in.shadow_blur = 2.5
+		sun_in.light_volumetric_fog_energy = 12.0
+		sun_in.light_specular = 0.2
+		lights.add_child(sun_in)
+		sun_in.position = Vector3(x, 3.25, 26.3)
+		sun_in.look_at(Vector3(x - 2.6, 0.0, 22.0))
+	_garage_rays(lights)
+	_hang_bag()
+	# Warm bounce filling the whole room (the concept garage is bright, not a dark cave).
+	var fill := OmniLight3D.new()
+	fill.light_color = Color("ffe2b8")
+	fill.light_energy = 1.6
+	fill.omni_range = 9.0
+	fill.omni_attenuation = 0.4
+	lights.add_child(fill)
+	fill.position = Vector3(-0.8, 2.6, 21.5)
+	var lamp := OmniLight3D.new()
+	lamp.light_color = Color("ffd29a")
+	lamp.light_energy = 1.4
+	lamp.omni_range = 5.5
+	lamp.shadow_enabled = true
+	lamp.light_volumetric_fog_energy = 0.4
+	lights.add_child(lamp)
+	lamp.position = Vector3(-2.2, 2.6, 22.4)
+	var lantern := OmniLight3D.new()
+	lantern.light_color = Color("ffb35c")
+	lantern.light_energy = 1.2
+	lantern.omni_range = 2.0
+	lights.add_child(lantern)
+	lantern.position = Vector3(0.75, 1.1, 26.1)
+	# Dusty air only inside the garage, so the window light reads as shafts.
+	var dust := FogVolume.new()
+	dust.size = Vector3(8.0, 4.2, 7.5)
+	var fog := FogMaterial.new()
+	fog.density = 0.012
+	fog.albedo = Color("fff0d8")
+	dust.material = fog
+	lights.add_child(dust)
+	dust.position = Vector3(-0.6, 2.1, 22.75)
+	# Dim the garage's own ambient: the sky light floods an indoor room otherwise.
+	var shade := ReflectionProbe.new()
+	shade.size = Vector3(8.0, 4.4, 7.5)
+	shade.interior = true
+	shade.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	shade.ambient_color = Color("6a5040")
+	shade.ambient_color_energy = 0.6
+	lights.add_child(shade)
+	shade.position = Vector3(-0.6, 2.2, 22.75)
+
+## Reparent the bag, its straps and chain under a pivot at the beam so it can swing.
+func _hang_bag() -> void:
+	bag_pivot = Node3D.new()
+	bag_pivot.name = "BagPivot"
+	scenery.add_child(bag_pivot)
+	bag_pivot.position = BAG_TOP
+	var parts: Array[Node3D] = []
+	for node in stage_instance.find_children("Bag*", "Node3D", true, false):
+		parts.append(node as Node3D)
+	for part in parts:
+		var keep := part.global_transform
+		part.get_parent().remove_child(part)
+		bag_pivot.add_child(part)
+		part.global_transform = keep
+
+## God rays as in the concept: soft additive beams from each window slanting down to the floor.
+## Each beam is a quad turned about its own axis to face the garage camera.
+func _garage_rays(parent: Node3D) -> void:
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/sky/god_ray.gdshader")
+	var view := garage_cam
+	var beams := [[-0.1, 0.0, 0.09], [0.9, 0.0, 0.09], [0.15, 0.3, 0.045], [0.65, -0.25, 0.055], [0.4, 0.1, 0.035]]
+	for beam: Array in beams:
+		var x: float = beam[0]
+		var start := Vector3(x, 3.25, 26.35)
+		var end := Vector3(x - 2.6 + float(beam[1]), 0.0, 22.2)
+		var axis := end - start
+		var quad := MeshInstance3D.new()
+		var mesh := QuadMesh.new()
+		mesh.size = Vector2(1.1, axis.length())
+		quad.mesh = mesh
+		quad.material_override = material.duplicate()
+		quad.material_override.set_shader_parameter("strength", float(beam[2]))
+		quad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		parent.add_child(quad)
+		var up := axis.normalized()
+		var to_view := (view - (start + end) * 0.5)
+		var normal := (to_view - up * to_view.dot(up)).normalized()
+		var side := up.cross(normal)
+		quad.global_transform = Transform3D(Basis(side, up, normal), (start + end) * 0.5)
+
+## Turn around to the training garage (on = true) or back to the beach menu view.
+func focus_garage(on: bool) -> void:
+	garage_target = 1.0 if on else 0.0
+
+func garage_open() -> bool:
+	return garage_target > 0.0 and garage_flight >= 1.0
+
 func focus_board(on: bool) -> void:
 	board_target = 1.0 if on else 0.0
 
@@ -431,6 +620,44 @@ func _update_menu_camera(delta: float) -> bool:
 		elif was > 0.0 and board_flight <= 0.0:
 			board_closed.emit()
 		return true
+	if garage_cam != Vector3.ZERO and (garage_flight > 0.0 or garage_target > 0.0):
+		var was := garage_flight
+		garage_flight = move_toward(garage_flight, garage_target, delta / GARAGE_TURN_TIME)
+		# One ease-in-out over the whole move (quintic: no jolt at start or stop); the turn
+		# leads and the walk to the gate trails, sharing that single eased timeline.
+		var f := garage_flight
+		var eased := f * f * f * (f * (f * 6.0 - 15.0) + 10.0)
+		var turn := clampf(eased / 0.8, 0.0, 1.0)
+		var walk := clampf((eased - 0.2) / 0.8, 0.0, 1.0)
+		var start := Vector3(1.2, 2.8, 12.2)
+		camera.position = start.lerp(garage_cam, walk)
+		# Indoors: less sky ambient so the window light and the lamp model the room.
+		world_env.environment.ambient_light_energy = lerpf(0.32, 0.36, walk)
+		var from_dir := (MENU_LOOK - start).normalized()
+		var to_dir := (garage_look - garage_cam).normalized()
+		# Turn through the sea side (the right), not across the foliage wall on the left.
+		var yaw0 := atan2(from_dir.x, from_dir.z)
+		var yaw1 := atan2(to_dir.x, to_dir.z)
+		if yaw1 > yaw0:
+			yaw1 -= TAU
+		var yaw := lerpf(yaw0, yaw1, turn)
+		var pitch := lerpf(asin(from_dir.y), asin(to_dir.y), turn)
+		var dir := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
+		camera.look_at(camera.position + dir)
+		camera.h_offset = 0.0
+		if was < 1.0 and garage_flight >= 1.0:
+			garage_ready.emit()
+		elif was > 0.0 and garage_flight <= 0.0:
+			garage_closed.emit()
+		return true
+	if patio_shot and patio_cam != Vector3.ZERO:
+		# Still camera with a barely-there drift (the stall texts must not swim).
+		camera.position = patio_cam + Vector3(sin(clock * 0.2) * 0.03, sin(clock * 0.27) * 0.015, 0)
+		camera.look_at(patio_look)
+		camera.h_offset = 0.0
+		if is_instance_valid(select_view):
+			select_view.rotation.y = lerp_angle(select_view.rotation.y, _patio_facing() + select_turn, 1.0 - exp(-8.0 * delta))
+		return true
 	if select_shot:
 		camera.position = camera.position.lerp(SELECT_CAM, 1.0 - exp(-4.0 * delta))
 		camera.look_at(SELECT_LOOK)
@@ -451,11 +678,95 @@ func show_select_fighter(data: GaleData, id: String, palette: int) -> void:
 	select_view = GaleFighterView.new()
 	scenery.add_child(select_view)
 	select_view.build(data, id, palette)
-	select_view.position = SELECT_SPOT
-	select_view.rotation.y = SELECT_FACING + select_turn
+	select_view.position = patio_spot if patio_shot else SELECT_SPOT
+	select_view.rotation.y = (_patio_facing() if patio_shot else SELECT_FACING) + select_turn
 	select_view.scale = Vector3.ONE
 	select_view.aura.visible = false
 	select_view.play_clip("select", 0.0)
+
+## Cut to the village patio (the caller hides the cut behind a fade to black).
+func show_patio(on: bool) -> void:
+	patio_shot = on and patio_cam != Vector3.ZERO
+	_light_patio(patio_shot)
+	if patio_shot:
+		camera.position = patio_cam
+		camera.look_at(patio_look)
+		if is_instance_valid(select_view):
+			select_view.position = patio_spot
+			select_view.rotation.y = _patio_facing() + select_turn
+	else:
+		camera.position = Vector3(1.2, 2.8, 12.2)
+		camera.look_at(MENU_LOOK)
+
+## Late-afternoon light of the patio concept: a warm sun low from the upper left behind the big
+## tree, its leaves dappling the cobbles (an unseen canopy that only casts shadows), warmer
+## ambient. The beach light is put back when leaving.
+var patio_saved := {}
+var patio_gobo: Node3D
+
+func _light_patio(on: bool) -> void:
+	var env := world_env.environment
+	if on:
+		if patio_saved.is_empty():
+			patio_saved = {"basis": sun.global_transform.basis, "energy": sun.light_energy, "color": sun.light_color,
+				"ambient": env.ambient_light_color, "ambient_energy": env.ambient_light_energy, "fill": fill.light_energy}
+		# Light travels toward the camera's right and a little toward it, from high on the left.
+		var travel := Vector3(0.55, -0.62, 0.55).normalized()
+		sun.global_transform = Transform3D(Basis.looking_at(travel, Vector3.UP), Vector3.ZERO)
+		sun.light_energy = 0.95
+		sun.light_color = Color("ffd9a6")
+		sun.shadow_blur = 1.6
+		env.ambient_light_color = Color("ffe7cc")
+		env.ambient_light_energy = 0.4
+		fill.light_energy = 0.06
+		if not is_instance_valid(patio_gobo):
+			patio_gobo = _leaf_gobo()
+		patio_gobo.visible = true
+	elif not patio_saved.is_empty():
+		sun.global_transform = Transform3D(patio_saved.basis, Vector3.ZERO)
+		sun.light_energy = patio_saved.energy
+		sun.light_color = patio_saved.color
+		env.ambient_light_color = patio_saved.ambient
+		env.ambient_light_energy = patio_saved.ambient_energy
+		fill.light_energy = patio_saved.fill
+		patio_saved.clear()
+		if is_instance_valid(patio_gobo):
+			patio_gobo.visible = false
+
+## Leaf cards high over the patio that are invisible but cast the dappled shadows.
+func _leaf_gobo() -> Node3D:
+	var root := Node3D.new()
+	root.name = "PatioLeafShadows"
+	scenery.add_child(root)
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = load("res://assets/environments/beach/textures/folhas.png")
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	material.alpha_scissor_threshold = 0.5
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var centre := patio_spot + Vector3(1.6, 0, -0.5)
+	for i in 46:
+		if rng.randf() < 0.5:
+			continue  # gaps between the leaf clusters let the sun through
+		var quad := MeshInstance3D.new()
+		var mesh := QuadMesh.new()
+		mesh.size = Vector2.ONE * rng.randf_range(1.1, 2.0)
+		quad.mesh = mesh
+		quad.material_override = material
+		quad.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		root.add_child(quad)
+		# Spread over the front half of the patio, then lifted up the light path so the
+		# shadows land on the cobbles, the fighter and the stall front.
+		var ground := centre + Vector3(rng.randf_range(-6.0, 5.0), 0, rng.randf_range(-3.0, 4.5))
+		quad.position = ground + Vector3(-0.55, 0.62, -0.55).normalized() * rng.randf_range(6.0, 8.0)
+		quad.rotation = Vector3(deg_to_rad(-90 + rng.randf_range(-25, 25)), rng.randf_range(0, TAU), 0)
+	return root
+
+## Yaw that turns the fighter (model forward -Z) toward the patio camera, a touch toward the stall.
+func _patio_facing() -> float:
+	var to_cam := patio_cam - patio_spot
+	return atan2(-to_cam.x, -to_cam.z) + 0.25
 
 func hide_select_fighter() -> void:
 	select_shot = false
@@ -465,6 +776,12 @@ func hide_select_fighter() -> void:
 	select_view = null
 
 func _animate_living_pieces(delta: float, sim: GaleCombat) -> void:
+	if is_instance_valid(bag_pivot):
+		# A slow pendulum: two out-of-step sways (about 1.5 degrees) and a faint twist.
+		bag_pivot.rotation = Vector3(
+			deg_to_rad(sin(clock * 0.9) * 1.4 + sin(clock * 0.37) * 0.5),
+			deg_to_rad(sin(clock * 0.21) * 3.0),
+			deg_to_rad(sin(clock * 0.71 + 1.3) * 1.0))
 	var drift := Vector2(sin(clock * 0.21) * 0.012, clock * 0.006)
 	for water: Material in water_materials:
 		if water is ShaderMaterial:
@@ -557,7 +874,7 @@ func render(sim: GaleCombat, delta: float) -> void:
 
 	if menu_mode and menu_scene_active and _update_menu_camera(delta):
 		if is_instance_valid(select_view):
-			select_view.play_clip("select", fmod(clock * 0.5, GaleAnimTiming.state_sec(select_view.fighter_id, "victory")))
+			select_view.present("select", clock)
 	elif menu_mode:
 		# Sanctuary overview camera matching menu-principal-v3.png
 		var menu_cam_pos := Vector3(1.2 + sin(clock * 0.25) * 0.25, 2.8, 12.2)
@@ -591,4 +908,4 @@ func impact(event: Dictionary) -> void:
 		var beam := GaleFighterView.box(node, Vector3(0.06, 0.7, 0.06), Vector3.ZERO, material)
 		beam.rotation.z = float(i) * PI / 3.0
 	effects.append({"node": node, "life": 0.16})
-	shake = 0.5 if event.kind in ["heavy", "ultimate", "clash", "ko"] else 0.2
+	shake = 0.5 if event.kind in ["heavy", "ultimate", "clash", "ko"] else (0.32 if int(event.get("chain_step", 1)) == 3 else 0.2)

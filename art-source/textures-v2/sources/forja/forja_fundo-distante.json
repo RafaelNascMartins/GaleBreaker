@@ -1,0 +1,14 @@
+{
+  "key": "forja_fundo-distante",
+  "source": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\art-source\\textures-v2\\sources\\forja\\forja_fundo-distante.png",
+  "native_size": [
+    2172,
+    724
+  ],
+  "native_mode": "RGB",
+  "generator": "built-in image_gen",
+  "requested_size": [
+    4096,
+    1024
+  ]
+}

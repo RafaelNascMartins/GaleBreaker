@@ -66,9 +66,9 @@ static func build_default(id: String) -> GaleVisualCatalog:
 			cat.accent_color = Color("28654F")
 			cat.palettes = [
 				{"name": "Jade Monástico", "primary": "#357A57", "secondary": "#C6D1A8", "accent": "#4AD69D"},
-				{"name": "Tempestade Carmesim", "primary": "#9F1239", "secondary": "#E2E8F0", "accent": "#FB7185"},
-				{"name": "Vento Noturno", "primary": "#1E3A5F", "secondary": "#94A3B8", "accent": "#38BDF8"},
-				{"name": "Zéfiro Dourado", "primary": "#854D0E", "secondary": "#FEF08A", "accent": "#FACC15"},
+				{"name": "Jade Dourado", "primary": "#8A6A12", "secondary": "#F2D27A", "accent": "#FACC15", "page": "res://assets/characters/kaze/textures/page_dourado.png"},
+				{"name": "Peixão", "primary": "#2E8C7E", "secondary": "#E9DDB8", "accent": "#F08A7A", "page": "res://assets/characters/kaze/textures/page_peixao.png", "hand": "res://assets/characters/kaze/textures/hand_peixao.png", "body": "kaze_PeixeBody"},
+				{"name": "Executivo", "primary": "#2B2B2E", "secondary": "#F2F2F2", "accent": "#D62828", "page": "res://assets/characters/kaze/textures/page_executivo.png", "body": "kaze_ExecBody"},
 			]
 			cat.gdd_moves = {
 				"light": {"name": "Palma de Jade", "sequence": "J1 palma frontal; J2 duas palmas verticais; J3 chute frontal.", "behavior": "Curto alcance. Três golpes encadeados; J3 afasta o alvo.", "counter": "Bloquear a sequência ou punir o chute se errar."},
@@ -77,7 +77,7 @@ static func build_default(id: String) -> GaleVisualCatalog:
 				"ultimate": {"name": "Tufão Celestial", "sequence": "Abaixa a base; ergue os braços em espiral; tornado vertical explode à frente.", "behavior": "Área fixa adiante com vórtice ascendente e expulsão final.", "counter": "Sair da área sinalizada antes da formação do tornado."},
 			}
 		"ignis":
-			cat.display_name = "Ignis"
+			cat.display_name = "Dale"
 			cat.subtitle = "Brutamontes do Sol escaldante"
 			cat.element_label = "FOGO"
 			cat.accent_color = Color("A54332")

@@ -1,0 +1,20 @@
+{
+  "engine": "4.7.2-stable (official)",
+  "fonts": [
+    {
+      "ascent_64": 63.0,
+      "height_64": 89.0,
+      "missing": [],
+      "path": "res://fonts/StardosStencil-Bold.ttf",
+      "words_tested": 20
+    },
+    {
+      "ascent_64": 68.0,
+      "height_64": 84.0,
+      "missing": [],
+      "path": "res://fonts/PortaoStencil-Desgastado.fnt",
+      "words_tested": 20
+    }
+  ],
+  "passed": true
+}

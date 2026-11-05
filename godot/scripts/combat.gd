@@ -5,6 +5,42 @@ const DT := 1.0 / 60.0
 # Half-width of the fighting area; stage blockers sit just beyond it.
 const EDGE := 6.5
 const GRAVITY := 28.0
+# Godot-only feel of each light-chain step (J1, J2, J3): metres stepped back before the strike,
+# metres travelled forward with it, extra startup frames and the hitstop on connect (frames).
+const LIGHT_FEEL := {
+	"kaze": [
+		{"back": 0.05, "advance": 0.15, "startup": 0, "hitstop": 4},
+		{"back": 0.0, "advance": 0.25, "startup": 0, "hitstop": 5},
+		{"back": 0.0, "advance": 0.35, "startup": 0, "hitstop": 7},
+	],
+	# Dale (grappler): short steps, and a longer freeze on the impact pose than Babuin's.
+	"ignis": [
+		{"back": 0.0, "advance": 0.12, "startup": 0, "hitstop": 10},
+		{"back": 0.0, "advance": 0.15, "startup": 0, "hitstop": 12},
+		{"back": 0.0, "advance": 0.20, "startup": 0, "hitstop": 18},
+	],
+}
+# Godot-only K chain (K1, K2, K3): each press of K inside the chain window plays the next kick.
+# Fields override the fighter's heavy move; feel fields work as in LIGHT_FEEL.
+const HEAVY_CHAIN := {
+	"kaze": [
+		{"name": "Chute Baixo", "hitHeight": "low", "startupFrames": 7, "activeFrames": 3, "recoveryFrames": 12,
+			"damage": 70, "hitstunFrames": 18, "blockstunFrames": 10, "launchY": 0, "knockback": 2.6,
+			"hitbox": {"offsetX": 1.25, "offsetY": 0.45, "width": 1.9, "height": 0.75},
+			"back": 0.0, "advance": 0.15, "hitstop": 6},
+		{"name": "Chute de Porta", "hitHeight": "mid", "startupFrames": 9, "activeFrames": 4, "recoveryFrames": 14,
+			"damage": 85, "hitstunFrames": 20, "blockstunFrames": 11, "launchY": 0, "knockback": 3.6,
+			"hitbox": {"offsetX": 1.35, "offsetY": 1.0, "width": 2.1, "height": 0.95},
+			"back": 0.0, "advance": 0.30, "hitstop": 7},
+		{"name": "Chute Giratório", "startupFrames": 11, "activeFrames": 5, "recoveryFrames": 18, "damage": 110,
+			"back": 0.0, "advance": 0.45, "hitstop": 9},
+	],
+}
+
+## Speed that covers `metres` within `frames` steps, given the per-frame decay of step().
+static func travel_speed(metres: float, frames: int) -> float:
+	var r := pow(0.05, DT)
+	return metres / (DT * (1.0 - pow(r, maxi(1, frames))) / (1.0 - r))
 # Long enough for the full "three, two, one, FIGHT" announcer line.
 const COUNTDOWN_FRAMES := 216
 var data: GaleData
@@ -46,7 +82,7 @@ func make_fighter(id: String, player: int, skills: Array, palette: int = 0, boss
 		"facing": 1.0 if player == 0 else -1.0, "hp": hp, "max_hp": hp,
 		"meter": 50.0 if boss else 25.0, "action": "idle", "frames": 0, "phase_total": 1,
 		"grounded": true, "crouch": false, "move": {}, "connected": false,
-		"buffer": "", "buffer_frames": 0, "chain": 1, "chain_frames": 0,
+		"buffer": "", "buffer_frames": 0, "chain": 1, "chain_frames": 0, "kchain": 1, "kchain_frames": 0,
 		"combo": 0, "combo_damage": 0, "combo_frames": 0, "dribbles": 0,
 		"juggle": 1.0, "breaker_cd": 0, "immunity": 0, "invuln": 0,
 		"stunlock": 0, "wall_bounced": false, "hard_down": false,
@@ -115,17 +151,42 @@ func attack(f: Dictionary, requested: String, crouching: bool) -> bool:
 				move.hitHeight = "low"
 				move.hitbox = {"offsetX":0.9,"offsetY":0.3,"width":1.25,"height":0.6}
 		move["chain_step"] = chain
+		var feel: Array = LIGHT_FEEL.get(f.id, [])
+		if chain <= feel.size():
+			var step: Dictionary = feel[chain - 1]
+			move.startupFrames += int(step.startup)
+			move["advance"] = float(step.advance)
+			move["back"] = float(step.back)
+			move["hitstopFrames"] = int(step.hitstop)
 		f.chain = chain % 3 + 1
 		f.chain_frames = 54 if chain < 3 else 0
 	else:
 		f.chain = 1
 		f.chain_frames = 0
+	var kicks: Array = HEAVY_CHAIN.get(f.id, [])
+	if kind == "heavy" and not kicks.is_empty() and not (crouching and f.grounded):
+		var kstep: int = f.kchain if f.kchain_frames > 0 else 1
+		var over: Dictionary = kicks[kstep - 1]
+		for key: String in over:
+			if key not in ["back", "advance", "hitstop"]:
+				move[key] = over[key]
+		move["chain_step"] = kstep
+		move["back"] = float(over.back)
+		move["advance"] = float(over.advance)
+		move["hitstopFrames"] = int(over.hitstop)
+		f.kchain = kstep % 3 + 1
+		f.kchain_frames = 60 if kstep < 3 else 0
+	elif kind != "heavy":
+		f.kchain = 1
+		f.kchain_frames = 0
 	if kind == "heavy" and crouching and f.grounded:
 		move.merge({"name": "Rasteira", "delivery":"melee", "hitHeight": "low", "animStyle": "low_sweep",
 			"startupFrames": 8, "activeFrames": 4, "recoveryFrames": 18, "damage": 95,
 			"launchY": 2.4, "knockback": 3.6, "armorHits": 0,
 			"hitbox": {"offsetX": 1.45, "offsetY": 0.42, "width": 2.55, "height": 0.72}}, true)
 	f.vx = f.vx * 0.65 if f.action == "dash" else 0.0
+	if f.grounded and float(move.get("back", 0.0)) > 0.0:
+		f.vx = -f.facing * travel_speed(float(move.back), int(move.startupFrames))
 	f.attack_serial += 1
 	f.move = move
 	f.meter -= float(move.meterCost)
@@ -269,7 +330,7 @@ func step(input1: Dictionary, input2: Dictionary) -> void:
 		check_round()
 
 func update_fighter(f: Dictionary, opponent: Dictionary, inp: Dictionary) -> void:
-	for key: String in ["breaker_cd", "immunity", "invuln", "flash", "parry_frames", "combo_frames", "chain_frames", "buffer_frames"]:
+	for key: String in ["breaker_cd", "immunity", "invuln", "flash", "parry_frames", "combo_frames", "chain_frames", "kchain_frames", "buffer_frames"]:
 		f[key] = maxi(0, int(f[key]) - 1)
 	if f.combo_frames == 0:
 		f.combo = 0
@@ -304,6 +365,8 @@ func update_fighter(f: Dictionary, opponent: Dictionary, inp: Dictionary) -> voi
 					f.action = "active"
 					f.frames = int(f.move.activeFrames)
 					f.phase_total = maxi(1, int(f.move.activeFrames))
+					if f.grounded and float(f.move.get("advance", 0.0)) > 0.0:
+						f.vx = f.facing * travel_speed(float(f.move.advance), int(f.move.activeFrames) + int(f.move.recoveryFrames))
 					if f.id == "ignis" and f.move.type == "ultimate":
 						f.vx = f.facing * 8.5
 					elif f.id == "volt" and f.move.type in ["heavy","ultimate"]:
@@ -464,7 +527,7 @@ func resolve_hit(a: Dictionary, d: Dictionary, inp: Dictionary, move_override: D
 		announce("STUNLOCK ESCAPE!")
 	elif counter:
 		announce("COUNTER HIT!", 45)
-	freeze = maxi(1, roundi(float(move.hitstopMs) * 0.06))
+	freeze = int(move.hitstopFrames) if move.has("hitstopFrames") else maxi(1, roundi(float(move.hitstopMs) * 0.06))
 	emit("heavy" if move.type in ["heavy", "ultimate"] else "hit", d, Color(data.fighter(a.id).primaryColor))
 	events[-1].fighter = a.id
 	# Which move landed, so presentation can pick a per-move sound.

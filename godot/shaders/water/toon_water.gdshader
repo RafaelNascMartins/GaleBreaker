@@ -32,7 +32,12 @@ void vertex() {
 void fragment() {
 	// View-space distance from the water surface to whatever is behind it.
 	float d = texture(depth_tex, SCREEN_UV).r;
+	// OpenGL (Compatibility) stores depth in 0..1 and NDC z in -1..1; Vulkan (Forward+) uses 0..1.
+#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 	vec4 behind = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, d * 2.0 - 1.0, 1.0);
+#else
+	vec4 behind = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, d, 1.0);
+#endif
 	behind.xyz /= behind.w;
 	float gap = max(0.0, VERTEX.z - behind.z);
 

@@ -1,0 +1,1757 @@
+{
+  "version": 2,
+  "project": "Gale Breaker",
+  "units": "meters",
+  "world_size_convention": "number = side length of square; [width,height] = coverage of rectangle",
+  "source_references": {
+    "santuario": "concept-art/arenas/santuario-refinado-v1.png",
+    "bazaar": "concept-art/arenas/bazaar-fechado-v1.png",
+    "forja": "concept-art/arenas/forja-sol-vermelho-v1.png",
+    "praia": "concept-art/ui/menu-principal-praia-v1.png"
+  },
+  "textures": [
+    {
+      "file": "textures-v2/santuario/santuario_pedra-estrutural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_pedra-estrutural_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_piso-calcario_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_piso-calcario_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_madeira-vermelha_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_madeira-vermelha_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_latao-envelhecido_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_latao-envelhecido_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_tecido-jade_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_tecido-jade_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_telhas-azul-ardosia_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_telhas-azul-ardosia_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_madeira-caixas_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_madeira-caixas_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_flores-cerejeira_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1.5,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_flores-cerejeira_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_casca-cerejeira_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_casca-cerejeira_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_pedra-musgo_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_pedra-musgo_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_piso-calcario_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_piso-calcario_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_azulejo-cobalto-marfim_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_azulejo-cobalto-marfim_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_parede-arenito_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_parede-arenito_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_latao_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_latao_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tecido-carmesim_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_tecido-carmesim_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tecido-azul-marinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_tecido-azul-marinho_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_madeira-carrinhos_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_madeira-carrinhos_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_juta_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_juta_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_especiaria-amarela_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.5,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_especiaria-amarela_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_lava_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_lava_emission.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_lava_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_lava_emission.png",
+      "type": "emission",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_lava_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "sampling": "data; do not apply source_color/sRGB decoding to mask samples",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_piso-basalto_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_piso-basalto_emission.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_piso-basalto_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_piso-basalto_emission.png",
+      "type": "emission",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_piso-basalto_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "sampling": "data; do not apply source_color/sRGB decoding to mask samples",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_basalto-natural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_basalto-natural_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_crosta-vulcanica_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_crosta-vulcanica_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_ferro-escuro_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_ferro-escuro_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_latao_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_latao_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_tecido-vinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_tecido-vinho_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_tijolos-escuros_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_tijolos-escuros_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_areia_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_areia_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_agua_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_agua_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_pedra-laranja_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_pedra-laranja_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_tijolo-branco_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_tijolo-branco_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_tronco-coqueiro_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_tronco-coqueiro_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_tronco-arvore_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_tronco-arvore_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_madeira-barco_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_madeira-barco_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_grama_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_grama_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_friso-azul-dourado_albedo.png",
+      "type": "strip",
+      "size_px": [
+        2048,
+        512
+      ],
+      "world_size_m": [
+        4,
+        1
+      ],
+      "repeat": "x",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        2172,
+        724
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_telhas-azul-marinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/praia/preview_praia_telhas-azul-marinho_albedo.png",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_lava-vertical_albedo.png",
+      "type": "strip",
+      "size_px": [
+        512,
+        2048
+      ],
+      "world_size_m": [
+        1,
+        4
+      ],
+      "repeat": "y",
+      "pair": "textures-v2/forja/forja_lava-vertical_emission.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        724,
+        2172
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_lava-vertical_emission.png",
+      "type": "emission",
+      "size_px": [
+        512,
+        2048
+      ],
+      "world_size_m": [
+        1,
+        4
+      ],
+      "repeat": "y",
+      "pair": "textures-v2/forja/forja_lava-vertical_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "sampling": "data; do not apply source_color/sRGB decoding to mask samples",
+      "source_native_size_px": [
+        724,
+        2172
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_medalhao-vento_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_mar-transicao_albedo.png",
+      "type": "strip",
+      "size_px": [
+        2048,
+        1024
+      ],
+      "world_size_m": [
+        8,
+        4
+      ],
+      "repeat": "y",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        1774,
+        887
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_emblema-vento_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.65,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_emblema-fogo_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.65,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_vitral-geometrico_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": [
+        1.5,
+        1.5
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tapete-central_albedo.png",
+      "type": "decal",
+      "size_px": [
+        2048,
+        1024
+      ],
+      "world_size_m": [
+        4,
+        2
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        1774,
+        887
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_abertura-forja_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1.5,
+      "repeat": "none",
+      "pair": "textures-v2/forja/forja_abertura-forja_emission.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_abertura-forja_emission.png",
+      "type": "emission",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1.5,
+      "repeat": "none",
+      "pair": "textures-v2/forja/forja_abertura-forja_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "sampling": "data; do not apply source_color/sRGB decoding to mask samples",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_hibisco_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.55,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-monstera_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.8,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_flores-brancas_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.6,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-larga_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.8,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-coqueiro_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2.5,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-rosa_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.85,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-roxo_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.65,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-laranja_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.8,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_fundo-distante_albedo.png",
+      "type": "backdrop",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "world_size_m": [
+        200,
+        50
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        2172,
+        724
+      ]
+    },
+    {
+      "file": "textures-v2/forja/forja_fundo-distante_albedo.png",
+      "type": "backdrop",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "world_size_m": [
+        200,
+        50
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        2172,
+        724
+      ]
+    },
+    {
+      "file": "textures-v2/santuario/santuario_ramo-cerejeira_cutout.png",
+      "type": "cutout",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1.5,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight",
+      "source_native_size_px": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "file": "textures-v2/praia/praia_fundo-distante_albedo.png",
+      "type": "backdrop",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "world_size_m": [
+        200,
+        50
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "source_native_size_px": [
+        2172,
+        724
+      ]
+    }
+  ],
+  "previews": [
+    {
+      "file": "textures-v2/santuario/preview_santuario_pedra-estrutural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_pedra-estrutural_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_piso-calcario_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_piso-calcario_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_madeira-vermelha_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_madeira-vermelha_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_latao-envelhecido_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_latao-envelhecido_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_tecido-jade_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_tecido-jade_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_telhas-azul-ardosia_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_telhas-azul-ardosia_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_madeira-caixas_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_madeira-caixas_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_flores-cerejeira_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 3.0,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_flores-cerejeira_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_casca-cerejeira_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_casca-cerejeira_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/santuario/preview_santuario_pedra-musgo_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/santuario/santuario_pedra-musgo_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_piso-calcario_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_piso-calcario_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_azulejo-cobalto-marfim_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_azulejo-cobalto-marfim_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_parede-arenito_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_parede-arenito_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_latao_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_latao_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_tecido-carmesim_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_tecido-carmesim_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_tecido-azul-marinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_tecido-azul-marinho_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_madeira-carrinhos_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_madeira-carrinhos_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_juta_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_juta_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/bazaar/preview_bazaar_especiaria-amarela_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 1.0,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/bazaar/bazaar_especiaria-amarela_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_lava_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_lava_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_piso-basalto_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_piso-basalto_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_basalto-natural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_basalto-natural_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_crosta-vulcanica_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_crosta-vulcanica_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_ferro-escuro_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_ferro-escuro_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_latao_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_latao_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_tecido-vinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_tecido-vinho_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/forja/preview_forja_tijolos-escuros_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/forja/forja_tijolos-escuros_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_areia_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_areia_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_agua_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_agua_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_pedra-laranja_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_pedra-laranja_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_tijolo-branco_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_tijolo-branco_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_tronco-coqueiro_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_tronco-coqueiro_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_tronco-arvore_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_tronco-arvore_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_madeira-barco_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_madeira-barco_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_grama_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 2,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_grama_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    },
+    {
+      "file": "textures-v2/praia/preview_praia_telhas-azul-marinho_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        2048,
+        2048
+      ],
+      "world_size_m": 4,
+      "repeat": "none",
+      "pair": null,
+      "usage": "2x2 preview only; not a production material",
+      "source": "textures-v2/praia/praia_telhas-azul-marinho_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    }
+  ]
+}

@@ -458,7 +458,8 @@ def animate_fighter(arm_obj, fighter_id: str):
     pb = arm_obj.pose.bones
     clip_context = {'name':'idle'}
     for b in pb:
-        b.rotation_mode = 'XYZ'
+        # Quaternion keys interpolate along the shortest arc; Euler curves can twist the long way.
+        b.rotation_mode = 'QUATERNION'
     import anim_timing
     # Kaze and Ignis use per-fighter timing and the exaggerated clips below;
     # Tophia and Volt keep the original 24-frame clips until their own pass.
@@ -473,7 +474,7 @@ def animate_fighter(arm_obj, fighter_id: str):
         authored_loc.clear()
         for b in pb:
             b.location = (0, 0, 0)
-            b.rotation_euler = (0, 0, 0)
+            b.rotation_quaternion = (1, 0, 0, 0)
             b.scale = (1, 1, 1)
 
     def set_rot(bname: str, rx=0.0, ry=0.0, rz=0.0):
@@ -486,7 +487,7 @@ def animate_fighter(arm_obj, fighter_id: str):
             joint = bname.startswith(('upper_arm_', 'forearm_', 'hand_', 'thigh_', 'shin_'))
             rot = Euler((math.radians(-rx if joint else rx), math.radians(ry), math.radians(rz)), 'XYZ').to_matrix()
             basis = pb[bname].bone.matrix_local.to_3x3()
-            pb[bname].rotation_euler = (basis.inverted() @ rot @ basis).to_euler('XYZ')
+            pb[bname].rotation_quaternion = (basis.inverted() @ rot @ basis).to_quaternion()
 
     def set_loc(bname: str, x=0.0, y=0.0, z=0.0):
         if bname in pb:
@@ -504,12 +505,20 @@ def animate_fighter(arm_obj, fighter_id: str):
         x, y, z = authored_loc.get(bname, (0.0, 0.0, 0.0))
         set_loc(bname, x + dx, y + dy, z + dz)
 
+    keyed_rot = {}
+
     def key_all(frame: int, phase=None):
         from character_polish import finalize_pose
         finalize_pose(arm_obj, fighter_id, clip_context['name'], frame, phase)
         for b in pb:
+            # q and -q are the same orientation; keep the sign of the previous key of this
+            # clip so the interpolation never takes the long way round.
+            prev = keyed_rot.get((clip_context['name'], b.name))
+            if prev is not None and prev.dot(b.rotation_quaternion) < 0:
+                b.rotation_quaternion = -b.rotation_quaternion
+            keyed_rot[(clip_context['name'], b.name)] = b.rotation_quaternion.copy()
             b.keyframe_insert(data_path="location", frame=frame)
-            b.keyframe_insert(data_path="rotation_euler", frame=frame)
+            b.keyframe_insert(data_path="rotation_quaternion", frame=frame)
 
     def apply_base_stance():
         reset_pose()
@@ -967,6 +976,26 @@ def animate_fighter(arm_obj, fighter_id: str):
                 add_rot("hat", hat, 0, 0)
                 key_all(f, 'free')
 
+    def kaze_select():
+        # Arcade select (arcade-selecao-personagem-roupa-v2): standing tall, right palm raised in
+        # salute, left arm loose; a slow breath (torso, head and cloth only: arm keys that differ
+        # interpolate their Euler angles the long way round) that loops without a seam.
+        n = st('victory')
+        for f, breath in [(0, 0.0), (n // 2, 1.0), (n, 0.0)]:
+            reset_pose()
+            set_rot("spine", -2 - 2 * breath, 0, 0)
+            set_rot("chest", -2 * breath, 0, -6)
+            set_rot("head", 2 - breath, 0, 4)
+            set_rot("upper_arm_r", 22, 18, 0)
+            set_rot("forearm_r", 92, 0, 0)
+            set_rot("hand_r", -25, 0, 0)
+            set_rot("upper_arm_l", 6, 4, 6)
+            set_rot("forearm_l", 14, 0, 0)
+            set_rot("thigh_l", 2, 0, 0)
+            set_rot("thigh_r", -4, 0, 0)
+            cloth(2 * breath, 0, 2)
+            key_all(f, 'free')
+
     if NEW:
         new_builders.update({
             "idle": (st('idle'), new_idle),
@@ -980,7 +1009,7 @@ def animate_fighter(arm_obj, fighter_id: str):
             "get_up": (18, new_get_up),
             "ko": (st('ko'), new_ko),
             "victory": (st('victory'), new_victory),
-            "select": (st('victory'), new_victory),
+            "select": (st('victory'), kaze_select if KAZE else new_victory),
         })
 
     # 1. idle (frames 0..40)

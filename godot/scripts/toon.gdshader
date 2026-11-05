@@ -16,10 +16,14 @@ uniform bool use_face = false;
 uniform sampler2D face_tex : source_color, filter_linear_mipmap, repeat_disable;
 uniform vec2 face_grid = vec2(4.0, 2.0);
 uniform float face_cell = 0.0;
+// PS1 Legends pages (256 px, 15 colours): sampled texel by texel, no mipmaps.
+uniform bool pixelated = false;
+uniform sampler2D albedo_px : source_color, filter_nearest, repeat_disable;
+uniform sampler2D face_px : source_color, filter_nearest, repeat_disable;
 
 void fragment() {
 	vec3 n = NORMAL;
-	if (use_textures) {
+	if (use_textures && !pixelated) {
 		vec3 nmap = texture(normal_tex, UV).rgb * 2.0 - 1.0;
 		vec3 mapped = normalize(TANGENT * nmap.x + BINORMAL * nmap.y + NORMAL * nmap.z);
 		n = normalize(mix(NORMAL, mapped, 0.24));
@@ -32,7 +36,7 @@ void fragment() {
 	vec3 surface = base_color.rgb;
 	float accent_mask = 0.0;
 	if (use_textures) {
-		vec3 tex = texture(albedo_tex, UV).rgb;
+		vec3 tex = pixelated ? texture(albedo_px, UV).rgb : texture(albedo_tex, UV).rgb;
 		vec3 m = texture(mask_tex, UV).rgb;
 		float lum = dot(tex, vec3(0.299, 0.587, 0.114));
 		vec3 detail_factor = clamp(tex / max(lum, 0.08), 0.55, 1.45);
@@ -45,7 +49,8 @@ void fragment() {
 	}
 	if (use_face && UV2.x >= 0.0) {
 		vec2 cell = vec2(mod(face_cell, face_grid.x), floor(face_cell / face_grid.x));
-		vec4 face = texture(face_tex, (cell + clamp(UV2, 0.002, 0.998)) / face_grid);
+		vec2 fuv = (cell + clamp(UV2, 0.002, 0.998)) / face_grid;
+		vec4 face = pixelated ? texture(face_px, fuv) : texture(face_tex, fuv);
 		surface = mix(surface, face.rgb, face.a);
 	}
 

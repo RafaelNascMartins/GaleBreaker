@@ -1,0 +1,14 @@
+{
+  "key": "forja_lava-vertical",
+  "source": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\art-source\\textures-v2\\sources\\forja\\forja_lava-vertical.png",
+  "native_size": [
+    724,
+    2172
+  ],
+  "native_mode": "RGB",
+  "generator": "built-in image_gen",
+  "requested_size": [
+    512,
+    2048
+  ]
+}

@@ -50,6 +50,7 @@ func _ready() -> void:
 	editorial_font=cinzel(600)
 	get_window().min_size = Vector2i(1000, 650)
 	prefs.load_from_disk(data)
+	apply_window_mode.call_deferred()
 	Input.joy_connection_changed.connect(func(_device: int, _connected: bool) -> void: prefs.install_gamepads())
 	arena = GaleArena.new()
 	add_child(arena)
@@ -477,7 +478,7 @@ func build_beach_menu() -> void:
 	var items: Array = [
 		["ARCADE", open_arcade_select],
 		["VERSUS LOCAL", open_mode.bind("versus")],
-		["TREINO", open_mode.bind("training")],
+		["TREINO", open_garage],
 		["HABILIDADES", open_player_skills],
 		["OPÇÕES", open_board_settings],
 	]
@@ -994,6 +995,7 @@ func show_skills() -> void:
 	if is_instance_valid(menu):
 		menu.hide()
 	modal = overlay()
+	modal.set_meta("skills", true)
 	var column := centered(modal, 920, false, 540)
 	var target := skill_target_fighter if skill_target_fighter in GaleData.IDS else fighter1
 	var cat := GaleVisualCatalog.load_for(target)
@@ -1036,11 +1038,22 @@ func show_skills() -> void:
 		loadouts[target] = []
 		persist()
 		show_skills())
-	button(column, "Fechar", func() -> void:
-		close_modal()
-		if in_arcade_select: show_arcade_select()
-		elif in_selection: show_menu(true))
+	button(column, "Fechar", close_skills)
 	focus_first(column)
+
+## Leave the skills screen back to wherever it was opened from (the patio stall keeps the
+## main menu hidden).
+func close_skills() -> void:
+	if in_arcade_select:
+		listening.clear()
+		if is_instance_valid(modal):
+			ui.remove_child(modal)
+			modal.queue_free()
+		modal = null
+		show_arcade_select()
+		return
+	close_modal()
+	if in_selection: show_menu(true)
 
 ## Options screen from concept-art/ui/opcoes-geral-praia-v2.png and opcoes-controles-praia-v2.png.
 const OPTIONS_DIR := "res://assets/ui/options/"
@@ -1056,11 +1069,16 @@ var settings_tab := "geral"
 var settings_on_board := false
 var menu_fade: Tween
 var board_ui: GaleBoardOptions
+# Training is set up on the garage gate behind the menu camera (see arena.focus_garage).
+var garage_ui: GaleGarageMenu
+var in_garage := false
 const SETTINGS_DESIGN := Vector2(1145, 680)
 # Tighter canvas on the board, so it is scaled down less and reads larger.
 const BOARD_DESIGN := Vector2(840, 540)
 var in_arcade_select := false
 var arcade_outfit_page := 0
+var patio_ui: GalePatioMenu
+var blackout_rect: ColorRect
 var settings_input := "teclado"
 
 func cinzel(weight: int = 700, spacing: int = 0) -> FontVariation:
@@ -1370,7 +1388,7 @@ func build_general_options(body: VBoxContainer) -> void:
 	picker.add_theme_font_size_override("font_size", 17)
 	picker.item_selected.connect(func(index: int) -> void: prefs.difficulty = index; persist())
 	difficulty_row.add_child(picker)
-	jade_toggle(option_row(right, "Flashes de impacto"), prefs.flashes, func(on: bool) -> void: prefs.flashes = on; persist())
+	jade_toggle(option_row(right, "Tela cheia (1920×1080)"), prefs.fullscreen, func(on: bool) -> void: prefs.fullscreen = on; persist())
 	jade_toggle(option_row(right, "Vibração do gamepad"), prefs.vibration, func(on: bool) -> void: prefs.vibration = on; persist())
 	jade_toggle(option_row(right, "Mostrar áreas de colisão"), arena.show_boxes, func(on: bool) -> void: arena.show_boxes = on)
 
@@ -1467,21 +1485,39 @@ func restore_default_keys() -> void:
 func open_arcade_select() -> void:
 	mode = "arcade"
 	in_arcade_select = true
+	await blackout(true)
 	if is_instance_valid(menu):
 		menu.hide()
+	arena.show_patio(true)
 	arena.show_select_fighter(data, fighter1, palette1)
 	show_arcade_select()
+	await blackout(false, 0.45)
+	if in_arcade_select and is_instance_valid(patio_ui):
+		patio_ui.interactive = true
+		patio_ui.refresh()
 
 func leave_arcade_select() -> void:
 	in_arcade_select = false
+	if is_instance_valid(patio_ui):
+		patio_ui.interactive = false
+	await blackout(true)
 	close_modal()
+	if is_instance_valid(patio_ui):
+		patio_ui.queue_free()
+	patio_ui = null
 	arena.hide_select_fighter()
+	arena.show_patio(false)
 	show_menu()
+	await blackout(false, 0.45)
 
 func start_arcade_from_select() -> void:
 	in_arcade_select = false
 	arcade_index = 1
 	close_modal()
+	if is_instance_valid(patio_ui):
+		patio_ui.queue_free()
+	patio_ui = null
+	arena.show_patio(false)
 	begin_fight()
 
 func choose_arcade_fighter(id: String) -> void:
@@ -1524,7 +1560,7 @@ func outfit_preview(parent: Node, id: String, palette: int) -> SubViewportContai
 	view.rotation.y = PI - 0.3
 	view.aura.visible = false
 	view.contact_shadow.visible = false
-	view.play_clip("idle", 0.0)
+	view.play_clip("select", 0.0)
 	return holder
 
 func select_card(parent: Node, size: Vector2, selected: bool, callback: Callable) -> Button:
@@ -1571,166 +1607,46 @@ func section_plate(parent: Node, text: String) -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	gold_rule(row)
 
-func show_arcade_select(redraw: bool = false) -> void:
-	close_modal()
-	if is_instance_valid(menu):
-		menu.hide()
-	modal = overlay(0.0)
-	modal.set_meta("arcade_select", true)
-	var cat := GaleVisualCatalog.load_for(fighter1)
+func show_arcade_select(_redraw: bool = false) -> void:
+	"""Arcade select on the village patio: a clear overlay keeps ESC VOLTAR on screen, the
+	choices themselves are painted on the stall (GalePatioMenu)."""
+	if not is_instance_valid(modal) or not modal.has_meta("arcade_select"):
+		close_modal()
+		modal = overlay(0.0)
+		modal.set_meta("arcade_select", true)
+		if is_instance_valid(menu):
+			menu.hide()
+		var esc := label(modal, "ESC   VOLTAR", 16, Color("FFF8EA"))
+		esc.position = Vector2(40, 676)
+		esc.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.6))
+		esc.add_theme_constant_override("outline_size", 5)
+		esc.mouse_filter = Control.MOUSE_FILTER_STOP
+		esc.gui_input.connect(func(e: InputEvent) -> void:
+			if e is InputEventMouseButton and e.pressed: leave_arcade_select())
+	if not is_instance_valid(patio_ui):
+		patio_ui = GalePatioMenu.new()
+		arena.scenery.add_child(patio_ui)
+		patio_ui.setup(self, arena.patio_anchors)
+	patio_ui.rebuild()
 
-	# Left: the fighter's name and title over the beach, and rotate arrows.
-	var name_box := VBoxContainer.new()
-	name_box.position = Vector2(56, 452)
-	name_box.add_theme_constant_override("separation", 2)
-	modal.add_child(name_box)
-	var slanted := FontVariation.new()
-	slanted.base_font = cinzel(700, 1)
-	slanted.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.22, 1), Vector2.ZERO)
-	var big := ink_label(name_box, cat.display_name.to_upper(), 58, Color("C6A052"), slanted)
-	big.add_theme_color_override("font_outline_color", Color(0.12, 0.09, 0.05, 0.85))
-	big.add_theme_constant_override("outline_size", 6)
-	var rule := ColorRect.new()
-	rule.color = Color("C6A052")
-	rule.custom_minimum_size = Vector2(260, 2)
-	name_box.add_child(rule)
-	var italic := FontVariation.new()
-	italic.base_font = ThemeDB.fallback_font
-	italic.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.2, 1), Vector2.ZERO)
-	var subtitle := ink_label(name_box, cat.subtitle, 20, Color("FFF8EA"), italic)
-	subtitle.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55))
-	subtitle.add_theme_constant_override("outline_size", 5)
-	var turns := HBoxContainer.new()
-	turns.position = Vector2(150, 610)
-	turns.add_theme_constant_override("separation", 170)
-	modal.add_child(turns)
-	for pair: Array in [["↶", -0.6], ["↷", 0.6]]:
-		var arrow := button(turns, String(pair[0]), turn_select_fighter.bind(float(pair[1])))
-		arrow.add_theme_font_size_override("font_size", 30)
-		for state: String in ["normal", "hover", "pressed", "focus"]:
-			arrow.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-		arrow.add_theme_color_override("font_color", Color("1F3B2E"))
-		arrow.add_theme_constant_override("outline_size", 0)
+func open_arcade_skills() -> void:
+	skill_target_player = 0
+	skill_target_fighter = fighter1
+	show_skills()
 
-	# Right: the selection card.
-	var card := TextureRect.new()
-	card.texture = load(OPTIONS_DIR + "frame.png")
-	card.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	card.stretch_mode = TextureRect.STRETCH_SCALE
-	card.size = Vector2(650, 618)
-	card.position = Vector2(596, 12)
-	modal.add_child(card)
-	if not redraw:
-		fade_in(card, 0.28, Vector2(24, 0))
-		fade_in(name_box, 0.35, Vector2(-20, 0))
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	for side: String in ["left", "right"]:
-		margin.add_theme_constant_override("margin_" + side, 40)
-	margin.add_theme_constant_override("margin_top", 22)
-	margin.add_theme_constant_override("margin_bottom", 26)
-	card.add_child(margin)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 6)
-	margin.add_child(column)
-	var brand := ink_label(column, "GALE BREAKER", 12, INK, cinzel(600, 6))
-	brand.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var title := ink_label(column, "ARCADE", 40, INK, cinzel(700, 6))
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var sub := ink_label(column, "ESCOLHA SEU LUTADOR", 14, INK, cinzel(700, 5))
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	section_plate(column, "PERSONAGEM")
-	var roster := HBoxContainer.new()
-	roster.alignment = BoxContainer.ALIGNMENT_CENTER
-	roster.add_theme_constant_override("separation", 10)
-	column.add_child(roster)
-	var focus_target: Control = null
-	for id: String in GaleData.IDS:
-		var fighter_card := select_card(roster, Vector2(124, 138), id == fighter1, choose_arcade_fighter.bind(id))
-		var inner := VBoxContainer.new()
-		inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		inner.add_theme_constant_override("separation", 0)
-		inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		fighter_card.add_child(inner)
-		var portrait := TextureRect.new()
-		portrait.texture = load("res://assets/ui/portraits/%s.png" % id)
-		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		portrait.custom_minimum_size = Vector2(116, 108)
-		portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		inner.add_child(portrait)
-		var label_name := ink_label(inner, GaleVisualCatalog.load_for(id).display_name.to_upper(), 14, INK, cinzel(700, 2))
-		label_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		if id == fighter1:
-			focus_target = fighter_card
-
-	section_plate(column, "ROUPA")
-	var outfits := HBoxContainer.new()
-	outfits.alignment = BoxContainer.ALIGNMENT_CENTER
-	outfits.add_theme_constant_override("separation", 10)
-	column.add_child(outfits)
-	var count := cat.palettes.size()
-	var prev := plate_button(outfits, "‹", true, Vector2(40, 52), 24, func() -> void:
-		arcade_outfit_page = posmod(arcade_outfit_page - 1, count)
-		show_arcade_select(true))
-	prev.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	for offset in 3:
-		var index := posmod(arcade_outfit_page + offset, count)
-		var outfit_card := select_card(outfits, Vector2(128, 158), index == palette1, choose_arcade_outfit.bind(index))
-		var inner := VBoxContainer.new()
-		inner.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		outfit_card.add_child(inner)
-		outfit_preview(inner, fighter1, index)
-		var short_name := String(cat.palettes[index].name).split(" ")[0]
-		var outfit_label := ink_label(inner, short_name, 14, INK)
-		outfit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var next := plate_button(outfits, "›", true, Vector2(40, 52), 24, func() -> void:
-		arcade_outfit_page = posmod(arcade_outfit_page + 1, count)
-		show_arcade_select(true))
-	next.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var caption := HBoxContainer.new()
-	caption.add_theme_constant_override("separation", 12)
-	column.add_child(caption)
-	gold_rule(caption)
-	var italic_ink := FontVariation.new()
-	italic_ink.base_font = ThemeDB.fallback_font
-	italic_ink.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.2, 1), Vector2.ZERO)
-	ink_label(caption, String(cat.palettes[palette1].name), 17, INK, italic_ink)
-	gold_rule(caption)
-	var counter := ink_label(column, "%02d / %02d" % [palette1 + 1, count], 13, INK_SOFT)
-	counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
-	# Footer: back on the left, skills and start on the right.
-	var footer := HBoxContainer.new()
-	footer.position = Vector2(56, 650)
-	footer.size = Vector2(1170, 52)
-	footer.add_theme_constant_override("separation", 12)
-	modal.add_child(footer)
-	var esc := key_pill(footer, "ESC", false, leave_arcade_select)
-	esc.custom_minimum_size = Vector2(56, 30)
-	var back := button(footer, "VOLTAR", leave_arcade_select)
-	back.add_theme_font_override("font", cinzel(700, 2))
-	back.add_theme_font_size_override("font_size", 19)
-	for state: String in ["normal", "hover", "pressed", "focus"]:
-		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	for state: String in ["font_color", "font_hover_color", "font_focus_color", "font_pressed_color"]:
-		back.add_theme_color_override(state, Color("FFF8EA"))
-	back.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55))
-	back.add_theme_constant_override("outline_size", 5)
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	footer.add_child(spacer)
-	plate_button(footer, "HABILIDADES", false, Vector2(210, 46), 16, func() -> void:
-		skill_target_player = 0
-		skill_target_fighter = fighter1
-		show_skills())
-	var start := plate_button(footer, "INICIAR ARCADE  ↵", true, Vector2(320, 50), 20, start_arcade_from_select)
-	if not redraw:
-		fade_in(footer, 0.3)
-	call_deferred("focus_control", start if focus_target == null else focus_target)
+## Fade the whole screen to black (on) or back (off); returns when done.
+func blackout(on: bool, time: float = 0.35) -> void:
+	if not is_instance_valid(blackout_rect):
+		blackout_rect = ColorRect.new()
+		blackout_rect.color = Color.BLACK
+		blackout_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		blackout_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		blackout_rect.modulate.a = 0.0
+		ui.add_child(blackout_rect)
+	ui.move_child(blackout_rect, -1)
+	var tween := blackout_rect.create_tween()
+	tween.tween_property(blackout_rect, "modulate:a", 1.0 if on else 0.0, time)
+	await tween.finished
 
 func close_settings() -> void:
 	listening.clear()
@@ -1754,6 +1670,51 @@ func close_settings() -> void:
 		if is_instance_valid(menu) and screen == "menu":
 			menu.show()
 			fade_in(menu, 0.25)
+
+func open_garage() -> void:
+	mode = "training"
+	if is_instance_valid(menu):
+		menu_fade = menu.create_tween()
+		menu_fade.tween_property(menu, "modulate:a", 0.0, 0.2)
+		menu_fade.tween_callback(menu.hide)
+	in_garage = true
+	if not is_instance_valid(garage_ui):
+		garage_ui = GaleGarageMenu.new()
+		arena.scenery.add_child(garage_ui)
+		garage_ui.setup(self, arena.garage_panel)
+	garage_ui.focus = 0
+	garage_ui.interactive = false
+	garage_ui.rebuild()
+	arena.focus_garage(true)
+	await arena.garage_ready
+	if screen == "menu" and in_garage:
+		garage_ui.interactive = true
+		garage_ui.refresh_focus()
+
+func close_garage() -> void:
+	if not in_garage:
+		return
+	in_garage = false
+	if is_instance_valid(garage_ui):
+		garage_ui.interactive = false
+		garage_ui.hover = -1
+		garage_ui.refresh_focus()
+	arena.focus_garage(false)
+	await arena.garage_closed
+	if menu_fade != null and menu_fade.is_valid():
+		menu_fade.kill()
+	if is_instance_valid(menu) and screen == "menu":
+		menu.show()
+		fade_in(menu, 0.25)
+
+func start_training_from_garage() -> void:
+	in_garage = false
+	if is_instance_valid(garage_ui):
+		garage_ui.interactive = false
+	mode = "training"
+	arena.focus_garage(false)
+	arena.garage_flight = 0.0
+	begin_fight()
 
 func open_board_settings() -> void:
 	if is_instance_valid(menu):
@@ -1805,9 +1766,22 @@ func _input(event: InputEvent) -> void:
 		if board_ui.handle_input(event):
 			get_viewport().set_input_as_handled()
 			return
+	if in_arcade_select and is_instance_valid(patio_ui) and patio_ui.interactive and is_instance_valid(modal) and modal.has_meta("arcade_select"):
+		if patio_ui.handle_input(event):
+			get_viewport().set_input_as_handled()
+			return
+	if in_garage and is_instance_valid(garage_ui) and garage_ui.interactive:
+		if event.is_action_pressed("ui_cancel") or (event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_B):
+			get_viewport().set_input_as_handled()
+			close_garage()
+			return
+		if garage_ui.handle_input(event):
+			get_viewport().set_input_as_handled()
+			return
 	if event is InputEventJoypadButton and event.pressed:
 		if event.button_index == JOY_BUTTON_START:
-			if is_instance_valid(modal) and screen in ["menu","selection"]:close_modal()
+			if is_instance_valid(modal) and modal.has_meta("skills"): close_skills()
+			elif is_instance_valid(modal) and screen in ["menu","selection"]:close_modal()
 			elif screen == "playing": pause_match()
 			elif screen == "paused": resume_match()
 			elif screen == "menu": show_menu(true)
@@ -1867,6 +1841,8 @@ func _input(event: InputEvent) -> void:
 				close_settings()
 			elif modal.has_meta("arcade_select"):
 				leave_arcade_select()
+			elif modal.has_meta("skills"):
+				close_skills()
 			else:
 				close_modal()
 		return
@@ -1966,11 +1942,27 @@ func focus_control(control: Control) -> void:
 		control.grab_focus()
 
 func apply_presentation_options() -> void:
+	apply_window_mode()
 	if is_instance_valid(arena):
 		arena.shake_strength = prefs.shake_strength
 		for view in arena.fighters:
 			view.flashes_enabled = prefs.flashes
 			view.shake_strength = prefs.shake_strength
+
+## Fullscreen at 1920x1080 or the 1280x720 window. The UI scales with the window (canvas_items
+## stretch), so both show the same layout. Headless runs (tests) have no window to change.
+func apply_window_mode() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var window := get_window()
+	if prefs.fullscreen:
+		if window.mode != Window.MODE_FULLSCREEN:
+			window.mode = Window.MODE_FULLSCREEN
+			window.size = Vector2i(1920, 1080)
+	elif window.mode == Window.MODE_FULLSCREEN or window.mode == Window.MODE_EXCLUSIVE_FULLSCREEN:
+		window.mode = Window.MODE_WINDOWED
+		window.size = Vector2i(1280, 720)
+		window.move_to_center()
 
 func begin_fight() -> void:
 	tutorial = null

@@ -1,0 +1,27 @@
+{
+  "key": "forja_emblema-fogo",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661657.4466896,
+  "pipeline_version": 4,
+  "cut_scores": {},
+  "entries": [
+    {
+      "file": "textures-v2/forja/forja_emblema-fogo_albedo.png",
+      "type": "decal",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 0.65,
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "straight"
+    }
+  ]
+}

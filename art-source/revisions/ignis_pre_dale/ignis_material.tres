@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_bytpi"]
+[ext_resource type="Texture2D" path="res://assets/characters/ignis/textures/albedo.png" id="2_vjmdw"]
+[ext_resource type="Texture2D" path="res://assets/characters/ignis/textures/mask.png" id="3_p6leo"]
+[ext_resource type="Texture2D" path="res://assets/characters/ignis/textures/normal.png" id="4_5trcw"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_bytpi")
+shader_parameter/base_color = null
+shader_parameter/glow = null
+shader_parameter/use_textures = true
+shader_parameter/albedo_tex = ExtResource("2_vjmdw")
+shader_parameter/mask_tex = ExtResource("3_p6leo")
+shader_parameter/normal_tex = ExtResource("4_5trcw")
+shader_parameter/palette_primary = Color(0.23137255, 0.34901962, 0.47058824, 1)
+shader_parameter/palette_secondary = Color(0.36078432, 0.2509804, 0.15686275, 1)
+shader_parameter/palette_accent = Color(0.9764706, 0.4509804, 0.08627451, 1)
+shader_parameter/flash_amount = null

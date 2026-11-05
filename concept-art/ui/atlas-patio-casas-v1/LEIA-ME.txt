@@ -1,0 +1,15 @@
+PÁTIO DAS CASAS — CONCEPT E ATLAS V1
+
+Concept atualizada: somente a ficha de Babuin; fichas de Ignis, Tophia e Volt removidas. Stand e área de descanso preservados.
+
+Três atlas, 16 células cada (48 regiões):
+1. Casas, pedras e madeiras: rebocos, alvenaria, calçamento, degraus, pedra laranja, pedra com musgo, madeiras, persianas jade, terracota, cerâmica, latão e ferro.
+2. Tecidos e acessórios: lona do stand, estandarte, almofadas, tapetes, toalhas, corda, papel, bronze, vidro âmbar, casca, musgo, madeira de placas e vime.
+3. Recortes e ornamentos: emblema, desenhos de vasos/almofadas, flores, folhas, cipó, pétalas, sublinhado, setas, etiqueta vazia e pino.
+Não inclui texturas de telhado. A lona é o tecido do stand.
+
+As três imagens mantêm sua resolução nativa de 1254×1254. Cada célula ocupa aproximadamente 313–314 px por lado. Os dois atlas de superfícies são RGB; recortes/ornamentos RGBA com alfa. manifest.json contém nomes, retângulos em pixels e UVs. opaque_content_rect_px indica o conteúdo principal dos recortes, sem margens.
+
+Use as regiões na UV/AtlasTexture. Repetir UV comum repete o atlas inteiro, não a célula: materiais que precisarem repetir requerem recorte ou remapeamento UV. Estas são fontes artísticas para prototipagem; não houve certificação de emendas invisíveis, dilatação ou mipmaps de produção. Ajuste a densidade de texel conforme a câmera final.
+Vidro âmbar é albedo RGB; emissão/transparência da lanterna são configurações do material no Godot. O metal fornece a cor da armação; grades, cantos e suportes precisam de geometria. Recortes foram inspecionados compostos sobre jade; a prévia de QA não substitui o PNG com alfa.
+Textos das placas, retrato, personagem e roupas continuam separados; as referências desses trajes já existem na pasta de Babuin. Não inclui modelos 3D ou implementação da tela.

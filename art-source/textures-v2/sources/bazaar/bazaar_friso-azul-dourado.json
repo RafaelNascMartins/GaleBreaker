@@ -1,0 +1,14 @@
+{
+  "key": "bazaar_friso-azul-dourado",
+  "source": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\art-source\\textures-v2\\sources\\bazaar\\bazaar_friso-azul-dourado.png",
+  "native_size": [
+    2172,
+    724
+  ],
+  "native_mode": "RGB",
+  "generator": "built-in image_gen",
+  "requested_size": [
+    2048,
+    512
+  ]
+}

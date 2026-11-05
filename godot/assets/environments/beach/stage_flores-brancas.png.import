@@ -3,22 +3,23 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://gg35mj8vmji0"
-path="res://.godot/imported/stage_flores-brancas.png-d60ba9ef7aa26997b86d95e33f943820.ctex"
+path.s3tc="res://.godot/imported/stage_flores-brancas.png-d60ba9ef7aa26997b86d95e33f943820.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "4441274ba4d6dca40951e0dcf6cf91ac"
+"md5": "25de9fe01e0da1d47d9e65a1662f035e"
 }
 
 [deps]
 
 source_file="res://assets/environments/beach/stage_flores-brancas.png"
-dest_files=["res://.godot/imported/stage_flores-brancas.png-d60ba9ef7aa26997b86d95e33f943820.ctex"]
+dest_files=["res://.godot/imported/stage_flores-brancas.png-d60ba9ef7aa26997b86d95e33f943820.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

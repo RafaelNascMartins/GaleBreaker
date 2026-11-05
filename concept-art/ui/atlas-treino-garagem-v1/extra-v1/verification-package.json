@@ -1,0 +1,39 @@
+{
+  "cells_extra": 16,
+  "cells_total": 48,
+  "font_glyphs": 191,
+  "font_engine_test": {
+    "engine": "4.7.2-stable (official)",
+    "fonts": [
+      {
+        "ascent_64": 63.0,
+        "height_64": 89.0,
+        "missing": [],
+        "path": "res://fonts/StardosStencil-Bold.ttf",
+        "words_tested": 20
+      },
+      {
+        "ascent_64": 68.0,
+        "height_64": 84.0,
+        "missing": [],
+        "path": "res://fonts/PortaoStencil-Desgastado.fnt",
+        "words_tested": 20
+      }
+    ],
+    "passed": true
+  },
+  "archives": [
+    {
+      "file": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\atlas-treino-garagem-v1\\extra-v1\\Garagem_Detalhes_Fonte_v1.zip",
+      "bytes": 6548378,
+      "entries": 58,
+      "sha256": "4cad10ad12cf1ac2b2c779972510f24de58813ebf75f9ec96669c3b1242e6511"
+    },
+    {
+      "file": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\atlas-treino-garagem-v1\\Atlas_Treino_Garagem_Completo_v2.zip",
+      "bytes": 10514854,
+      "entries": 64,
+      "sha256": "f4169b0dad5f74885ff89dcf551ce903910c7cfd2a9f0b406560673dca9bb1af"
+    }
+  ]
+}

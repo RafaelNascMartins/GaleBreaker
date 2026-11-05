@@ -1,0 +1,574 @@
+{
+  "version": 1,
+  "grid": [
+    4,
+    4
+  ],
+  "origin": "top-left",
+  "atlases": [
+    {
+      "file": "atlas-detalhes-garagem-v1.png",
+      "type": "mixed",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "saco-pancadas-costura",
+          "row": 0,
+          "column": 0,
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/01_saco-pancadas-costura.png",
+          "mode": "RGB",
+          "size_px": [
+            314,
+            314
+          ]
+        },
+        {
+          "id": "anilha-sextavada-10",
+          "row": 0,
+          "column": 1,
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/02_anilha-sextavada-10.png",
+          "mode": "RGB",
+          "size_px": [
+            313,
+            314
+          ]
+        },
+        {
+          "id": "cabo-serrilhado",
+          "row": 0,
+          "column": 2,
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/03_cabo-serrilhado.png",
+          "mode": "RGB",
+          "size_px": [
+            313,
+            314
+          ]
+        },
+        {
+          "id": "painel-perfurado",
+          "row": 0,
+          "column": 3,
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/04_painel-perfurado.png",
+          "mode": "RGB",
+          "size_px": [
+            314,
+            314
+          ]
+        },
+        {
+          "id": "concreto-oleo-pegadas",
+          "row": 1,
+          "column": 0,
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/05_concreto-oleo-pegadas.png",
+          "mode": "RGB",
+          "size_px": [
+            314,
+            313
+          ]
+        },
+        {
+          "id": "madeira-wing-chun",
+          "row": 1,
+          "column": 1,
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/06_madeira-wing-chun.png",
+          "mode": "RGB",
+          "size_px": [
+            313,
+            313
+          ]
+        },
+        {
+          "id": "lona-equipamento",
+          "row": 1,
+          "column": 2,
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/07_lona-equipamento.png",
+          "mode": "RGB",
+          "size_px": [
+            313,
+            313
+          ]
+        },
+        {
+          "id": "corrente",
+          "row": 1,
+          "column": 3,
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "material",
+          "file": "textures/08_corrente.png",
+          "mode": "RGB",
+          "size_px": [
+            314,
+            313
+          ],
+          "repeat_file": "textures/08_corrente_faixa-x.png",
+          "repeat_file_size_px": [
+            112,
+            313
+          ],
+          "repeat_file_axis": "x",
+          "repeat_file_source_rect_px": [
+            160,
+            0,
+            112,
+            313
+          ]
+        },
+        {
+          "id": "ferramentas",
+          "row": 2,
+          "column": 0,
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/09_ferramentas.png",
+          "mode": "RGBA",
+          "size_px": [
+            314,
+            313
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            26,
+            693,
+            271,
+            202
+          ],
+          "blend": "mix",
+          "subsprites": [
+            {
+              "id": "chave-boca",
+              "file": "textures/09_chave-boca.png",
+              "rect_px": [
+                23,
+                693,
+                59,
+                199
+              ]
+            },
+            {
+              "id": "chave-estrela",
+              "file": "textures/09_chave-estrela.png",
+              "rect_px": [
+                95,
+                691,
+                45,
+                202
+              ]
+            },
+            {
+              "id": "martelo",
+              "file": "textures/09_martelo.png",
+              "rect_px": [
+                148,
+                690,
+                84,
+                208
+              ]
+            },
+            {
+              "id": "alicate",
+              "file": "textures/09_alicate.png",
+              "rect_px": [
+                227,
+                698,
+                73,
+                197
+              ]
+            }
+          ]
+        },
+        {
+          "id": "janela-interior",
+          "row": 2,
+          "column": 1,
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/10_janela-interior.png",
+          "mode": "RGBA",
+          "size_px": [
+            313,
+            313
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            335,
+            692,
+            267,
+            204
+          ],
+          "blend": "mix"
+        },
+        {
+          "id": "lampada-pendente",
+          "row": 2,
+          "column": 2,
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/11_lampada-pendente.png",
+          "mode": "RGBA",
+          "size_px": [
+            313,
+            313
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            685,
+            654,
+            202,
+            244
+          ],
+          "blend": "mix"
+        },
+        {
+          "id": "lanterna-bancada",
+          "row": 2,
+          "column": 3,
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/12_lanterna-bancada.png",
+          "mode": "RGBA",
+          "size_px": [
+            314,
+            313
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            1023,
+            672,
+            148,
+            236
+          ],
+          "blend": "mix"
+        },
+        {
+          "id": "toalha-listra-jade",
+          "row": 3,
+          "column": 0,
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/13_toalha-listra-jade.png",
+          "mode": "RGBA",
+          "size_px": [
+            314,
+            314
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            67,
+            966,
+            180,
+            262
+          ],
+          "blend": "mix"
+        },
+        {
+          "id": "caneca-branca",
+          "row": 3,
+          "column": 1,
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/14_caneca-branca.png",
+          "mode": "RGBA",
+          "size_px": [
+            313,
+            314
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            377,
+            1004,
+            193,
+            177
+          ],
+          "blend": "mix"
+        },
+        {
+          "id": "feixes-luz",
+          "row": 3,
+          "column": 2,
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "effect",
+          "file": "textures/15_feixes-luz.png",
+          "mode": "RGBA",
+          "size_px": [
+            313,
+            314
+          ],
+          "alpha_range": [
+            0,
+            253
+          ],
+          "opaque_content_rect_px": [
+            657,
+            974,
+            239,
+            242
+          ],
+          "blend": "add"
+        },
+        {
+          "id": "respingos-tinta",
+          "row": 3,
+          "column": 3,
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "type": "cutout",
+          "file": "textures/16_respingos-tinta.png",
+          "mode": "RGBA",
+          "size_px": [
+            314,
+            314
+          ],
+          "alpha_range": [
+            0,
+            255
+          ],
+          "opaque_content_rect_px": [
+            972,
+            986,
+            252,
+            229
+          ],
+          "blend": "mix"
+        }
+      ]
+    }
+  ],
+  "fonts": {
+    "manifest": "fonts/manifest-fonte.json",
+    "ttf": "fonts/StardosStencil-Bold.ttf",
+    "bitmap": "fonts/PortaoStencil-Desgastado.fnt"
+  },
+  "notes": [
+    "Células 1–8: arquivos individuais RGB; 9–16: RGBA.",
+    "O atlas misto é RGBA: regiões de superfície têm alfa 255.",
+    "A faixa de corrente separada repete em X; não repetir o atlas inteiro.",
+    "Feixes de luz mantêm alfa gradual e usam mistura aditiva."
+  ]
+}

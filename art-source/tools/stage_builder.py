@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ENV = ROOT / "godot" / "assets" / "environments"
 # x_min, x_max, y_front, y_back of the walkable floor.
 STAGE_FLOOR = {"zephyr_dojo": (-8.6, 8.6, -4.6, 4.2), "molten_forge": (-7.6, 7.6, -4.6, 3.8), "storm_market": (-9.6, 9.6, -14.0, 16.6)}
-KEEP_PREFIXES = ("Blocker_", "Barrier_", "Banner_", "Crowd_", "Backdrop", "QuestBoardPanel")
+KEEP_PREFIXES = ("Blocker_", "Barrier_", "Banner_", "Crowd_", "Backdrop", "QuestBoardPanel", "GaragePanel", "Bag")
 
 
 class Kit:
@@ -228,7 +228,7 @@ def floor(k, base_mat, under_mat):
     k.box("FloorSlab", (cx, cy, -0.32), (w, d, 0.62), under_mat)
 
 
-def backdrop(k, z_bottom=-7.0, radius=46.0, a_left=158.0, a_right=22.0, segments=40, filename="backdrop.png", height=None, v_rows=None):
+def backdrop(k, z_bottom=-7.0, radius=46.0, a_left=158.0, a_right=22.0, segments=40, filename="backdrop.png", height=None, v_rows=None, u_range=(0.0, 1.0)):
     """Painted horizon on a curved band around the back of the arena (no flat poster edges).
 
     v_rows [(z, v), ...] maps image rows to heights piecewise, e.g. to pull a sky's
@@ -247,7 +247,8 @@ def backdrop(k, z_bottom=-7.0, radius=46.0, a_left=158.0, a_right=22.0, segments
     for i in range(segments + 1):
         a = math.radians(a_left) - span * i / segments
         x, y = math.cos(a) * radius, math.sin(a) * radius
-        columns.append(([bm.verts.new((x, y, z)) for z, _ in v_rows], i / segments))
+        u = u_range[0] + (u_range[1] - u_range[0]) * i / segments
+        columns.append(([bm.verts.new((x, y, z)) for z, _ in v_rows], u))
     for (c0, u0), (c1, u1) in zip(columns, columns[1:]):
         for r in range(len(v_rows) - 1):
             v0, v1 = v_rows[r][1], v_rows[r + 1][1]
@@ -790,8 +791,7 @@ def build_beach(k):
     water_rows = [((x - 0.6, y, WATER_Z), (260.0, y, WATER_Z)) for x, y in SHORE]
     water_rows.append(((-260.0, 260.0, WATER_Z), (260.0, 260.0, WATER_Z)))
     flat_mesh(k, "WaterSurface", water_rows, water)
-    # Clouds occupy the top half of the painted sky: bring them down to 3-20 degrees of elevation.
-    backdrop(k, radius=200.0, a_left=190.0, a_right=-10.0, segments=64, filename="ceu-praia-v1.png", v_rows=[(-6.0, 0.0), (10.0, 0.5), (75.0, 1.0)])
+    # The sky is the toon sky shader in Godot (shaders/sky/toon_sky.gdshader): no painted band.
 
     # Hill with white houses and navy roofs, a stone wall and steps.
     k.ball("Hill", (-13, 42, -4.0), (18, 13, 11), grass, 2)
@@ -865,6 +865,8 @@ def build_beach(k):
     k.panel("SunGlints", (20, 52, 0.06), 26, 44, k.tex("glint_sol", "glints.png"), "up", rot_z=-18)
     foliage_wall(k, leaves, fronds, flowers, tree_bark)
     forest(k, sand)
+    garage(k)
+    patio(k)
 
 
 WATER_Z = 0.05
@@ -1138,6 +1140,646 @@ def forest(k, sand_dark):
                              (-12.5, CORRIDOR_Y, 1.95), (-16.0, CORRIDOR_Y, 2.3)]):
         marker("CamPath_%d" % n, loc)
     marker("BoardLook", (BOARD.x, BOARD.y, 2.06))
+
+
+# --- Garagem de treino (concept-art/ui/atlas-treino-garagem-v1) ---
+# Behind the menu camera: choosing Treino turns the camera 180 degrees to the garage. The
+# closed gate leaf on the screen left (+X when looking toward -Y) carries the training menu
+# painted on it (GaragePanel); the rest of the front is open on the gym.
+GARAGE_FRONT = -19.0
+GARAGE_BACK = -26.5
+GARAGE_X = (-4.6, 3.4)
+
+
+def face_uv(obj):
+    """Every face of a box shows the whole texture once (labels on crates, not a tiled strip)."""
+    uv = obj.data.uv_layers.active or obj.data.uv_layers.new()
+    for poly in obj.data.polygons:
+        for loop, corner in zip(poly.loop_indices, ((0, 0), (1, 0), (1, 1), (0, 1))):
+            uv.data[loop].uv = corner
+    return obj
+
+
+def garage_tex(k, name, meters=0.0, emit=0.0):
+    return k.tex("g_" + name, "garage/" + name + ".png", meters, emit)
+
+
+def garage_window(k, cx, y, cz, frame, glass):
+    """Modelled window in the back wall: deep wooden frame, cross mullions, sill, and lit
+    glass showing the foliage outside (faces +Y into the room)."""
+    w, h, d = 0.9, 0.64, 0.14
+    k.panel("WindowGlass", (cx, y + 0.02, cz), w - 0.08, h - 0.08, glass, "front", rot_z=180)
+    for side in (-1, 1):
+        k.box("WindowJamb", (cx + side * (w / 2 - 0.03), y + d / 2, cz), (0.07, d, h), frame)
+    k.box("WindowHead", (cx, y + d / 2, cz + h / 2 - 0.03), (w + 0.08, d, 0.08), frame)
+    k.box("WindowSill", (cx, y + d / 2 + 0.03, cz - h / 2 + 0.02), (w + 0.14, d + 0.08, 0.06), frame)
+    k.box("WindowMullion", (cx, y + 0.06, cz), (0.04, 0.05, h - 0.08), frame)
+    k.box("WindowMullion", (cx, y + 0.06, cz), (w - 0.08, 0.05, 0.04), frame)
+
+
+def garage_tools(k, cx, y, cz, steel, wood, red):
+    """Wrenches, hammer and pliers hanging on the pegboard (wall faces +Y)."""
+    f = y + 0.05
+    # Two open/ring wrenches: a flat bar with a ring at the top and a jaw at the bottom.
+    for n, x in enumerate((cx - 0.42, cx - 0.26)):
+        k.box("Wrench", (x, f, cz - 0.02), (0.035, 0.018, 0.34), steel)
+        k.ring("WrenchRing", (x, f, cz + 0.17), 0.04, 0.012, steel, rot=(90, 0, 0))
+        k.box("WrenchJaw", (x - 0.025, f, cz - 0.2), (0.022, 0.018, 0.06), steel)
+        k.box("WrenchJaw", (x + 0.025, f, cz - 0.2), (0.022, 0.018, 0.06), steel)
+    # Hammer: wooden handle, iron head.
+    k.box("HammerHandle", (cx - 0.04, f, cz - 0.04), (0.035, 0.03, 0.36), wood)
+    k.box("HammerHead", (cx - 0.04, f, cz + 0.16), (0.16, 0.05, 0.06), steel)
+    # Pliers: two red grips meeting at a steel pivot and jaws.
+    for side in (-1, 1):
+        k.beam("PliersGrip", (cx + 0.2 + side * 0.04, f, cz - 0.18), (cx + 0.2 + side * 0.012, f, cz + 0.03), 0.016, red)
+    k.cyl("PliersPivot", (cx + 0.2, f + 0.005, cz + 0.05), 0.022, 0.022, 0.02, steel, 10, rot=(90, 0, 0))
+    k.box("PliersJaw", (cx + 0.2, f, cz + 0.12), (0.035, 0.02, 0.12), steel)
+    # Pegs holding them.
+    for x in (cx - 0.42, cx - 0.26, cx - 0.04, cx + 0.2):
+        k.beam("Peg", (x, y, cz + 0.24), (x, y + 0.08, cz + 0.26), 0.008, steel)
+
+
+def heavy_bag(k, bx, by, top_z, leather, iron, cap_mat):
+    """Heavy bag with rounded caps, four straps to a ring and a real chain to the beam."""
+    body_z = 1.45
+    k.cyl("Bag", (bx, by, body_z), 0.24, 0.24, 1.0, leather, 16)
+    k.ball("BagBottom", (bx, by, body_z - 0.5), (0.24, 0.24, 0.07), cap_mat, 2)
+    k.ball("BagTop", (bx, by, body_z + 0.5), (0.24, 0.24, 0.06), cap_mat, 2)
+    ring_z = body_z + 0.82
+    k.ring("BagRing", (bx, by, ring_z), 0.05, 0.013, iron, rot=(90, 0, 0))
+    for a in range(4):
+        ang = math.radians(45 + a * 90)
+        k.beam("BagStrap", (bx + math.cos(ang) * 0.2, by + math.sin(ang) * 0.2, body_z + 0.53), (bx, by, ring_z - 0.04), 0.008, iron)
+    # Chain: elongated links, each turned 90 degrees from the last.
+    z = ring_z + 0.07
+    n = 0
+    while z < top_z:
+        link = k.ring("BagChainLink", (bx, by, z), 0.045, 0.012, iron, rot=(90, 0, 90 * (n % 2)))
+        bpy.context.view_layer.update()
+        mw = link.matrix_world
+        # Stretch along the chain (world Z) to read as links rather than washers.
+        for v in link.data.vertices:
+            co = mw @ v.co
+            co.z = z + (co.z - z) * 1.7
+            v.co = mw.inverted() @ co
+        z += 0.12
+        n += 1
+
+
+def garage(k):
+    gate = garage_tex(k, "portao-canelado", 1.6)
+    steel = garage_tex(k, "aco-gasto", 1.0)
+    plank = garage_tex(k, "madeira-tabua", 1.2)
+    beam_wood = garage_tex(k, "madeira-viga", 1.4)
+    concrete = garage_tex(k, "concreto", 2.5)
+    brick = garage_tex(k, "tijolo", 1.4)
+    plaster = garage_tex(k, "reboco", 2.2)
+    roof = garage_tex(k, "telhado-metal", 1.6)
+    tatami = garage_tex(k, "tatame-jade", 1.8)
+    leather = garage_tex(k, "couro-saco-pancadas", 0.9)
+    rubber = garage_tex(k, "borracha-pneu", 0.7)
+    cloth = garage_tex(k, "tecido-jade", 1.0)
+    brass = garage_tex(k, "latao", 0.5)
+    iron = garage_tex(k, "ferro", 0.5)
+    cardboard = garage_tex(k, "papelao", 0.7)
+    amber = garage_tex(k, "vidro-ambar", 1.0, emit=1.6)
+    # Detail atlas (extra-v1).
+    bag_leather = garage_tex(k, "extra/saco-pancadas-costura", 1.1)
+    plate = k.tex("g_anilha", "garage/extra/anilha-sextavada-10.png")
+    knurl = garage_tex(k, "extra/cabo-serrilhado", 0.3)
+    pegboard = k.tex("g_pegboard", "garage/extra/painel-perfurado.png")
+    floor_oil = garage_tex(k, "extra/concreto-oleo-pegadas", 2.4)
+    dummy_wood = garage_tex(k, "extra/madeira-wing-chun", 0.8)
+    canvas = k.tex("g_lona", "garage/extra/lona-equipamento.png")
+    tools_cut = k.tex("cutout_ferramentas", "garage/extra/ferramentas.png")
+    window_cut = k.tex("glow_janela", "garage/extra/janela-interior.png")
+    lantern_cut = k.tex("cutout_lanterna_bancada", "garage/extra/lanterna-bancada.png")
+    towel_cut = k.tex("cutout_toalha", "garage/extra/toalha-listra-jade.png")
+    mug_cut = k.tex("cutout_caneca", "garage/extra/caneca-branca.png")
+    splash = k.tex("cutout_respingos", "garage/extra/respingos-tinta.png")
+    banner = k.tex("cutout_estandarte", "forest/estandarte-jade.png")
+    towel = k.mat("toalha", (0.93, 0.91, 0.84))
+    stripe = k.mat("toalha_listra", (0.30, 0.55, 0.36))
+    mug = k.mat("caneca", (0.95, 0.94, 0.90))
+    bulb = k.mat("lampada", (1.0, 0.85, 0.55), emit=4.0)
+    x0, x1 = GARAGE_X
+    yf, yb = GARAGE_FRONT, GARAGE_BACK
+    depth = yf - yb
+    cx, cy = (x0 + x1) / 2, (yf + yb) / 2
+    h = 4.1
+
+    # Shell: concrete floor, plaster/brick walls, roof on wooden trusses.
+    k.box("GarageFloor", (cx, cy, -0.02), (x1 - x0 + 1.0, depth + 1.0, 0.06), floor_oil)
+    k.box("GarageBack", (cx, yb - 0.12, h / 2), (x1 - x0, 0.24, h), plaster)
+    for x, w, z in ((-3.4, 1.3, 1.5), (-0.6, 1.0, 0.8), (1.9, 1.2, 2.6)):
+        k.box("GarageBrick", (x, yb + 0.01, z), (w, 0.04, 0.9), brick)
+    for x in (x0, x1):
+        k.box("GarageSide", (x, cy, h / 2), (0.24, depth, h), plaster)
+    k.box("GarageSideBrick", (x0 + 0.13, cy - 1.0, 1.4), (0.04, 2.2, 1.3), brick)
+    k.box("GarageRoof", (cx, cy, h + 0.12), (x1 - x0 + 0.6, depth + 0.8, 0.12), roof)
+    k.box("GarageHeader", (cx, yf + 0.1, h - 0.25), (x1 - x0 + 0.4, 0.4, 0.6), plaster)
+    for n in range(4):
+        y = yf - 0.6 - n * (depth - 1.0) / 3
+        k.box("GarageTie", (cx, y, h - 0.35), (x1 - x0, 0.22, 0.22), beam_wood)
+        k.beam("GarageRafter", (x0 + 0.2, y, h - 0.35), (cx, y, h + 0.02), 0.09, beam_wood)
+        k.beam("GarageRafter", (x1 - 0.2, y, h - 0.35), (cx, y, h + 0.02), 0.09, beam_wood)
+    k.box("GarageRidge", (cx, cy, h - 0.05), (0.2, depth, 0.2), beam_wood)
+    for x in (x0 + 0.15, x1 - 0.15):
+        k.box("GaragePost", (x, yf, h / 2), (0.3, 0.3, h), steel)
+
+    # Gate: a rail across the top, the closed leaf with the menu, rollers and a handle.
+    k.box("GateRail", (cx + 1.0, yf + 0.18, 3.62), (x1 - x0 + 2.4, 0.12, 0.16), iron)
+    gate_x = (0.8, 3.15)
+    gx = (gate_x[0] + gate_x[1]) / 2
+    gw = gate_x[1] - gate_x[0]
+    k.box("GateFrame", (gx, yf + 0.14, 1.78), (gw + 0.1, 0.08, 3.58), steel)
+    panel = k.box("GaragePanel", (gx, yf + 0.2, 1.78), (gw, 0.04, 3.45), gate)
+    panel.name = "GaragePanel"
+    for x in (gate_x[0] + 0.3, gate_x[1] - 0.3):
+        k.cyl("GateRoller", (x, yf + 0.27, 3.62), 0.11, 0.11, 0.1, iron, 10, rot=(90, 0, 0))
+        k.box("GateHanger", (x, yf + 0.24, 3.45), (0.16, 0.05, 0.3), iron)
+    k.box("GateHandle", (gate_x[0] + 0.14, yf + 0.25, 0.75), (0.1, 0.05, 0.36), iron)
+    # Second leaf pushed open behind the left side wall (only its edge shows).
+    k.box("GateOpenLeaf", (x0 - 0.35, yf + 0.3, 1.78), (0.05, 1.4, 3.45), gate)
+
+    # Wing chun wooden dummy on its frame.
+    dx, dy = 0.3, -20.9
+    k.cyl("DummyTrunk", (dx, dy, 1.05), 0.15, 0.14, 1.6, dummy_wood, 12)
+    for z, a in ((1.45, -25), (1.45, 25), (1.12, 0)):
+        k.beam("DummyArm", (dx, dy, z), (dx + math.sin(math.radians(a)) * 0.45, dy + 0.42, z - 0.05), 0.035, dummy_wood)
+    k.beam("DummyLeg", (dx, dy, 0.55), (dx, dy + 0.45, 0.25), 0.045, dummy_wood)
+    for sx in (-1, 1):
+        k.box("DummyFrame", (dx + sx * 0.35, dy, 0.85), (0.1, 0.1, 1.7), plank)
+        k.beam("DummyFoot", (dx + sx * 0.35, dy - 0.35, 0.03), (dx + sx * 0.35, dy + 0.35, 0.03), 0.05, plank)
+    k.box("DummyBar", (dx, dy, 1.65), (0.8, 0.1, 0.08), plank)
+    k.box("DummyBar", (dx, dy, 0.3), (0.8, 0.1, 0.08), plank)
+
+    # Heavy bag on a chain from the tie beam.
+    bx, by = -0.75, -21.6
+    heavy_bag(k, bx, by, h - 0.46, bag_leather, iron, k.mat("couro_escuro", (0.32, 0.10, 0.08)))
+
+    # Tyres stacked next to the dummy, a single one by the wall.
+    for n in range(3):
+        k.ring("Tyre", (1.05, -20.2, 0.13 + n * 0.25), 0.34, 0.13, rubber)
+    k.ring("Tyre", (-4.0, -25.2, 0.45), 0.36, 0.13, rubber, rot=(90, 0, 70))
+
+    # Mats on the floor and a low wooden platform.
+    k.box("Tatami", (-0.9, -20.1, 0.02), (1.7, 1.0, 0.04), tatami, rot=(0, 0, -8))
+    k.box("Tatami", (-2.5, -21.6, 0.02), (1.7, 1.1, 0.04), tatami, rot=(0, 0, 6))
+    k.box("Platform", (-1.4, -23.4, 0.14), (2.2, 1.3, 0.1), tatami)
+    for px in (-0.4, 0.4):
+        for py in (-0.5, 0.5):
+            k.box("PlatformLeg", (-1.4 + px * 2.2, -23.4 + py, 0.05), (0.12, 0.12, 0.1), plank)
+
+    # Dumbbell in the foreground.
+    for ox in (-0.18, 0.18):
+        k.cyl("DumbbellHead", (1.45 + ox, -19.4, 0.13), 0.13, 0.13, 0.14, iron, 6, rot=(0, 90, 0))
+        # The cast "10" plate on the outer face of each head.
+        k.panel("DumbbellPlate", (1.45 + ox * 1.42, -19.4, 0.13), 0.24, 0.24, plate, "+x" if ox > 0 else "-x")
+    k.beam("DumbbellBar", (1.25, -19.4, 0.13), (1.65, -19.4, 0.13), 0.03, knurl)
+
+    # Back wall: banner, workbench with drawers, tool board, shelf with boxes and a towel.
+    k.box("BannerRod", (-1.1, yb + 0.25, 3.05), (1.0, 0.04, 0.04), steel)
+    k.panel("GarageBanner", (-1.1, yb + 0.27, 2.25), 0.85, 1.6, banner, "front", rot_z=180)
+    wx = 1.5
+    k.box("BenchTop", (wx, yb + 0.45, 0.92), (2.0, 0.7, 0.08), plank)
+    k.box("BenchDrawers", (wx - 0.5, yb + 0.45, 0.45), (0.8, 0.6, 0.86), plank)
+    for sx in (0.4, 0.9):
+        k.box("BenchLeg", (wx + sx, yb + 0.45, 0.45), (0.08, 0.6, 0.86), plank)
+    for n in range(3):
+        k.box("DrawerFront", (wx - 0.5, yb + 0.76, 0.17 + n * 0.28), (0.7, 0.03, 0.22), beam_wood)
+    k.panel("ToolBoard", (wx - 0.1, yb + 0.06, 1.75), 1.3, 0.8, pegboard, "front", rot_z=180)
+    garage_tools(k, wx - 0.1, yb + 0.06, 1.72, steel, beam_wood, k.mat("cabo_vermelho", (0.62, 0.12, 0.1)))
+    k.panel("BenchLantern", (wx - 0.75, yb + 0.4, 1.12), 0.2, 0.26, lantern_cut, "front", rot_z=180)
+    for n, x in enumerate((wx + 0.5, wx + 0.75)):
+        k.cyl("BenchCan", (x, yb + 0.45, 1.1), 0.07, 0.07, 0.3 - n * 0.06, steel, 10)
+    k.box("Shelf", (-3.0, yb + 0.25, 2.3), (1.9, 0.4, 0.06), plank)
+    k.box("ShelfBox", (-3.5, yb + 0.25, 2.48), (0.5, 0.32, 0.3), cardboard)
+    face_uv(k.box("ShelfBox", (-2.9, yb + 0.25, 2.45), (0.45, 0.3, 0.24), canvas))
+    k.panel("Towel", (-2.3, yb + 0.3, 1.95), 0.45, 0.62, towel_cut, "front", rot_z=180)
+    for n in range(2):
+        face_uv(k.box("Crate", (-4.0, -24.2, 0.3 + n * 0.55), (0.75, 0.6, 0.55), canvas))
+
+    # Table, bench and a mug on the right of the frame.
+    tx, ty = -3.1, -22.6
+    k.box("TableTop", (tx, ty, 0.82), (1.0, 1.7, 0.08), plank)
+    for sx in (-0.4, 0.4):
+        for sy in (-0.75, 0.75):
+            k.box("TableLeg", (tx + sx, ty + sy, 0.4), (0.08, 0.08, 0.8), plank)
+    k.box("TableBench", (tx + 0.85, ty, 0.45), (0.38, 1.6, 0.07), plank)
+    for sy in (-0.65, 0.65):
+        k.box("TableBenchLeg", (tx + 0.85, ty + sy, 0.21), (0.3, 0.07, 0.42), plank)
+    k.panel("Mug", (tx + 0.1, ty + 0.5, 0.93), 0.13, 0.12, mug_cut, "front", rot_z=180)
+    # Paint splashes on the floor.
+    for (px, py, r) in ((-1.9, -20.0, 30), (0.9, -22.8, -40), (-3.4, -25.4, 10)):
+        card(k, "PaintSplash", (px, py, 0.012), 0.9, 0.7, splash, (0, 0, r))
+
+    # High windows in the back wall with warm light, a pendant lamp over the mats.
+    glass = k.tex("glow_janela_vidro", "garage/extra/janela-vidro.png")
+    for x in (-0.1, 0.9):
+        garage_window(k, x, yb, 3.2, beam_wood, glass)
+    k.beam("LampCord", (-2.2, -22.4, h - 0.35), (-2.2, -22.4, 2.95), 0.01, iron)
+    k.cyl("LampShade", (-2.2, -22.4, 2.88), 0.32, 0.06, 0.18, steel, 14)
+    k.ball("LampBulb", (-2.2, -22.4, 2.78), (0.07, 0.07, 0.07), bulb, 1)
+
+    # Camera: the menu turns around to stand in front of the gate.
+    # Facade continuing past the gate, so the diagonal view never shows the outside.
+    # (stops short of the shoreline at x ~6.7, closed by a side wall).
+    k.box("FacadeLeft", (4.9, -19.1, 2.15), (3.0, 0.3, 4.3), plaster)
+    k.box("FacadeLeftRoof", (4.9, -21.0, 4.35), (3.2, 4.2, 0.14), roof)
+    k.box("FacadeSide", (6.35, -21.0, 2.15), (0.24, 4.0, 4.3), plaster)
+    # Camera a little to the right of the gate, looking slightly across it (as in the concept).
+    marker("CamGarage", (-1.299, -14.966, 1.942))
+    marker("GarageLook", (-0.037, -19.0, 1.896))
+
+
+# --- Pátio da vila: seleção do Arcade (concept-art/ui/atlas-patio-casas-v1) ---
+# Reached from the beach menu by a fade to black (it is far behind the hill, never seen from the
+# menu camera). The fighter warms up on the cobbles on the left; on the right a jade-canvas stall
+# holds the ARCADE sign, the fighter's poster, the outfits on hangers and the two wooden buttons.
+# Godot writes the texts on the anchors (Patio* empties) and hangs the outfits on the rack.
+PATIO = Vector((-60.0, 30.0, 0.0))
+# Patio camera (x, y, z relative to PATIO), close like the concept: the stall fills the right half.
+PATIO_CAM = (0.15, -6.5, 1.5)
+EASEL_YAW = 15.7  # degrees
+
+
+def turn_about(objs, pivot, yaw_deg, shift=Vector()):
+    """Rotate objects about a vertical axis through pivot, then move them by shift."""
+    from mathutils import Matrix
+    p = Vector(pivot)
+    turn = Matrix.Translation(p + shift) @ Matrix.Rotation(math.radians(yaw_deg), 4, "Z") @ Matrix.Translation(-p)
+    bpy.context.view_layer.update()
+    for o in objs:
+        o.matrix_world = turn @ o.matrix_world
+
+
+def patio_tex(k, name, meters=0.0, emit=0.0):
+    return k.tex("p_" + name, "patio/" + name + ".png", meters, emit)
+
+
+def patio_cut(k, name):
+    return k.tex("cutout_p_" + name, "patio/" + name + ".png")
+
+
+def patio_roof(k, cx, cy, w, d, z, mat, along_x):
+    """Tiled gable roof with overhangs; the ridge runs along X (along_x) or along Y."""
+    span, length = (d, w) if along_x else (w, d)
+    half = span / 2 + 0.35
+    outline = [(-half, 0.0), (half, 0.0), (half, 0.12), (0.0, span * 0.32 + 0.12), (-half, 0.12)]
+    obj = k.prism("PatioRoof", outline, 0.0, length + 0.6, mat)
+    obj.location = (cx, cy, z)
+    if along_x:
+        obj.rotation_euler = (0, 0, math.radians(90))
+    return obj
+
+
+def patio_house(k, cx, cy, w, d, h, face, m, flowers, roof_side=True):
+    """Dress a plain house box: roof, eave beam, stone base, framed windows with shutters and
+    flower boxes, a door on the ground floor. face: '+x', '-x' or '-y' (toward the street)."""
+    patio_roof(k, cx, cy, w, d, h, m["roof"], along_x=(face == "-y"))
+    if face == "-y":
+        fx, fy, run = None, cy - d / 2, w
+    else:
+        fx, fy, run = cx + (w / 2 if face == "+x" else -w / 2), None, d
+    out = 0.06
+
+    def on_face(t, z, size, depth, mat, name):
+        # t: position along the face (-0.5..0.5 of its run), size (along, height).
+        if face == "-y":
+            return k.box(name, (cx + t * run, fy - depth / 2 - 0.01, z), (size[0], depth, size[1]), mat)
+        sign = 1 if face == "+x" else -1
+        return k.box(name, (fx + sign * (depth / 2 + 0.01), cy + t * run, z), (depth, size[0], size[1]), mat)
+
+    on_face(0.0, 0.25, (run + 0.1, 0.5), out, m["base"], "PatioHouseBase")
+    on_face(0.0, h - 0.12, (run + 0.2, 0.16), 0.14, m["frame"], "PatioEave")
+    floors = [1.25] + ([2.85] if h > 3.6 else []) + ([4.3] if h > 5.0 else [])
+    cols = [-0.25, 0.25] if run > 3.0 else [0.0]
+    for fi, z in enumerate(floors):
+        for c in cols:
+            if fi == 0 and c == cols[0] and run > 3.0:
+                # Door with a lintel instead of the first ground-floor window.
+                on_face(c, 1.05, (0.95, 2.1), 0.05, m["shutter"], "PatioDoor")
+                on_face(c, 2.2, (1.15, 0.12), 0.1, m["frame"], "PatioLintel")
+                continue
+            on_face(c, z, (0.75, 0.85), 0.04, m["glass"], "PatioWindow")
+            for edge, size in ((z + 0.45, (0.9, 0.08)), (z - 0.45, (0.95, 0.09))):
+                on_face(c, edge, size, 0.1, m["frame"], "PatioWindowFrame")
+            for side in (-1, 1):
+                on_face(c + side * 0.58 / run, z, (0.36, 0.9), 0.05, m["shutter"], "PatioShutter")
+            if k.rng.random() < 0.7:
+                on_face(c, z - 0.58, (0.85, 0.2), 0.22, m["pot"], "PatioFlowerBox")
+                if face == "-y":
+                    pos = (cx + c * run, fy - 0.25, z - 0.35)
+                    rot = (85, 0, 0)
+                else:
+                    sign = 1 if face == "+x" else -1
+                    pos = (fx + sign * 0.25, cy + c * run, z - 0.35)
+                    rot = (85, 0, 90 if face == "+x" else -90)
+                card(k, "PatioBoxFlowers", pos, 0.9, 0.55, flowers[k.rng.randrange(len(flowers))], rot)
+
+
+def patio_sign(k, name, center, w, h, m, ornament=None, hang_to=None, tilt=0.0):
+    """Thick plank sign with a darker frame, optional jade ornaments at both ends and ropes."""
+    x, y, z = center
+    k.box(name, (x, y, z), (w, 0.1, h), m["signs"], rot=(tilt, 0, 0))
+    for dz in (h / 2 - 0.03, -h / 2 + 0.03):
+        k.box(name + "Trim", (x, y - 0.035, z + dz), (w + 0.06, 0.06, 0.07), m["frame"], rot=(tilt, 0, 0))
+    for dx in (w / 2 - 0.03, -w / 2 + 0.03):
+        k.box(name + "Trim", (x + dx, y - 0.035, z), (0.07, 0.06, h), m["frame"], rot=(tilt, 0, 0))
+    if ornament is not None:
+        for side in (-1, 1):
+            orn = k.panel(name + "Ornament", (x + side * (w / 2 - h * 0.42), y - 0.075, z), h * 0.62, h * 0.5, ornament, "front")
+            if side > 0:
+                orn.scale.x = -1.0  # mirrored on the right end
+    if hang_to is not None:
+        for side in (-1, 1):
+            k.beam(name + "Rope", (x + side * w * 0.36, y, z + h / 2), (x + side * w * 0.36, y, hang_to), 0.018, m["rope"])
+
+
+def draped_canopy(k, x0, x1, y_front, y_back, z_front, z_back, mat, bays=2, scallops=9):
+    """Canvas awning that sags between the posts, with a hanging valance whose bottom edge is
+    cut in scallops (the concept's draped jade cloth)."""
+    import bmesh
+    bm = bmesh.new()
+    nx, ny = 24, 6
+
+    def roof_z(u, v):
+        sag = 0.14 * abs(math.sin(math.pi * u * bays)) ** 0.8
+        return z_front + (z_back - z_front) * v - sag * (1.0 - 0.6 * v)
+
+    grid = [[bm.verts.new((x0 + (x1 - x0) * i / nx, y_front + (y_back - y_front) * j / ny, roof_z(i / nx, j / ny)))
+             for i in range(nx + 1)] for j in range(ny + 1)]
+    for j in range(ny):
+        for i in range(nx):
+            bm.faces.new((grid[j][i], grid[j][i + 1], grid[j + 1][i + 1], grid[j + 1][i]))
+    # Valance: hangs from the front edge, bottom edge scalloped.
+    steps = scallops * 6
+    top, bottom = [], []
+    for i in range(steps + 1):
+        u = i / steps
+        x = x0 + (x1 - x0) * u
+        z = roof_z(u, 0.0)
+        drop = 0.2 + 0.13 * abs(math.sin(math.pi * u * scallops))
+        top.append(bm.verts.new((x, y_front - 0.01, z + 0.01)))
+        bottom.append(bm.verts.new((x, y_front - 0.03, z - drop)))
+    for i in range(steps):
+        bm.faces.new((top[i], top[i + 1], bottom[i + 1], bottom[i]))
+    me = bpy.data.meshes.new("StallCanopy")
+    bm.to_mesh(me)
+    bm.free()
+    obj = bpy.data.objects.new("StallCanopy", me)
+    bpy.context.collection.objects.link(obj)
+    return k._finish(obj, "StallCanopy", mat, (0, 0, 0))
+
+
+def patio_stairs_and_balcony(k, P, m, steps_mat, wall_mat, plaster, rail_wood, flowers, pots):
+    """Stone stair climbing the alley behind the fighter to a raised house with a wooden balcony."""
+    x0, x1 = -2.95, -1.5
+    for i in range(10):
+        y = 3.0 + i * 0.42
+        z = 0.12 + i * 0.24
+        k.box("PatioAlleyStep", (P.x + (x0 + x1) / 2, P.y + y, z / 2 + 0.06), (x1 - x0, 0.44, z + 0.12), steps_mat)
+    k.box("PatioAlleyLanding", (P.x + (x0 + x1) / 2, P.y + 7.6, 1.3), (x1 - x0 + 0.6, 1.6, 2.6), steps_mat)
+    k.box("PatioAlleyWall", (P.x + x1 + 0.12, P.y + 5.2, 1.0), (0.24, 4.4, 2.0), wall_mat)
+    for i in range(3):
+        k.cyl("PatioAlleyPot", (P.x + x1 - 0.2, P.y + 3.4 + i * 1.2, 0.5 + i * 0.75), 0.18, 0.12, 0.3, pots, 10)
+        card(k, "PatioAlleyFlower", (P.x + x1 - 0.2, P.y + 3.35 + i * 1.2, 0.85 + i * 0.75), 0.6, 0.6, flowers[i % len(flowers)], (85, 0, 0))
+    # Raised house at the top of the stair, its balcony overlooking the patio.
+    hx, hy, base = -2.0, 10.2, 2.6
+    k.box("PatioUpperHouse", (P.x + hx, P.y + hy, base + 2.2), (3.8, 3.2, 4.4), plaster)
+    patio_house_box = (P.x + hx, P.y + hy, 3.8, 3.2)
+    face_y = P.y + hy - 1.6
+    k.box("PatioBalconyFloor", (P.x + hx, face_y - 0.45, base + 1.55), (2.4, 0.9, 0.12), rail_wood)
+    for j in range(9):
+        k.box("PatioBalconyBaluster", (P.x + hx - 1.1 + j * 0.275, face_y - 0.86, base + 1.85), (0.05, 0.05, 0.6), rail_wood)
+    k.box("PatioBalconyRail", (P.x + hx, face_y - 0.86, base + 2.17), (2.45, 0.08, 0.07), rail_wood)
+    for side in (-1, 1):
+        k.beam("PatioBalconyBracket", (P.x + hx + side * 1.0, face_y - 0.02, base + 1.1), (P.x + hx + side * 1.0, face_y - 0.85, base + 1.5), 0.04, rail_wood)
+    k.box("PatioBalconyDoor", (P.x + hx, face_y - 0.02, base + 2.5), (0.9, 0.05, 1.9), m["shutter"])
+    for side in (-1, 1):
+        card(k, "PatioBalconyFlowers", (P.x + hx + side * 0.75, face_y - 0.95, base + 2.25), 0.9, 0.6, flowers[0], (80, 0, 0))
+    patio_roof(k, P.x + hx, P.y + hy, 3.8, 3.2, base + 4.4, m["roof"], along_x=True)
+    return patio_house_box
+
+
+def patio(k):
+    P = PATIO
+    plaster = patio_tex(k, "reboco-branco", 2.0)
+    plaster_old = patio_tex(k, "reboco-envelhecido", 2.0)
+    limestone = patio_tex(k, "alvenaria-calcario", 1.4)
+    orange_stone = patio_tex(k, "pedra-laranja", 1.0)
+    cobbles = patio_tex(k, "calcamento-pedras", 2.2)
+    steps = patio_tex(k, "pedra-degraus", 1.0)
+    mossy = patio_tex(k, "pedra-musgo", 1.2)
+    stall_wood = patio_tex(k, "madeira-stand-mobiliario", 1.0)
+    posts = patio_tex(k, "madeira-vigas-postes", 1.2)
+    shutters = patio_tex(k, "madeira-persianas-jade", 0.9)
+    crate_wood = patio_tex(k, "madeira-clara-caixas", 0.8)
+    terracotta = patio_tex(k, "terracota-vasos", 0.6)
+    ceramic = patio_tex(k, "ceramica-marfim", 0.5)
+    brass = patio_tex(k, "latao-lanternas", 0.4)
+    iron = patio_tex(k, "ferro-suportes", 0.4)
+    canvas = patio_tex(k, "lona-jade-stand", 1.4)
+    banner_cloth = k.tex("p_tecido-estandarte", "patio/tecido-estandarte.png")
+    cushion_a = patio_tex(k, "almofada-marfim", 0.5)
+    cushion_b = patio_tex(k, "almofada-salvia", 0.5)
+    straw = k.tex("p_tapete-palha", "patio/tapete-palha.png")
+    towel = patio_tex(k, "toalha-listrada", 0.6)
+    rope = patio_tex(k, "corda", 0.4)
+    paper = k.tex("p_papel-etiquetas", "patio/papel-etiquetas.png")
+    amber = patio_tex(k, "vidro-ambar-lanterna", 0.4, emit=2.0)
+    bark = patio_tex(k, "casca-arvore", 1.4)
+    signs = patio_tex(k, "madeira-placas", 1.0)
+    wicker = patio_tex(k, "vime-cesto", 0.5)
+    roof = forest_tex(k, "telhas-azul-marinho", 1.0)
+    leaves = k.tex("cutout_folhas", "folhas.png")
+    hibiscus = patio_cut(k, "hibisco")
+    plumeria = patio_cut(k, "flores-brancas")
+    bougainvillea = patio_cut(k, "bougainvillea")
+    monstera = patio_cut(k, "monstera")
+    sprig = patio_cut(k, "ramo-folhas")
+    vine = patio_cut(k, "cipo")
+    petals = patio_cut(k, "petalas-caidas")
+    emblem = patio_cut(k, "emblema-vento-marfim")
+    arrow_l = patio_cut(k, "seta-esquerda")
+    arrow_r = patio_cut(k, "seta-direita")
+    tag = patio_cut(k, "etiqueta-vazia")
+    pin = patio_cut(k, "pino-latao")
+    window_dark = k.mat("janela_patio", (0.18, 0.16, 0.14))
+    ornament = patio_cut(k, "ornamento-ceramica-jade")
+    underline = patio_cut(k, "sublinhado-jade")
+    m = {"roof": roof, "base": limestone, "frame": posts, "shutter": shutters, "glass": window_dark,
+         "pot": terracotta, "signs": signs, "rope": rope}
+    house_flowers = [bougainvillea, hibiscus, plumeria]
+
+    def at(x, y, z=0.0):
+        return (P.x + x, P.y + y, P.z + z)
+
+    # Street of cobbles running away from the camera, sand around it.
+    k.box("PatioStreet", at(0, 2, -0.015), (18.0, 32.0, 0.06), cobbles)
+    # Closes the right of the frame (the sea is beyond it).
+    k.box("PatioHouseNearR", at(8.2, -1.0, 2.4), (3.4, 5.0, 4.8), plaster)
+    patio_house(k, P.x + 8.2, P.y - 1.0, 3.4, 5.0, 4.8, "-x", m, house_flowers)
+
+    # Left house behind the fighter: white plaster, jade shutters, porch roof on posts.
+    k.box("PatioHouseL", at(-5.2, 3.6, 1.8), (4.4, 4.2, 3.6), plaster)
+    k.box("PatioHouseL2", at(-5.4, 9.0, 2.3), (4.0, 5.0, 4.6), plaster_old)
+    patio_house(k, P.x - 5.2, P.y + 3.6, 4.4, 4.2, 3.6, "+x", m, house_flowers)
+    patio_house(k, P.x - 5.4, P.y + 9.0, 4.0, 5.0, 4.6, "+x", m, house_flowers)
+    k.prism("PatioPorchRoof", [(P.x - 3.1, 3.3), (P.x - 1.1, 2.9), (P.x - 1.1, 2.75), (P.x - 3.1, 3.15)], P.y + 3.2, 4.6, roof)
+    for y in (1.2, 5.2):
+        k.box("PatioPorchPost", at(-1.25, y, 1.45), (0.16, 0.16, 2.9), posts)
+    k.box("PatioPorchBeam", at(-1.25, 3.2, 2.9), (0.18, 4.4, 0.18), posts)
+    k.beam("PatioLampArm", at(-2.95, 2.0, 2.3), at(-2.65, 2.0, 2.35), 0.025, iron)
+    k.cyl("PatioLamp", at(-2.6, 2.0, 2.15), 0.11, 0.11, 0.3, amber, 8)
+    k.cyl("PatioLampCap", at(-2.6, 2.0, 2.34), 0.14, 0.04, 0.1, brass, 8)
+    # Bench with cushions against the house, a jug and pots.
+    k.box("PatioBench", at(-2.55, 2.9, 0.45), (0.5, 1.8, 0.1), stall_wood)
+    for y in (2.2, 3.6):
+        k.box("PatioBenchLeg", at(-2.55, y, 0.2), (0.45, 0.1, 0.4), stall_wood)
+    k.box("PatioBenchBack", at(-2.8, 2.9, 0.8), (0.08, 1.8, 0.6), stall_wood)
+    for n, (y, mat) in enumerate(((2.5, cushion_b), (3.3, cushion_b))):
+        k.box("PatioCushion", at(-2.62, y, 0.72), (0.18, 0.55, 0.45), mat, rot=(0, -12, 0))
+    k.cyl("PatioJug", at(-2.4, 4.1, 0.25), 0.16, 0.1, 0.5, ceramic, 10)
+    # Hanging jade banner with the wind emblem on a bracket by the house corner.
+    k.beam("PatioBannerRod", at(-3.0, 0.9, 3.1), at(-2.2, 0.9, 3.1), 0.025, iron)
+    k.panel("PatioBanner", at(-2.6, 0.9, 2.35), 0.7, 1.4, banner_cloth, "front")
+    k.panel("PatioBannerEmblem", at(-2.6, 0.88, 2.45), 0.5, 0.42, emblem, "front")
+
+    # Big tree framing the top-left, its canopy arching over the frame.
+    trunk = [at(-4.6, -2.0, 0), at(-4.3, -1.8, 2.2), at(-3.4, -1.4, 3.9)]
+    for a, b in zip(trunk, trunk[1:]):
+        k.beam("PatioTreeTrunk", a, b, 0.42, bark, 10)
+    for end in (at(0.5, -1.0, 4.8), at(-2.0, 1.5, 5.4), at(-5.5, -2.5, 4.6)):
+        k.beam("PatioTreeBranch", trunk[-1], end, 0.16, bark, 8)
+        for j in range(14):
+            off = Vector((k.rng.uniform(-1.5, 1.5), k.rng.uniform(-1.2, 1.2), k.rng.uniform(-0.6, 0.5)))
+            card(k, "PatioTreeLeaf", Vector(end) + off, 1.5, 1.5, leaves, (k.rng.uniform(50, 130), k.rng.uniform(-30, 30), k.rng.uniform(0, 360)))
+    k.beam("PatioTreeLampArm", at(-3.6, -1.4, 3.5), at(-3.0, -1.4, 3.4), 0.03, iron)
+    k.cyl("PatioTreeLamp", at(-2.95, -1.4, 3.05), 0.16, 0.16, 0.45, amber, 8)
+    k.cyl("PatioTreeLampCap", at(-2.95, -1.4, 3.33), 0.2, 0.05, 0.12, brass, 8)
+
+    # Fighter's corner: straw mat, the name board on an easel, a wooden dummy post with rope.
+    k.panel("PatioMat", at(-1.45, -0.4, 0.042), 1.7, 1.1, straw, "up", rot_z=4)
+    # Name board on its easel, turned a little toward the stall (set by hand in Blender).
+    def easel():
+        patio_sign(k, "PatioNameBoardPlank", at(-2.75, -0.9, 0.95), 1.3, 0.85, m, tilt=-8)
+        for side in (-1, 1):
+            k.beam("PatioEaselLeg", at(-2.75 + side * 0.5, -0.86, 1.25), at(-2.75 + side * 0.62, -0.75, 0.0), 0.035, posts)
+        k.beam("PatioEaselBack", at(-2.75, -0.86, 1.25), at(-2.75, -0.3, 0.0), 0.03, posts)
+    easel_parts = k.collect(easel)
+    turn_about(easel_parts, at(-2.75, -0.9, 0.0), EASEL_YAW, Vector((0.25, -0.19, 0.0)))
+    board_marker = marker("PatioNameBoard", at(-2.75, -0.97, 0.97))
+    turn_about([board_marker], at(-2.75, -0.9, 0.0), EASEL_YAW, Vector((0.25, -0.19, 0.0)))
+    k.cyl("PatioPost", at(-5.0, -0.6, 0.75), 0.13, 0.13, 1.5, posts, 10)
+    for z in (0.5, 1.05):
+        k.ring("PatioPostRope", at(-5.0, -0.6, z), 0.14, 0.035, rope)
+        k.beam("PatioPostArm", at(-5.0, -0.6, z + 0.1), at(-4.55, -0.75, z + 0.1), 0.05, posts)
+    k.box("PatioCrateL", at(-5.2, -1.8, 0.3), (0.7, 0.6, 0.6), crate_wood)
+    k.box("PatioTowelL", at(-5.2, -2.12, 0.5), (0.5, 0.04, 0.5), towel)
+    k.cyl("PatioJar", at(-4.3, -2.4, 0.25), 0.2, 0.14, 0.5, ceramic, 10)
+    k.ring("PatioJarRope", at(-4.3, -2.4, 0.38), 0.18, 0.025, rope)
+
+    # The stall: platform, four posts with rope lashings, a sloped jade canvas awning.
+    sx, sy, sw, sd = 1.9, 0.7, 4.2, 1.4
+    k.box("StallDeck", at(sx, sy, 0.22), (sw, sd, 0.44), stall_wood)
+    k.box("StallBack", at(sx, sy + sd / 2, 1.55), (sw - 0.2, 0.06, 2.2), canvas)
+    for px in (sx - sw / 2 + 0.1, sx + sw / 2 - 0.1):
+        for py, top in ((sy - sd / 2 + 0.08, 3.2), (sy + sd / 2 - 0.08, 3.0)):
+            k.box("StallPost", at(px, py, top / 2), (0.18, 0.18, top), posts)
+        for z in (0.85, 2.1, 2.9):
+            k.ring("StallLashing", at(px, sy - sd / 2 + 0.08, z), 0.12, 0.03, rope)
+    draped_canopy(k, P.x + sx - sw / 2 - 0.3, P.x + sx + sw / 2 + 0.3, P.y + sy - sd / 2 - 0.45, P.y + sy + sd / 2 + 0.25,
+                  3.02, 3.3, k.tex("cutout_p_lona", "patio/lona-jade-stand.png", 1.4))  # two-sided, lit like sunlit cloth
+    k.beam("StallRope", at(sx - sw / 2, sy - sd / 2 - 0.05, 2.75), at(sx + sw / 2, sy - sd / 2 - 0.05, 2.75), 0.025, rope)
+    # Top sign plank (ARCADE), the poster pinned under the awning, the ROUPAS plank and the rack.
+    patio_sign(k, "StallSign", at(sx, sy - sd / 2 - 0.1, 3.55), 2.6, 0.6, m, ornament=ornament)
+    marker("PatioArcadeSign", at(sx, sy - sd / 2 - 0.16, 3.55))
+    k.box("StallPosterBoard", at(sx, sy + sd / 2 - 0.08, 2.66), (0.8, 0.03, 0.82), stall_wood)
+    k.panel("StallPoster", at(sx, sy + sd / 2 - 0.11, 2.66), 0.72, 0.76, paper, "front")
+    k.panel("StallPosterPin", at(sx, sy + sd / 2 - 0.13, 2.98), 0.08, 0.08, pin, "front")
+    marker("PatioPoster", at(sx, sy + sd / 2 - 0.13, 2.68))
+    patio_sign(k, "StallRoupas", at(sx, sy - 0.1, 2.06), 1.7, 0.3, m, ornament=ornament, hang_to=2.75)
+    marker("PatioRoupas", at(sx, sy - 0.17, 2.06))
+    k.beam("StallRack", at(sx - sw / 2 + 0.2, sy, 1.78), at(sx + sw / 2 - 0.2, sy, 1.78), 0.03, posts)
+    for n, hx in enumerate((sx - 1.5, sx - 0.5, sx + 0.5, sx + 1.5)):  # all four outfits on the rack
+        # A wooden hanger: hook on the rack, the shoulder bar under it.
+        k.ring("StallHangerHook", at(hx, sy, 1.83), 0.05, 0.01, iron, rot=(90, 0, 0))
+        for side in (-1, 1):
+            k.beam("StallHangerArm", at(hx, sy, 1.73), at(hx + side * 0.27, sy, 1.6), 0.018, posts)
+        k.beam("StallHangerBar", at(hx - 0.27, sy, 1.6), at(hx + 0.27, sy, 1.6), 0.012, posts)
+        marker("PatioHanger_%d" % n, at(hx, sy, 1.62))
+        # Name tag pinned on the counter front, under each outfit.
+        k.panel("StallTag", at(hx, sy - sd / 2 - 0.08, 0.66), 0.84, 0.36, tag, "front")
+        marker("PatioTag_%d" % n, at(hx, sy - sd / 2 - 0.1, 0.64))
+    # Painted arrows on boards at the stall sides to page the outfits.
+    for side, cut in ((-1, arrow_l), (1, arrow_r)):
+        x = sx + side * (sw / 2 + 0.05)
+        k.box("StallArrowBoard", at(x, sy - sd / 2 - 0.02, 1.35), (0.34, 0.06, 0.6), signs)
+        k.panel("StallArrow", at(x, sy - sd / 2 - 0.06, 1.35), 0.24, 0.42, cut, "front")
+        marker("PatioArrow_%s" % ("L" if side < 0 else "R"), at(x, sy - sd / 2 - 0.07, 1.35))
+    # Rope coil at the stall's front left, wicker basket on a crate at the right.
+    for j in range(4):
+        k.ring("StallRopeCoil", at(sx - sw / 2 - 0.3, sy - sd / 2 - 0.4, 0.05 + j * 0.06), 0.32 - j * 0.03, 0.04, rope)
+    k.box("StallCrateR", at(sx + sw / 2 + 0.55, sy - 0.2, 0.35), (0.8, 0.7, 0.7), crate_wood)
+    k.cyl("StallBasket", at(sx + sw / 2 + 0.55, sy - 0.2, 0.95), 0.25, 0.3, 0.5, wicker, 12)
+    k.box("StallTowelR", at(sx + sw / 2 + 0.55, sy - 0.57, 0.6), (0.6, 0.04, 0.5), towel)
+
+    # The two wooden buttons in front of the stall.
+    for name, x, y, w, h, z in (("PatioSkills", 0.45, -1.15, 1.45, 0.46, 0.22), ("PatioStart", 2.65, -1.3, 2.6, 0.66, 0.26)):
+        patio_sign(k, name + "Board", at(x, y, z), w, h, m, tilt=-6)
+        k.panel(name + "Underline", at(x, y - 0.1, z - h * 0.24), w * 0.62, 0.12, underline, "front")
+        for side in (-1, 1):
+            k.box(name + "Leg", at(x + side * (w / 2 - 0.15), y + 0.04, z / 2), (0.1, 0.1, z), posts)
+        marker(name, at(x, y - 0.07, z))
+
+    # Back of the patio: a stone stair up the right, houses down the street, flowers everywhere.
+    k.box("PatioWallBack", at(1.8, 3.4, 2.0), (6.5, 0.6, 4.0), plaster_old)
+    patio_house(k, P.x + 1.8, P.y + 3.4, 6.5, 0.6, 4.0, "-y", m, house_flowers)
+    for i in range(7):
+        k.box("PatioStep", at(5.2, 2.0 + i * 0.45, 0.12 + i * 0.25), (1.6, 0.45, 0.25 + i * 0.5), steps)
+    k.box("PatioStairWall", at(6.2, 3.4, 1.0), (0.4, 3.6, 2.0), limestone)
+    k.box("PatioHouseR", at(7.6, 8.0, 2.6), (3.6, 6.0, 5.2), plaster)
+    patio_house(k, P.x + 7.6, P.y + 8.0, 3.6, 6.0, 5.2, "-x", m, house_flowers)
+    k.box("PatioHouseFar", at(-1.0, 14.0, 2.5), (6.0, 3.0, 5.0), plaster)
+    patio_house(k, P.x - 1.0, P.y + 14.0, 6.0, 3.0, 5.0, "-y", m, house_flowers)
+    k.box("PatioHouseFarR", at(4.0, 13.0, 3.0), (4.0, 3.0, 6.0), plaster_old)
+    patio_house(k, P.x + 4.0, P.y + 13.0, 4.0, 3.0, 6.0, "-y", m, house_flowers)
+    for (x, y, s) in ((4.3, 1.2, 0.5), (4.9, 1.0, 0.35), (-0.4, 2.8, 0.45), (6.0, 5.6, 0.4), (-2.3, 6.0, 0.45)):
+        k.cyl("PatioPot", at(x, y, s * 0.5), s * 0.55, s * 0.4, s, terracotta, 10)
+        card(k, "PatioPotFlower", at(x, y - 0.05, s + 0.25), 0.7, 0.7, hibiscus if x > 0 else bougainvillea, (80, 0, 0))
+    for (x, y, z, cut) in ((-4.0, 1.5, 3.0, bougainvillea), (-3.2, 3.0, 3.4, bougainvillea), (0.0, 3.05, 3.7, bougainvillea),
+                           (3.6, 3.05, 3.5, vine), (1.2, 3.05, 3.8, vine), (4.9, -0.1, 1.1, hibiscus),
+                           (4.6, -0.5, 1.4, monstera), (-5.6, -2.6, 0.6, monstera), (-4.8, -2.9, 0.4, hibiscus),
+                           (5.7, -2.4, 0.5, plumeria), (5.2, -2.8, 0.7, monstera), (-1.5, 3.0, 1.5, sprig)):
+        card(k, "PatioFlower", at(x, y, z), 1.1, 1.1, cut, (85, 0, k.rng.uniform(-20, 20)))
+    for j in range(10):
+        card(k, "PatioPetals", at(k.rng.uniform(-1, 5), k.rng.uniform(-2.5, 1.5), 0.044), 0.5, 0.4, petals, (0, 0, k.rng.uniform(0, 360)))
+
+    patio_stairs_and_balcony(k, P, m, steps, limestone, plaster, posts, [bougainvillea, hibiscus, plumeria], terracotta)
+
+    # Foliage closing the left edge of the frame, near the camera (as in the concept). The camera
+    # looks +Y with a 42 degree vertical fov: at distance D the left frame edge is at
+    # x = cam_x - 0.68 D and the bottom edge at z = cam_z - 0.38 D.
+    left_cuts = [monstera, leaves, hibiscus, monstera, sprig, plumeria]
+    for j in range(24):
+        dist = k.rng.uniform(2.2, 6.0)
+        edge = PATIO_CAM[0] - 0.68 * dist
+        s = k.rng.uniform(0.8, 1.2) * (0.8 + dist * 0.08)
+        z = k.rng.uniform(max(0.2, PATIO_CAM[2] - 0.38 * dist), 2.8)
+        card(k, "PatioEdgeLeaf", at(edge + k.rng.uniform(-0.6, -0.12), PATIO_CAM[1] + dist, z), s, s, left_cuts[j % len(left_cuts)],
+             (k.rng.uniform(70, 100), k.rng.uniform(-30, 30), k.rng.uniform(-50, 30)))
+    for j in range(5):
+        dist = k.rng.uniform(2.4, 3.4)
+        edge = PATIO_CAM[0] - 0.68 * dist
+        card(k, "PatioCornerLeaf", at(edge + k.rng.uniform(0.0, 0.7), PATIO_CAM[1] + dist, PATIO_CAM[2] - 0.38 * dist + k.rng.uniform(-0.15, 0.1)),
+             0.9, 0.9, left_cuts[j % 3], (k.rng.uniform(65, 90), 0, k.rng.uniform(-40, 40)))
+
+    # Camera and fighter spot.
+    marker("CamPatio", at(PATIO_CAM[0], PATIO_CAM[1], PATIO_CAM[2]))
+    marker("PatioLook", at(PATIO_CAM[0], 0.0, 1.75))
+    marker("PatioSpot", at(-1.45, -0.3, 0.0))
 
 
 BUILDERS = {"zephyr_dojo": build_zephyr, "molten_forge": build_forge, "storm_market": build_bazaar, "beach": build_beach}

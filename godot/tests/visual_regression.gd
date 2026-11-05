@@ -32,9 +32,30 @@ func run() -> void:
 		var hand_contact := view.socket_position("socket_hand_r")
 		check(hand_contact.z < -0.2, id + " striking hand points in the fighting direction")
 		check(hand_contact.distance_to(hand_idle) > 0.01, id + " hand socket follows the animated skeleton")
+		# No bone may turn 150 degrees or more between two 60 fps frames: that reads as a
+		# flip (a key interpolating the long way round). Authored strike snaps stay
+		# below about 130 degrees.
+		var worst := [0.0, ""]
+		for anim_name: StringName in view.anim_player.get_animation_list():
+			# Limited-animation clips cut from pose to pose with no interpolation, so a bone
+			# rolling about its own axis between keys is never seen turning.
+			if String(anim_name) in GaleFighterView.AUTHORED_STEPPED.get(id, []):
+				continue
+			var anim := view.anim_player.get_animation(anim_name)
+			for track in anim.get_track_count():
+				if anim.track_get_type(track) != Animation.TYPE_ROTATION_3D:
+					continue
+				var prev := anim.rotation_track_interpolate(track, 0.0)
+				for frame in range(1, int(anim.length * 60.0) + 1):
+					var rot := anim.rotation_track_interpolate(track, frame / 60.0)
+					var deg := rad_to_deg(prev.angle_to(rot))
+					if deg > worst[0]:
+						worst = [deg, "%s %s frame %d" % [anim_name, anim.track_get_path(track).get_concatenated_subnames(), frame]]
+					prev = rot
+		check(worst[0] < 150.0, id + " bones never flip between frames (worst %.0f deg: %s)" % worst)
 		if id == "kaze":
 			view.play_clip("light_3", GaleAnimTiming.contact_sec(id, "light_3"))
-			check(view.socket_position("socket_foot_r").z < -0.45, "Kaze J3 extends the foot forward")
+			check(view.socket_position("socket_hand_r").z < -0.6, "Kaze J3 drives the rear palm forward")
 		if id == "volt":
 			for clip: String in ["idle", "light_1", "light_2", "heavy", "ultimate"]:
 				view.play_clip(clip, 0.1)

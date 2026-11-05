@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1cs821wl3w37"
-path="res://.godot/imported/stage_piso_calcario.png-31282c7e33f799e75c93deed5e4ff665.ctex"
+path.s3tc="res://.godot/imported/stage_piso_calcario.png-31282c7e33f799e75c93deed5e4ff665.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "4f9831f75944828014e011ec559528a5"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/environments/zephyr_dojo/stage_piso_calcario.png"
-dest_files=["res://.godot/imported/stage_piso_calcario.png-31282c7e33f799e75c93deed5e4ff665.ctex"]
+dest_files=["res://.godot/imported/stage_piso_calcario.png-31282c7e33f799e75c93deed5e4ff665.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

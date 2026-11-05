@@ -1,0 +1,32 @@
+{
+  "key": "bazaar_friso-azul-dourado",
+  "status": "processed",
+  "source_native_size": [
+    2172,
+    724
+  ],
+  "source_mtime": 1793661585.642216,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 230.29641723632812
+  },
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_friso-azul-dourado_albedo.png",
+      "type": "strip",
+      "size_px": [
+        2048,
+        512
+      ],
+      "world_size_m": [
+        4,
+        1
+      ],
+      "repeat": "x",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    }
+  ]
+}

@@ -1,0 +1,1099 @@
+{
+  "version": 1,
+  "concept": "concept-patio-babuin-v6.png",
+  "roof_textures_included": false,
+  "grid": [
+    4,
+    4
+  ],
+  "origin": "top-left",
+  "purpose": "Fontes artísticas do pátio, casas, stand de roupas e área de descanso.",
+  "coverage": {
+    "casas": [
+      "rebocos",
+      "alvenaria",
+      "madeiras",
+      "persianas"
+    ],
+    "pedras": [
+      "calcamento",
+      "degraus",
+      "pedra-laranja",
+      "pedra-musgo"
+    ],
+    "lanternas": [
+      "latao-lanternas",
+      "bronze-grade-lanterna",
+      "ferro-suportes",
+      "vidro-ambar-lanterna"
+    ],
+    "board-stand": [
+      "madeira-stand-mobiliario",
+      "madeira-placas",
+      "lona-jade-stand",
+      "corda",
+      "papel-etiquetas"
+    ],
+    "descanso": [
+      "tapetes",
+      "almofadas",
+      "toalhas",
+      "vime"
+    ],
+    "vasos": [
+      "terracota-vasos",
+      "ceramica-marfim",
+      "ornamentos"
+    ]
+  },
+  "notes": [
+    "Coordenadas de cada célula e conteúdo principal em pixels, UVs normalizadas.",
+    "Materiais em RGB; recortes e ornamentos em RGBA com alfa preservado.",
+    "Não certificado para repetição sem emendas, dilatação de bordas ou mipmaps.",
+    "Textos, retrato de Babuin, personagem e roupas são assets separados das texturas do ambiente."
+  ],
+  "atlases": [
+    {
+      "file": "atlas-casas-pedras-madeiras-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "cells": [
+        {
+          "id": "reboco-branco",
+          "row": 0,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "reboco-envelhecido",
+          "row": 0,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "alvenaria-calcario",
+          "row": 0,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedra-laranja",
+          "row": 0,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "calcamento-pedras",
+          "row": 1,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedra-degraus",
+          "row": 1,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "terra-arenosa",
+          "row": 1,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "pedra-musgo",
+          "row": 1,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-stand-mobiliario",
+          "row": 2,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-vigas-postes",
+          "row": 2,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-persianas-jade",
+          "row": 2,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-clara-caixas",
+          "row": 2,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "terracota-vasos",
+          "row": 3,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "ceramica-marfim",
+          "row": 3,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "latao-lanternas",
+          "row": 3,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "ferro-suportes",
+          "row": 3,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ]
+    },
+    {
+      "file": "atlas-tecidos-acessorios-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "cells": [
+        {
+          "id": "lona-jade-stand",
+          "row": 0,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tecido-estandarte",
+          "row": 0,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "almofada-marfim",
+          "row": 0,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "almofada-salvia",
+          "row": 0,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tapete-palha",
+          "row": 1,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "tapete-trama-verde",
+          "row": 1,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "toalha-branca",
+          "row": 1,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "toalha-listrada",
+          "row": 1,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "corda",
+          "row": 2,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "papel-etiquetas",
+          "row": 2,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "bronze-grade-lanterna",
+          "row": 2,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "vidro-ambar-lanterna",
+          "row": 2,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "casca-arvore",
+          "row": 3,
+          "column": 0,
+          "type": "material",
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "musgo",
+          "row": 3,
+          "column": 1,
+          "type": "material",
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "madeira-placas",
+          "row": 3,
+          "column": 2,
+          "type": "material",
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        },
+        {
+          "id": "vime-cesto",
+          "row": 3,
+          "column": 3,
+          "type": "material",
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none"
+        }
+      ]
+    },
+    {
+      "file": "atlas-recortes-ornamentos-v1.png",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "cells": [
+        {
+          "id": "emblema-vento-marfim",
+          "row": 0,
+          "column": 0,
+          "type": "decal",
+          "rect_px": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            42,
+            54,
+            235,
+            223
+          ]
+        },
+        {
+          "id": "ornamento-vaso-marfim",
+          "row": 0,
+          "column": 1,
+          "type": "decal",
+          "rect_px": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            338,
+            91,
+            269,
+            144
+          ]
+        },
+        {
+          "id": "ornamento-ceramica-jade",
+          "row": 0,
+          "column": 2,
+          "type": "decal",
+          "rect_px": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            654,
+            68,
+            250,
+            186
+          ]
+        },
+        {
+          "id": "motivo-ondas-almofada",
+          "row": 0,
+          "column": 3,
+          "type": "decal",
+          "rect_px": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.0,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            956,
+            112,
+            251,
+            114
+          ]
+        },
+        {
+          "id": "hibisco",
+          "row": 1,
+          "column": 0,
+          "type": "cutout",
+          "rect_px": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            33,
+            370,
+            253,
+            205
+          ]
+        },
+        {
+          "id": "flores-brancas",
+          "row": 1,
+          "column": 1,
+          "type": "cutout",
+          "rect_px": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            343,
+            364,
+            252,
+            216
+          ]
+        },
+        {
+          "id": "bougainvillea",
+          "row": 1,
+          "column": 2,
+          "type": "cutout",
+          "rect_px": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            648,
+            362,
+            254,
+            222
+          ]
+        },
+        {
+          "id": "monstera",
+          "row": 1,
+          "column": 3,
+          "type": "cutout",
+          "rect_px": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.25,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            963,
+            350,
+            252,
+            243
+          ]
+        },
+        {
+          "id": "ramo-folhas",
+          "row": 2,
+          "column": 0,
+          "type": "cutout",
+          "rect_px": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.0,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            38,
+            668,
+            246,
+            230
+          ]
+        },
+        {
+          "id": "cipo",
+          "row": 2,
+          "column": 1,
+          "type": "cutout",
+          "rect_px": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.25,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            356,
+            650,
+            222,
+            269
+          ]
+        },
+        {
+          "id": "petalas-caidas",
+          "row": 2,
+          "column": 2,
+          "type": "decal",
+          "rect_px": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "uv_rect": [
+            0.5,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            649,
+            710,
+            250,
+            139
+          ]
+        },
+        {
+          "id": "sublinhado-jade",
+          "row": 2,
+          "column": 3,
+          "type": "decal",
+          "rect_px": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "uv_rect": [
+            0.75,
+            0.5,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            952,
+            736,
+            271,
+            74
+          ]
+        },
+        {
+          "id": "seta-esquerda",
+          "row": 3,
+          "column": 0,
+          "type": "decal",
+          "rect_px": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.0,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            83,
+            983,
+            145,
+            215
+          ]
+        },
+        {
+          "id": "seta-direita",
+          "row": 3,
+          "column": 1,
+          "type": "decal",
+          "rect_px": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.25,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            395,
+            982,
+            150,
+            218
+          ]
+        },
+        {
+          "id": "etiqueta-vazia",
+          "row": 3,
+          "column": 2,
+          "type": "cutout",
+          "rect_px": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "uv_rect": [
+            0.5,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            646,
+            990,
+            264,
+            191
+          ]
+        },
+        {
+          "id": "pino-latao",
+          "row": 3,
+          "column": 3,
+          "type": "cutout",
+          "rect_px": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "uv_rect": [
+            0.75,
+            0.75,
+            0.25,
+            0.25
+          ],
+          "repeat": "none",
+          "opaque_content_rect_px": [
+            1007,
+            1007,
+            162,
+            161
+          ]
+        }
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    }
+  ]
+}

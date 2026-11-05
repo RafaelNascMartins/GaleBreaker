@@ -1,0 +1,46 @@
+{
+  "key": "forja_lava",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661208.4041584,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 433.675,
+    "y": 452.24652099609375
+  },
+  "entries": [
+    {
+      "file": "textures-v2/forja/forja_lava_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_lava_emission.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_lava_albedo.png"
+    },
+    {
+      "file": "textures-v2/forja/forja_lava_emission.png",
+      "type": "emission",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": "textures-v2/forja/forja_lava_albedo.png",
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "sampling": "data; do not apply source_color/sRGB decoding to mask samples"
+    }
+  ]
+}

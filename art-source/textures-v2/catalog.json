@@ -1,0 +1,881 @@
+[
+  {
+    "key": "santuario_piso-calcario",
+    "arena": "santuario",
+    "material": "piso-calcario",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Large warm pale-gray limestone pavers with softly worn irregular edges, quiet narrow grout and subtle grain. No emblem or gold inlay. A two-by-two staggered course rhythm, no dark framing at tile boundaries."
+  },
+  {
+    "key": "santuario_pedra-estrutural",
+    "arena": "santuario",
+    "material": "pedra-estrutural",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Light warm-gray solid limestone structural stone grain, restrained fine pores and small mineral variation, no masonry joints, foliage or carving."
+  },
+  {
+    "key": "santuario_madeira-vermelha",
+    "arena": "santuario",
+    "material": "madeira-vermelha",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Vermilion painted temple timber, vertical wood grain, tiny scuffs exposing muted warm wood, even red pigment and no knots as a huge focal point."
+  },
+  {
+    "key": "santuario_latao-envelhecido",
+    "arena": "santuario",
+    "material": "latao-envelhecido",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Matte aged golden brass material, fine painted hammered grain, gentle scratches and restrained oxidation uniformly across patch. NO metal plate border, bevel, rivets, highlight or vignette."
+  },
+  {
+    "key": "santuario_telhas-azul-ardosia",
+    "arena": "santuario",
+    "material": "telhas-azul-ardosia",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Repeating courses of curved slate-blue temple roof tiles, clear hand-painted shapes and evenly shaded local material colors, moderate lip separation, no light on one side and no roof silhouette."
+  },
+  {
+    "key": "santuario_tecido-jade",
+    "arena": "santuario",
+    "material": "tecido-jade",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Plain deep-jade woven banner cloth, fine visible thread grain, absolutely NO folds shaded across patch, no seam, hem, embroidery, crest or border."
+  },
+  {
+    "key": "santuario_madeira-caixas",
+    "arena": "santuario",
+    "material": "madeira-caixas",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Honey-brown crate planks with vertical grain, quiet narrow seams, restrained wear, no reinforcement bars, handles, corners or full crate."
+  },
+  {
+    "key": "santuario_casca-cerejeira",
+    "arena": "santuario",
+    "material": "casca-cerejeira",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Brown-gray cherry-tree bark texture for wrapping branches, flowing grooves and small warmer patches, no tree silhouette or branch object."
+  },
+  {
+    "key": "santuario_flores-cerejeira",
+    "arena": "santuario",
+    "material": "flores-cerejeira",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1.5,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Dense all-over pink cherry-blossom canopy texture: connected clusters of simple five-petal flowers in soft blush, pink and muted mauve, fully covers patch, no background, large bare branches or isolated bouquet."
+  },
+  {
+    "key": "santuario_pedra-musgo",
+    "arena": "santuario",
+    "material": "pedra-musgo",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Warm-gray weathered limestone with small naturally distributed jade moss patches, matte painted grain; uniformly distributed growth without a central rock silhouette."
+  },
+  {
+    "key": "bazaar_piso-calcario",
+    "arena": "bazaar",
+    "material": "piso-calcario",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Warm ivory limestone floor with medium rectangular pavers and quiet fine seams, subtle cream/peach material variation, no rug, symbols, directional sun or shadows."
+  },
+  {
+    "key": "bazaar_parede-arenito",
+    "arena": "bazaar",
+    "material": "parede-arenito",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Pale honey sandstone wall ashlar, staggered medium rectangular blocks with subtle mineral grain, narrow warm-gray joints, no border or arches."
+  },
+  {
+    "key": "bazaar_azulejo-cobalto-marfim",
+    "arena": "bazaar",
+    "material": "azulejo-cobalto-marfim",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Cobalt-blue and ivory geometric zellige ceramic. Geometric eight-point stars and clean interlocking line work, evenly repeating four-way pattern, no text, gold frame or directional highlights."
+  },
+  {
+    "key": "bazaar_latao",
+    "arena": "bazaar",
+    "material": "latao",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Muted warm golden aged brass material, very fine painted hammered grain and small scratches, NO perimeter frame, ornamental border, bevel, rivets, central highlight or vignette."
+  },
+  {
+    "key": "bazaar_tecido-carmesim",
+    "arena": "bazaar",
+    "material": "tecido-carmesim",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Muted crimson/carmine woven canopy fabric, fine thread texture and gentle pigment mottling only, NO cloth folds, shadows, hems or embroidered border."
+  },
+  {
+    "key": "bazaar_tecido-azul-marinho",
+    "arena": "bazaar",
+    "material": "tecido-azul-marinho",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Deep navy woven cloth, fine moderate-contrast thread grain, no embroidery, folds, seam, shadow or border."
+  },
+  {
+    "key": "bazaar_madeira-carrinhos",
+    "arena": "bazaar",
+    "material": "madeira-carrinhos",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Warm brown wooden merchant cart planks, vertical grain, gentle wear and narrow plank seams, no whole cart, metal strips or wheels."
+  },
+  {
+    "key": "bazaar_juta",
+    "arena": "bazaar",
+    "material": "juta",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Natural tan burlap sack fabric, small tidy interlaced crosshatch fibers, all-over evenly repeated cloth texture, no bag silhouette or tied neck."
+  },
+  {
+    "key": "bazaar_especiaria-amarela",
+    "arena": "bazaar",
+    "material": "especiaria-amarela",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 0.5,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Fine golden-yellow ground spice powder, modestly varied small grains filling the patch evenly, no bowl, mound, scoop, pile edge or shadow."
+  },
+  {
+    "key": "forja_piso-basalto",
+    "arena": "forja",
+    "material": "piso-basalto",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": true,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Large matte charcoal-gray basalt floor pavers, clearly legible seams and soft worn edges, very sparse thin restrained ember-orange cracks within some stones. Most surface remains unlit dark gray; cracks alone can emit. No bright rim, lava pool or extensive glow."
+  },
+  {
+    "key": "forja_basalto-natural",
+    "arena": "forja",
+    "material": "basalto-natural",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Natural charcoal basalt rock material, restrained fine fractures and planes, modest dark-gray variation, NO glowing cracks, warm reflected light, big highlights or isolated rock silhouette."
+  },
+  {
+    "key": "forja_lava",
+    "arena": "forja",
+    "material": "lava",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": true,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Molten lava material seen straight down: cooled dark crust islands with connected bright red-orange molten channels and small yellow-hot cores. Emissive color only in channels; no global orange glow, scenery or ash haze."
+  },
+  {
+    "key": "forja_crosta-vulcanica",
+    "arena": "forja",
+    "material": "crosta-vulcanica",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Mostly solid black cooled volcanic crust with thin very sparse deep-red/orange cooling cracks, matte quiet material, almost entirely dark gray, no bright lava river."
+  },
+  {
+    "key": "forja_ferro-escuro",
+    "arena": "forja",
+    "material": "ferro-escuro",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Dark matte slightly hammered wrought-iron material, faint fine scratches, very restrained rust spots and medium-dark gray surface grain; no rivets, border, plate outline or bright specular spot."
+  },
+  {
+    "key": "forja_latao",
+    "arena": "forja",
+    "material": "latao",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Matte aged brass with slightly soot-darkened golden color, fine scratches, even local paint variation; NO rim, frame, bevel, rivets or baked bright highlights."
+  },
+  {
+    "key": "forja_tecido-vinho",
+    "arena": "forja",
+    "material": "tecido-vinho",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Heavy dark wine/burgundy woven banner cloth, fine fibers and gentle pigment variation, NO folds, shadows, crest, stitching or hems."
+  },
+  {
+    "key": "forja_tijolos-escuros",
+    "arena": "forja",
+    "material": "tijolos-escuros",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Dark gray soot-stained stone bricks in a consistent staggered pattern, quiet seams, matte surface grain; no orange reflected illumination, windows or glow."
+  },
+  {
+    "key": "praia_agua",
+    "arena": "praia",
+    "material": "agua",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Clear turquoise shallow sea WATER seen directly overhead, even average depth/color everywhere, fine soft painted water ripples and subtle restrained pale caustic lines, no shoreline, sand gradient, sky/objects reflected, specular glitter or perspective."
+  },
+  {
+    "key": "praia_areia",
+    "arena": "praia",
+    "material": "areia",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Fine warm ivory beach sand, subtle small mineral grains and tiny low-contrast ripples, uniform warm cream coverage, no footprint, shell, stone, plant or shadow."
+  },
+  {
+    "key": "praia_pedra-laranja",
+    "arena": "praia",
+    "material": "pedra-laranja",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Weathered warm orange coastal rock surface, subtle fine grain, quiet cracks and pale mineral specks. No rock object outline or high-contrast cavities."
+  },
+  {
+    "key": "praia_tijolo-branco",
+    "arena": "praia",
+    "material": "tijolo-branco",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Warm whitewashed limestone bricks in clean staggered courses, subtle pale cream color variation and narrow muted grout, even frontal material color, no corner or strong relief shadow."
+  },
+  {
+    "key": "praia_tronco-coqueiro",
+    "arena": "praia",
+    "material": "tronco-coqueiro",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Coconut palm trunk bark for wrapping on a cylinder: tan fibrous horizontal growth rings, consistent scale and restrained grain, no whole palm/tree silhouette."
+  },
+  {
+    "key": "praia_tronco-arvore",
+    "arena": "praia",
+    "material": "tronco-arvore",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Warm brown-gray coastal tree bark, flowing organic vertical grooves and a little muted moss, medium-low contrast, no silhouette or protruding branch object."
+  },
+  {
+    "key": "praia_madeira-barco",
+    "arena": "praia",
+    "material": "madeira-barco",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Old honey-brown boat timber planks running vertically, subtle warm wood grain, small wear and restrained seams; no boat, ropes, hardware or lettering."
+  },
+  {
+    "key": "praia_grama",
+    "arena": "praia",
+    "material": "grama",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 1,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Lush jade/lime short grass ground texture seen straight down, evenly distributed small painted blades fully cover patch, moderate color contrast, no tuft silhouette, soil border or cast shadow."
+  },
+  {
+    "key": "praia_telhas-azul-marinho",
+    "arena": "praia",
+    "material": "telhas-azul-marinho",
+    "type": "tileable",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "xy",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE square repeating material filling the ENTIRE image, source resolution at least 1024x1024 (prefer 1536x1536 for seam processing). Seamless across all four borders, coherent pattern phase at edges. No unique central focal detail, ornamental rim or tile-wide gradients. Opaque RGB material, not a cutout. Flat even albedo color only. Surface details repeat without obvious mirroring or a grid of repeated medallions. SUBJECT: Repeating overlapping curved navy-blue ceramic roof tiles. Deep ink/midnight blues with mild blue variation, clear course spacing, extremely restrained ceramic scuffs. NO green glaze, directional shine, rooftop silhouette or perimeter border."
+  },
+  {
+    "key": "bazaar_friso-azul-dourado",
+    "arena": "bazaar",
+    "material": "friso-azul-dourado",
+    "type": "strip",
+    "size_px": [
+      2048,
+      512
+    ],
+    "repeat": "x",
+    "world_size_m": [
+      4,
+      1
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE edge-to-edge material STRIP, desired aspect ratio 2048:512, high resolution. Continuous repeating detail along the horizontal axis ONLY. No border at either repeating edge, no labels or gutters. Fully opaque RGB. SUBJECT: Flat cobalt/navy ceramic ornamental frieze with restrained aged-gold geometric interlace on blue, consistent horizontal rhythm across BOTH left/right ends. Top and bottom may have straight quiet edging; NO frame at the repeating ends, no lettering."
+  },
+  {
+    "key": "forja_lava-vertical",
+    "arena": "forja",
+    "material": "lava-vertical",
+    "type": "strip",
+    "size_px": [
+      512,
+      2048
+    ],
+    "repeat": "y",
+    "world_size_m": [
+      1,
+      4
+    ],
+    "emission": true,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE edge-to-edge material STRIP, desired aspect ratio 512:2048, high resolution. Continuous repeating detail along the vertical axis ONLY. No border at either repeating edge, no labels or gutters. Fully opaque RGB. SUBJECT: Narrow vertical material of bright red-orange/yellow molten channels descending between dark basalt ridges. Flow runs top to bottom; top/bottom pattern must meet for continuous vertical UV repetition. No waterfall landscape, ground, rocks in perspective or bottom pool."
+  },
+  {
+    "key": "praia_mar-transicao",
+    "arena": "praia",
+    "material": "mar-transicao",
+    "type": "strip",
+    "size_px": [
+      2048,
+      1024
+    ],
+    "repeat": "y",
+    "world_size_m": [
+      8,
+      4
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE edge-to-edge material STRIP, desired aspect ratio 2048:1024, high resolution. Continuous repeating detail along the vertical axis ONLY. No border at either repeating edge, no labels or gutters. Fully opaque RGB. SUBJECT: Single continuous top-down coastal material, increasing water depth LEFT TO RIGHT: narrow warm ivory wet sand at far left, thin natural foam edge, clear pale aqua shallows, bright turquoise near the center, progressively deep azure sea at the right. Ocean details and beach/foam edge must match TOP AND BOTTOM for repeating along the coast; the left and right edges do NOT repeat. No horizon, sky, boat, rocks or scenery. Calm soft painted ripples and moderate caustics."
+  },
+  {
+    "key": "santuario_medalhao-vento",
+    "arena": "santuario",
+    "material": "medalhao-vento",
+    "type": "decal",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 2,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: The floor wind medallion from reference: ONE circular thin aged brass outer ring and three elegant jade wind-swirl inlays around a smaller brass central circle. Only the brass and jade inlay elements are opaque; ALL gaps between them and the area outside the ring are truly transparent, NO limestone floor/background attached, no bevel shadow or neon glow."
+  },
+  {
+    "key": "santuario_emblema-vento",
+    "arena": "santuario",
+    "material": "emblema-vento",
+    "type": "decal",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.65,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE simple flat aged-gold circular wind swirl crest matching the reference green banners. Only the golden emblem is opaque; ALL negative space including gaps and center holes is transparent. No green cloth, backdrop or banner silhouette. Clean painted edge and slight gold pigment variation, no bevel or shine."
+  },
+  {
+    "key": "forja_emblema-fogo",
+    "arena": "forja",
+    "material": "emblema-fogo",
+    "type": "decal",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.65,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE simple strong aged-gold flame crest matching the burgundy arena banners. Opaque flat gold silhouette with transparent inner cutouts/negative space. NO cloth, red square, glow, bevel or drop shadow."
+  },
+  {
+    "key": "bazaar_tapete-central",
+    "arena": "bazaar",
+    "material": "tapete-central",
+    "type": "decal",
+    "size_px": [
+      2048,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": [
+      4,
+      2
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE fully OPAQUE rectangular 2:1 flat material panel, fills the whole image, desired 2048x1024. Orthographic texture view, no perspective, no floor around it, no contact shadows, no rolled edges. This is a unique nonrepeating piece. SUBJECT: Unique muted burgundy-red handwoven rectangular carpet, modest navy/gold border around the perimeter and ONE simple centered navy/gold diamond medallion from reference. Entire 2:1 image is the flat opaque rug surface, no floor, shadow, curled corner or perspective. Rich but moderately contrasted fine woven color texture."
+  },
+  {
+    "key": "bazaar_vitral-geometrico",
+    "arena": "bazaar",
+    "material": "vitral-geometrico",
+    "type": "decal",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": [
+      1.5,
+      1.5
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\bazaar-fechado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Closed indoor bazaar: warm ivory limestone, honey sandstone, cobalt-and-ivory zellige, muted brass, crimson, navy blue, natural tan fibers. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE complete tall shallow-pointed-arch geometric stained-glass window panel with thin dark lead lines and narrow pale stone/metal perimeter frame. Simple ivory, pale amber and pale cobalt geometric pattern matching concept. Window pane and frame opaque albedo; fully transparent outside silhouette, no wall or exterior scenery. No cast shadow, internal backlight bloom or text."
+  },
+  {
+    "key": "forja_abertura-forja",
+    "arena": "forja",
+    "material": "abertura-forja",
+    "type": "decal",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 1.5,
+    "emission": true,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE square dark hammered-iron furnace panel with a narrow vertical molten-orange slit in its center and four small restrained corner rivets. Complete panel silhouette, small chamfered corners, fully transparent outside. The slit is bright orange with a few yellow-orange inner variations, NOT a transparent hole, no large glow halo. Panel is otherwise dark gray, no background wall or floor. Maintain only low-contrast material paint shading."
+  },
+  {
+    "key": "praia_hibisco",
+    "arena": "praia",
+    "material": "hibisco",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.55,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE red tropical hibiscus bloom with five broad petals, a small visible yellow stamen, frontal slightly organic view, no leaves or plant pot."
+  },
+  {
+    "key": "praia_flores-brancas",
+    "arena": "praia",
+    "material": "flores-brancas",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.6,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE small coherent connected cluster of THREE ivory-white frangipani/plumeria flowers with warm yellow centers, clean opaque white petals, no pot or ground."
+  },
+  {
+    "key": "praia_folha-monstera",
+    "arena": "praia",
+    "material": "folha-monstera",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.8,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE broad jade-green monstera leaf, clear natural internal holes and split silhouette, subtle painted veins, attached short stem, no second leaf."
+  },
+  {
+    "key": "praia_folha-larga",
+    "arena": "praia",
+    "material": "folha-larga",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.8,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE broad tropical heart/oval-shaped leaf from the concept, fresh jade/lime green, clear veins and short stem, complete isolated leaf, no second leaf."
+  },
+  {
+    "key": "praia_folha-coqueiro",
+    "arena": "praia",
+    "material": "folha-coqueiro",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 2.5,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE fully spread coconut palm frond with central rib and many long thin readable leaflets, diagonal complete silhouette, small natural gaps between leaflets fully transparent, no trunk or coconut."
+  },
+  {
+    "key": "praia_coral-rosa",
+    "arena": "praia",
+    "material": "coral-rosa",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.85,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE compact coherent branching pink coral cluster with many rounded arms joined to a small base, complete silhouette, all gaps transparent, no seabed, rock, water or animals."
+  },
+  {
+    "key": "praia_coral-laranja",
+    "arena": "praia",
+    "material": "coral-laranja",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.8,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE compact coherent branching orange coral cluster, arms connected at small base, clear silhouette and transparent gaps, no seabed, rocks, water or animals."
+  },
+  {
+    "key": "praia_coral-roxo",
+    "arena": "praia",
+    "material": "coral-roxo",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 0.65,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE low lilac/purple coral cluster with connected rounded organic branches and complete base, transparent gaps, no seabed, rocks, water or animals."
+  },
+  {
+    "key": "santuario_ramo-cerejeira",
+    "arena": "santuario",
+    "material": "ramo-cerejeira",
+    "type": "cutout",
+    "size_px": [
+      1024,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": 1.5,
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. ONE centered isolated shape or ONE connected botanical cluster, square image, source at least 1024x1024. True TRANSPARENT alpha background; do not draw a white, black or checkerboard backdrop. Generous 8% transparent margin around the complete silhouette; no cropping at image edges. Opaque colored interior (including white flower petals), no semitransparent face or fake glow, crisp natural 1-2 px antialiasing, no yellow fringe or white matte, NO contact/drop shadow. This is a flat albedo decal/cutout to put on a polygon, not a scene. SUBJECT: ONE gracefully curving small cherry-tree branch with a connected cluster of soft pink five-petal blossoms, brown twig structure visible, no trunk, leafy canopy, background or falling isolated petals."
+  },
+  {
+    "key": "santuario_fundo-distante",
+    "arena": "santuario",
+    "material": "fundo-distante",
+    "type": "backdrop",
+    "size_px": [
+      4096,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": [
+      200,
+      50
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\santuario-refinado-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Warm pale gray limestone, vermilion painted timber, muted slate-blue ceramic, deep jade green cloth, aged brass and soft pink cherry blossoms. A very WIDE 4:1 distant-background panorama, intended final size 4096x1024. ONLY distant sky and faraway landscape, no foreground, NO fighting floor, no paving, platform, carpet, ground plane or railings along the bottom; landscape reaches the bottom crop as distant hazy forms only. No labels, title, text, watermark, UI or reference-image border. Continuous wide composition, painted anime game background, controlled contrast and simplified broad forms so the distant scenery cannot compete with characters. SUBJECT: ONLY distant mountain sanctuary landscape: layered cool blue-green ridges, quiet white waterfalls descending in the far valley, a small traditional pagoda perched on a far upper-right cliff, soft morning blue sky and thin clouds. NO torii in foreground, lantern, tree branch, blossom framing, railings, architecture at camera level or fighting floor. Bottom is still distant atmospheric slopes/mist, never a flat ground/platform."
+  },
+  {
+    "key": "forja_fundo-distante",
+    "arena": "forja",
+    "material": "fundo-distante",
+    "type": "backdrop",
+    "size_px": [
+      4096,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": [
+      200,
+      50
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\arenas\\forja-sol-vermelho-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Volcanic forge: charcoal basalt and iron, sparse warm ember cracks, controlled molten orange-red, aged brass, dark burgundy; a crimson sun against black sky. A very WIDE 4:1 distant-background panorama, intended final size 4096x1024. ONLY distant sky and faraway landscape, no foreground, NO fighting floor, no paving, platform, carpet, ground plane or railings along the bottom; landscape reaches the bottom crop as distant hazy forms only. No labels, title, text, watermark, UI or reference-image border. Continuous wide composition, painted anime game background, controlled contrast and simplified broad forms so the distant scenery cannot compete with characters. SUBJECT: ONLY distant volcanic panorama: black charcoal sky with ONE solid crimson-red full sun above the center, stepped black basalt fortress FAR AWAY, thin orange molten falls and dim volcanic haze among far cliffs. Sky is black, not red; sun is solid red, NOT an eclipse. No near pillars, banners, chains, cage, braziers, floating rocks, perimeter ledges or fighting floor. The bottom is distant dark terrain and haze, no foreground lava lake."
+  },
+  {
+    "key": "praia_fundo-distante",
+    "arena": "praia",
+    "material": "fundo-distante",
+    "type": "backdrop",
+    "size_px": [
+      4096,
+      1024
+    ],
+    "repeat": "none",
+    "world_size_m": [
+      200,
+      50
+    ],
+    "emission": false,
+    "reference": "C:\\Users\\Rafael\\Downloads\\gale-breaker_-elemental-clash\\concept-art\\ui\\menu-principal-praia-v1.png",
+    "prompt": "Use case: stylized-concept. Production GAME TEXTURE, individual file, NOT an atlas or a presentation. The attached concept is the mandatory STYLE, COLOR and FORM reference only. Maintain its painted anime / cel-shaded fantasy game look, coherent moderately sized brush marks, medium-low contrast suitable for a shader with three bands of lighting. Do not reproduce the scene. This is unlit BASE COLOR, not a rendered material ball: completely flat orthographic surface view, NO perspective, no directional illumination, no baked shine or specular spot, no cast/contact shadow, no vignette or border/frame, no writing, labels, letters, numbers, watermark, scale bars or UI. No geometry sample slab or extra props. Preserve the reference palette. Sunny anime-painted coastal village: pale cream sand, clear turquoise-to-deep-blue water, warm orange rock, warm white masonry, navy glazed roof tiles, lush jade/lime foliage and honey-brown boat timber. A very WIDE 4:1 distant-background panorama, intended final size 4096x1024. ONLY distant sky and faraway landscape, no foreground, NO fighting floor, no paving, platform, carpet, ground plane or railings along the bottom; landscape reaches the bottom crop as distant hazy forms only. No labels, title, text, watermark, UI or reference-image border. Continuous wide composition, painted anime game background, controlled contrast and simplified broad forms so the distant scenery cannot compete with characters. SUBJECT: ONLY distant sunny tropical backdrop: generous blue sky with softly painted white cumulus, an ocean horizon, far blue sea and a few tiny rocky green islets at the distant horizon. No shore, sand, nearby waves, coast at camera position, village, roofs, palm tree framing, foreground coral, boat, pier or text. Lower band is distant ocean at horizon scale only, never fighting ground."
+  }
+]

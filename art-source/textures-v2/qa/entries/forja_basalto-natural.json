@@ -1,0 +1,31 @@
+{
+  "key": "forja_basalto-natural",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661346.4912107,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 4.311384582519532,
+    "y": 3.991964340209961
+  },
+  "entries": [
+    {
+      "file": "textures-v2/forja/forja_basalto-natural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_basalto-natural_albedo.png"
+    }
+  ]
+}

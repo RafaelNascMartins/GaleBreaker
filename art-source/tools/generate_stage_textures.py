@@ -98,6 +98,125 @@ def split_forest():
     return written
 
 
+def split_garage():
+    """Training garage (concept-art/ui/atlas-treino-garagem-v1): materials as opaque PNGs for the
+    beach scene, the paint inscriptions (already alpha) for the gate menu in godot/assets/ui/garage."""
+    src = CONCEPT / "ui" / "atlas-treino-garagem-v1"
+    meta = json.loads((src / "manifest.json").read_text(encoding="utf-8"))
+    out = OUT / "beach" / "textures" / "garage"
+    ui_out = ROOT / "godot" / "assets" / "ui" / "garage"
+    out.mkdir(parents=True, exist_ok=True)
+    ui_out.mkdir(parents=True, exist_ok=True)
+    written = []
+    for atlas in meta["atlases"]:
+        if atlas["file"].startswith("extra-v1"):
+            continue  # split below from extra-v1/textures
+        sheet = Image.open(src / atlas["file"]).convert("RGBA")
+        opaque = "materiais" in atlas["file"]
+        for cell in atlas["cells"]:
+            name = cell["id"]
+            if opaque:
+                x, y, w, h = cell["rect_px"]
+                tile = sheet.crop((x + TRIM, y + TRIM, x + w - TRIM, y + h - TRIM))
+                tile.convert("RGB").resize((512, 512), Image.Resampling.LANCZOS).save(out / f"{name}.png")
+            else:
+                x, y, w, h = cell["opaque_content_rect_px"]
+                pad = 6
+                ink = sheet.crop((x - pad, y - pad, x + w + pad, y + h + pad))
+                ink.save(ui_out / f"{name}.png")
+            written.append(name)
+    # Extra details (extra-v1): already split into textures/ (surfaces RGB, cut-outs RGBA).
+    extra = src / "extra-v1" / "textures"
+    (out / "extra").mkdir(exist_ok=True)
+    for png in extra.glob("*.png"):
+        name = png.stem.split("_", 1)[1]
+        Image.open(png).save(out / "extra" / f"{name}.png")
+        written.append("extra/" + name)
+    # The roof timbers read too red under the warm light: a paler, less saturated beam wood.
+    from PIL import ImageEnhance as _E
+    beam = Image.open(out / "madeira-viga.png").convert("RGB")
+    beam = _E.Brightness(_E.Color(beam).enhance(0.5)).enhance(1.12)
+    beam.save(out / "madeira-viga.png")
+    # The concept floor is a warm light grey: lift the dark oily concrete toward it.
+    from PIL import ImageEnhance
+    floor = Image.open(out / "extra" / "concreto-oleo-pegadas.png").convert("RGB")
+    floor = ImageEnhance.Brightness(floor).enhance(1.55)
+    warm = Image.new("RGB", floor.size, (255, 226, 190))
+    Image.blend(floor, Image.composite(floor, warm, Image.new("L", floor.size, 160)), 1.0).save(out / "extra" / "concreto-oleo-pegadas.png")
+    # The glass of the window cut-out (foliage outside), for the modelled 3D windows.
+    window = Image.open(out / "extra" / "janela-interior.png").convert("RGB")
+    window.crop((64, 102, 246, 228)).save(out / "extra" / "janela-vidro.png")
+    return written
+
+
+PATIO_SEAMLESS = {"calcamento-pedras", "reboco-branco", "reboco-envelhecido", "alvenaria-calcario", "pedra-degraus"}
+
+
+def seamless(tile):
+    """Make a texture repeat without a visible seam: blend it with a copy shifted by half a tile,
+    weighted so the original wins in the middle and the shifted copy (whose own seam sits in the
+    middle, hidden) wins at the borders, where it continues into the next tile."""
+    import numpy as np
+    a = np.asarray(tile).astype(np.float32)
+    h, w = a.shape[:2]
+    shifted = np.roll(np.roll(a, h // 2, 0), w // 2, 1)
+    yy = np.abs(np.linspace(-1, 1, h))[:, None]
+    xx = np.abs(np.linspace(-1, 1, w))[None, :]
+    weight = np.clip(1.0 - np.maximum(xx, yy), 0, 1) ** 0.6
+    weight = np.clip(weight * 1.6, 0, 1)[..., None]
+    return Image.fromarray((a * weight + shifted * (1 - weight)).astype(np.uint8))
+
+
+def split_patio():
+    """Arcade village patio (concept-art/ui/atlas-patio-casas-v1): surfaces as opaque PNGs, the
+    cut-outs cleaned (their alpha carries stray specks: hard edge, keep only large pieces)."""
+    import numpy as np
+    import cv2
+    src = CONCEPT / "ui" / "atlas-patio-casas-v1"
+    meta = json.loads((src / "manifest.json").read_text(encoding="utf-8"))
+    out = OUT / "beach" / "textures" / "patio"
+    out.mkdir(parents=True, exist_ok=True)
+    written = []
+    for atlas in meta["atlases"]:
+        sheet = Image.open(src / atlas["file"]).convert("RGBA")
+        cutouts = "recortes" in atlas["file"]
+        for cell in atlas["cells"]:
+            name = cell["id"]
+            if not cutouts:
+                x, y, w, h = cell["rect_px"]
+                tile = sheet.crop((x + TRIM, y + TRIM, x + w - TRIM, y + h - TRIM))
+                tile = tile.convert("RGB").resize((512, 512), Image.Resampling.LANCZOS)
+                if name in PATIO_SEAMLESS:
+                    tile = seamless(tile)
+                tile.save(out / f"{name}.png")
+            else:
+                x, y, w, h = cell["rect_px"]
+                tile = clean_cutout(sheet.crop((x, y, x + w, y + h)), 170)
+                rgba = np.array(tile)
+                solid = (rgba[..., 3] > 0).astype(np.uint8)
+                count, labels, stats, _ = cv2.connectedComponentsWithStats(solid, connectivity=8)
+                if count > 1:
+                    biggest = stats[1:, cv2.CC_STAT_AREA].max()
+                    keep = np.zeros_like(solid, bool)
+                    for i in range(1, count):
+                        if stats[i, cv2.CC_STAT_AREA] >= biggest * 0.06:
+                            keep |= labels == i
+                    rgba[..., 3] = np.where(keep, rgba[..., 3], 0)
+                clean = Image.fromarray(rgba, "RGBA")
+                bbox = clean.getchannel("A").getbbox()
+                if bbox:
+                    clean = clean.crop(bbox)
+                clean.save(out / f"{name}.png")
+            written.append(name)
+    # The fighter's wanted-style poster, painted in the concept (until each fighter has its own
+    # poster art, the ones not drawn yet fall back to the portrait in Godot).
+    poster = Image.open(src / "concept-patio-babuin-v6.png").convert("RGB").crop((1100, 166, 1240, 343))
+    posters = ROOT / "godot" / "assets" / "ui" / "posters"
+    posters.mkdir(parents=True, exist_ok=True)
+    poster.resize((poster.width * 3, poster.height * 3), Image.Resampling.LANCZOS).save(posters / "kaze.png")
+    return written
+
+
 def light_shaft():
     """Soft vertical sunbeam for the clearing (additive)."""
     import numpy as np
@@ -172,6 +291,8 @@ def main():
     bazaar_corridor_view()
     print("beach textures:", split_beach())
     print("forest textures:", split_forest())
+    print("garage textures:", split_garage())
+    print("patio textures:", split_patio())
 
 
 if __name__ == "__main__":

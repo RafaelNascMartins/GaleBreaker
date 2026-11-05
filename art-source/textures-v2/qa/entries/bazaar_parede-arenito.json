@@ -1,0 +1,31 @@
+{
+  "key": "bazaar_parede-arenito",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661001.2246542,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "native_phase_x": 28.592541367623603,
+    "native_phase_y": 61.11156168760832
+  },
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_parede-arenito_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_parede-arenito_albedo.png"
+    }
+  ]
+}

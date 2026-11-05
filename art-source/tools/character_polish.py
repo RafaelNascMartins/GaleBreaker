@@ -199,7 +199,8 @@ def finalize_pose(rig, fid, clip='idle', frame=0, phase=None):
     if fid=='kaze' and clip not in ['knockdown','ko','get_up']:
         for side in ['l','r']:
             _world_orientation(bones['hand_'+side],Matrix.Rotation(math.pi,4,'Y'))
-    if clip in ['victory','select'] and frame>=20:
+    # Kaze's select clip is its own palm salute (build_blender_assets.kaze_select), not the bow.
+    if (clip=='victory' or (clip=='select' and fid!='kaze')) and frame>=20:
         if fid=='tophia':
             arm('r',(-.16,-.22,1.70))
             _world_orientation(bones['hand_r'],Matrix.Rotation(math.pi,4,'Y'))

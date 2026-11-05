@@ -1,0 +1,34 @@
+{
+  "cells": 16,
+  "surface_files": 8,
+  "rgba_files": 8,
+  "tools": 4,
+  "font_glyphs": 191,
+  "words": [
+    "BABUIN",
+    "TOPHIA",
+    "VOLT",
+    "IGNIS",
+    "KAZE",
+    "PASSIVO",
+    "DEFENDE ALTO",
+    "DEFENDE BAIXO",
+    "PULA",
+    "IA",
+    "SIM",
+    "NÃO",
+    "TREINO",
+    "LUTADOR",
+    "ADVERSÁRIO",
+    "COMPORTAMENTO",
+    "EXIBIR HITBOXES",
+    "INICIAR TREINO",
+    "ESC VOLTAR"
+  ],
+  "size_px": [
+    1254,
+    1254
+  ],
+  "top_half_alpha_255": true,
+  "chain_first_last_columns_equal": true
+}

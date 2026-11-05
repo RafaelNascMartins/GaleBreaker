@@ -1,0 +1,10 @@
+GARAGEM DE TREINOS — ATLAS V1
+
+Dois atlas com 16 células cada: materiais RGB e inscrições RGBA transparentes, em resolução nativa. O manifest.json informa tamanho real e recortes em pixels/UVs. São 32 regiões de aproximadamente 313–314 px por lado.
+
+O atlas de materiais cobre portão, aço, madeiras, concreto, tijolo, reboco, telhado, tatame, saco de pancadas, pneus, tecido, latão, ferro, papelão e vidro.
+O atlas de inscrições contém a tinta das opções e os indicadores. Não contém placas ou fundos: aplique sobre a malha/material do portão, acompanhando seus UVs, ranhuras e iluminação. Para manter a tinta integrada, use albedo com alfa, não emissão. Valores e seleções devem continuar independentes para serem alterados no jogo. Os nomes e valores desta prancha são os exemplos da concept; outras escolhas podem ser renderizadas com fonte/material equivalente.
+
+Cada célula de atlas é uma região: UV repeat comum repete o atlas inteiro. Para repetição de um material, use recorte individual ou remapeamento UV apropriado. Não foram certificados emendas invisíveis, dilatação de bordas ou mipmaps de produção. Vidro âmbar é albedo RGB; transparência e emissão da iluminação ficam no material. Não inclui modelos 3D nem implementação.
+
+qa-inscricoes-sobre-metal.png é uma prévia das inscrições compostas sobre cinza, apenas para inspeção. O arquivo utilizável com alfa é atlas-inscricoes-treino-garagem-v1.png.

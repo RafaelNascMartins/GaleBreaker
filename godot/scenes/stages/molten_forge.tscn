@@ -1,9 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bnikots5dea75"]
 
-[ext_resource type="PackedScene" path="res://assets/environments/molten_forge/stage.glb" id="1_hhb6g"]
+[ext_resource type="PackedScene" uid="uid://b1bx38yi086ll" path="res://assets/environments/molten_forge/stage.glb" id="1_hhb6g"]
 
 [node name="MoltenForgeStage" type="Node3D" unique_id=547866984]
 
-[node name="Environment" type="Node3D" parent="." unique_id=151463878 instance=ExtResource("1_hhb6g")]
+[node name="Environment" parent="." unique_id=151463878 instance=ExtResource("1_hhb6g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08024979, -0.031739593, -0.0038671494)
 
 [node name="Props" type="Node3D" parent="." unique_id=738204216]

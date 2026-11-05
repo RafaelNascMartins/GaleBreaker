@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://i2ejqx2uvisc"
+path="res://.godot/imported/PortaoStencil-Desgastado.fnt-9756d0a95a53ef6db2825208588df67e.fontdata"
+
+[deps]
+
+source_file="res://fonts/PortaoStencil-Desgastado.fnt"
+dest_files=["res://.godot/imported/PortaoStencil-Desgastado.fnt-9756d0a95a53ef6db2825208588df67e.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

@@ -1,0 +1,697 @@
+{
+  "files": 61,
+  "failures": [],
+  "results": [
+    {
+      "file": "textures-v2/santuario/santuario_pedra-estrutural_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_piso-calcario_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_madeira-vermelha_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_latao-envelhecido_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_tecido-jade_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_telhas-azul-ardosia_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_madeira-caixas_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_flores-cerejeira_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_casca-cerejeira_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_pedra-musgo_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_piso-calcario_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_azulejo-cobalto-marfim_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_parede-arenito_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_latao_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tecido-carmesim_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tecido-azul-marinho_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_madeira-carrinhos_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_juta_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_especiaria-amarela_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_lava_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_lava_emission.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_piso-basalto_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_piso-basalto_emission.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_basalto-natural_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_crosta-vulcanica_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_ferro-escuro_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_latao_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_tecido-vinho_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_tijolos-escuros_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_areia_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_agua_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_pedra-laranja_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_tijolo-branco_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_tronco-coqueiro_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_tronco-arvore_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_madeira-barco_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_grama_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_friso-azul-dourado_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        2048,
+        512
+      ],
+      "edge_x_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_telhas-azul-marinho_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "edge_x_max_delta": 0,
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_lava-vertical_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        512,
+        2048
+      ],
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_lava-vertical_emission.png",
+      "mode": "RGB",
+      "size_px": [
+        512,
+        2048
+      ],
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_medalhao-vento_albedo.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 266635,
+      "transparent_pixels": 770076,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_mar-transicao_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        2048,
+        1024
+      ],
+      "edge_y_max_delta": 0,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_emblema-vento_albedo.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 273978,
+      "transparent_pixels": 763409,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_emblema-fogo_albedo.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 211262,
+      "transparent_pixels": 832246,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_vitral-geometrico_albedo.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 479177,
+      "transparent_pixels": 566571,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/bazaar/bazaar_tapete-central_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        2048,
+        1024
+      ],
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_abertura-forja_albedo.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 590863,
+      "transparent_pixels": 454684,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_abertura-forja_emission.png",
+      "mode": "RGB",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_hibisco_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 475648,
+      "transparent_pixels": 568987,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-monstera_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 413556,
+      "transparent_pixels": 626968,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_flores-brancas_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 416492,
+      "transparent_pixels": 626250,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-larga_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 469401,
+      "transparent_pixels": 575604,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_folha-coqueiro_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 322331,
+      "transparent_pixels": 698836,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-rosa_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 343335,
+      "transparent_pixels": 695166,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-roxo_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 288358,
+      "transparent_pixels": 752384,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_coral-laranja_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 347194,
+      "transparent_pixels": 689527,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_fundo-distante_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "errors": []
+    },
+    {
+      "file": "textures-v2/forja/forja_fundo-distante_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "errors": []
+    },
+    {
+      "file": "textures-v2/santuario/santuario_ramo-cerejeira_cutout.png",
+      "mode": "RGBA",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "opaque_pixels": 222637,
+      "transparent_pixels": 814891,
+      "aa_max_distance": 2.0,
+      "dilation_px": 16,
+      "errors": []
+    },
+    {
+      "file": "textures-v2/praia/praia_fundo-distante_albedo.png",
+      "mode": "RGB",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "errors": []
+    }
+  ],
+  "tileable_previews": 36,
+  "processed_sources": 57,
+  "expected_sources": 57,
+  "previews_pixel_identical_to_2x2_source": 36,
+  "renderer": "Godot 4.7.2, OpenGL Compatibility, GTX 1060",
+  "gpu_qa": "three tone bands, straight alpha + linear mipmaps, four paired emission masks"
+}

@@ -244,12 +244,46 @@ func run() -> void:
 	var face_view := GaleFighterView.new()
 	root.add_child(face_view)
 	face_view.build(data, "kaze", 0)
-	check(bool(face_view.material.get_shader_parameter("use_face")) and face_view.material.get_shader_parameter("face_tex") != null, "Babuin's flat face draws the expression atlas")
+	check(bool(face_view.material.get_shader_parameter("use_face")) and (face_view.material.get_shader_parameter("face_tex") != null or face_view.material.get_shader_parameter("face_px") != null), "Babuin's flat face draws the expression atlas")
 	var face_state := {"move": {"type": "light"}}
-	check(face_view._face_for(face_state, "active", 1.0) == GaleFighterView.Face.SHOUT and face_view._face_for({"move": {"type": "ultimate"}}, "startup", 1.0) == GaleFighterView.Face.FOCUS, "attacks shout and specials focus")
+	check(face_view._face_for(face_state, "active", 1.0) == GaleFighterView.Face.SHOUT and face_view._face_for({"move": {"type": "elemental"}}, "startup", 1.0) == GaleFighterView.Face.FOCUS, "attacks shout and specials focus")
+	check(face_view._face_for({"move": {"type": "ultimate"}}, "startup", 1.0) == GaleFighterView.Face.ULT_CHARGE and face_view.face_cell(GaleFighterView.Face.ULT_CHARGE) == 6 and face_view._face_for({"move": {"type": "ultimate"}}, "active", 1.0) == GaleFighterView.Face.ULT_RELEASE and face_view.face_cell(GaleFighterView.Face.ULT_RELEASE) == 10 and face_view._face_for({"move": {"type": "ultimate"}}, "recovery", 1.0) == GaleFighterView.Face.ULT_RECOVER and face_view.face_cell(GaleFighterView.Face.ULT_RECOVER) == 22, "Babuin's ultimate: face 6 charging, 10 firing, 22 recovering")
 	check(face_view._face_for({}, "hitstun", 1.0) == GaleFighterView.Face.HURT and face_view._face_for({}, "ko", 1.0) == GaleFighterView.Face.KO and face_view._face_for({}, "victory", 1.0) == GaleFighterView.Face.VICTORY and face_view._face_for({}, "guard", 1.0) == GaleFighterView.Face.EFFORT, "hurt, KO, victory and guard have their own faces")
 	face_view.set_face(GaleFighterView.Face.HURT)
-	check(is_equal_approx(float(face_view.material.get_shader_parameter("face_cell")), float(GaleFighterView.Face.HURT)), "changing expression picks the atlas cell")
+	check(is_equal_approx(float(face_view.material.get_shader_parameter("face_cell")), float(face_view.face_cell(GaleFighterView.Face.HURT))), "changing expression picks the atlas cell")
+	check(face_view.open_hands.size() == 2 and face_view.fists.size() == 2, "Babuin has fist and open-hand parts to swap")
+	face_view.play_clip("light_3", 0.1)
+	check(face_view.open_hands.all(func(m): return m.visible) and face_view.fists.all(func(m): return not m.visible), "the J3 palm swaps both fists for open hands")
+	face_view.play_clip("light_1", 0.1)
+	check(face_view.fists.any(func(m): return m.visible and String(m.name).ends_with("l")), "the J1 punch closes the lead fist")
+	face_view.play_clip("crouch", 0.1)
+	check(face_view.fists.any(func(m): return m.visible and String(m.name).ends_with("r")), "the crouch keeps the rear fist closed")
+	face_view.play_clip("light_1", 3.0 / 60.0)
+	var held_a := face_view.socket_position("socket_hand_l")
+	face_view.play_clip("light_1", 4.5 / 60.0)
+	var held_b := face_view.socket_position("socket_hand_l")
+	face_view.play_clip("light_1", 7.0 / 60.0)
+	var strike := face_view.socket_position("socket_hand_l")
+	check(held_a.distance_to(held_b) < 0.001 and held_b.distance_to(strike) > 0.2, "Babuin J1 holds its anticipation pose, then snaps to the strike (limited animation)")
+	var gold_view := GaleFighterView.new()
+	root.add_child(gold_view)
+	gold_view.build(data, "kaze", 1)
+	check(String(gold_view.material.get_shader_parameter("albedo_px").resource_path).ends_with("page_dourado.png") and GaleVisualCatalog.load_for("kaze").palettes[1].name == "Jade Dourado", "Babuin's second outfit is Jade Dourado, its own gold page")
+	gold_view.apply_palette(0, data)
+	check(String(gold_view.material.get_shader_parameter("albedo_px").resource_path).ends_with("page.png"), "switching back to Jade restores the painted page")
+	gold_view.apply_palette(3, data)
+	var exec_shown := gold_view.meshes.filter(func(m): return m.visible and not String(m.name).contains("Fist") and not String(m.name).contains("HandOpen"))
+	check(exec_shown.size() == 1 and String(exec_shown[0].name).contains("ExecBody") and String(gold_view.material.get_shader_parameter("albedo_px").resource_path).ends_with("page_executivo.png"), "Babuin's Executivo outfit shows the suit body and its page")
+	gold_view.apply_palette(2, data)
+	var fish_shown := gold_view.meshes.filter(func(m): return m.visible and not String(m.name).contains("Fist") and not String(m.name).contains("HandOpen"))
+	check(fish_shown.size() == 1 and String(fish_shown[0].name).contains("PeixeBody") and String(gold_view.hand_material.get_shader_parameter("albedo_px").resource_path).ends_with("hand_peixao.png"), "Babuin's Peixão outfit shows the fish costume and gloved open hands")
+	gold_view.queue_free()
+	var blinks := 0
+	for step in 80:
+		face_view.present("select", step * 0.05)
+		if face_view.face == GaleFighterView.Face.BLINK:
+			blinks += 1
+	check(blinks > 0 and blinks < 80, "outside a fight (Arcade select) the fighter still blinks")
 	face_view.queue_free()
 	# Options on the forest quest board.
 	menu_app.set_process(false)
@@ -279,14 +313,45 @@ func run() -> void:
 		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
 	await process_frame
 	check(not menu_app.arena.board_open() and menu_app.menu.visible and not is_instance_valid(menu_app.modal), "leaving the board flies back and restores the beach menu")
-	# Arcade select on the beach.
-	menu_app.open_arcade_select()
-	check(menu_app.modal.has_meta("arcade_select") and menu_app.arena.select_view != null and menu_app.arena.select_view.fighter_id == menu_app.fighter1, "Arcade opens the beach fighter select")
+	# Training set up on the garage gate behind the menu camera.
+	check(beach.find_child("GaragePanel", true, false) != null and beach.find_child("CamGarage", true, false) != null, "beach scene has the training garage behind the menu camera")
+	menu_app.open_garage()
+	for i in 140:
+		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
+	await process_frame
+	check(menu_app.arena.garage_open() and menu_app.garage_ui.interactive and menu_app.garage_ui.widgets.size() == 6, "Treino turns the camera to the garage and the menu is painted on the gate")
+	var pivot: Node3D = menu_app.arena.bag_pivot
+	var swing_a := pivot.rotation
+	for i in 30:
+		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
+	check(pivot.get_child_count() >= 10 and pivot.rotation.distance_to(swing_a) > 0.0005 and absf(pivot.rotation.x) < deg_to_rad(3.0), "the heavy bag hangs from its chain on a pivot and sways gently")
+	var rival_before: String = menu_app.fighter2
+	menu_app.garage_ui.change(1, 1)
+	menu_app.garage_ui.change(2, 1)
+	check(menu_app.fighter2 != rival_before and menu_app.training_behavior == 1, "the gate changes the opponent and its behaviour")
+	menu_app.garage_ui.change(2, -1)
+	menu_app.close_garage()
+	for i in 140:
+		menu_app.arena.render(menu_app.sim, 1.0 / 60.0)
+	await process_frame
+	check(not menu_app.arena.garage_open() and menu_app.menu.visible, "leaving the garage turns back to the beach menu")
+	menu_app.fighter2 = rival_before
+	# Arcade select in the village patio, reached through a fade to black.
+	check(beach.find_child("CamPatio", true, false) != null and beach.find_child("PatioHanger_2", true, false) != null and beach.find_child("PatioStart", true, false) != null, "beach scene has the village patio with its stall anchors")
+	await menu_app.open_arcade_select()
+	check(menu_app.modal.has_meta("arcade_select") and menu_app.arena.patio_shot and menu_app.arena.select_view != null and menu_app.arena.select_view.fighter_id == menu_app.fighter1 and menu_app.arena.select_view.position.distance_to(menu_app.arena.patio_spot) < 0.01, "Arcade fades to the patio with the fighter on the cobbles")
+	check(menu_app.patio_ui.interactive and menu_app.patio_ui.hangers.size() == 4 and menu_app.patio_ui.rows.size() == 4, "the stall shows all four outfits on hangers and the four choices")
+	var palette_before: int = menu_app.palette1
+	menu_app.patio_ui.focus = 1
+	menu_app.patio_ui.change(1)
+	check(menu_app.palette1 == posmod(palette_before + 1, 4), "stepping on the rack picks the next outfit")
 	menu_app.choose_arcade_fighter("ignis")
 	menu_app.choose_arcade_outfit(2)
-	check(menu_app.fighter1 == "ignis" and menu_app.palette1 == 2 and menu_app.arena.select_view.fighter_id == "ignis", "choosing a fighter and outfit updates the beach model")
-	menu_app.leave_arcade_select()
-	check(menu_app.arena.select_view == null and menu_app.menu.visible and not menu_app.in_arcade_select, "leaving the select returns to the beach menu")
+	check(menu_app.fighter1 == "ignis" and menu_app.palette1 == 2 and menu_app.arena.select_view.fighter_id == "ignis", "choosing a fighter and outfit updates the patio model")
+	await menu_app.leave_arcade_select()
+	check(menu_app.arena.select_view == null and not menu_app.arena.patio_shot and menu_app.menu.visible and not menu_app.in_arcade_select, "leaving the patio fades back to the beach menu")
+	menu_app.fighter1 = "kaze"
+	menu_app.palette1 = 0
 	menu_app.queue_free()
 	await process_frame
 	sound.queue_free()

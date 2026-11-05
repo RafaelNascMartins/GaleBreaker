@@ -26,6 +26,22 @@
         "end": 28
       },
       "heavy": {
+        "wind": 6,
+        "contact": 9,
+        "hold": 12,
+        "follow": 15,
+        "recover": 21,
+        "end": 26
+      },
+      "heavy_2": {
+        "wind": 8,
+        "contact": 11,
+        "hold": 14,
+        "follow": 18,
+        "recover": 25,
+        "end": 32
+      },
+      "heavy_3": {
         "wind": 10,
         "contact": 13,
         "hold": 16,
@@ -121,6 +137,22 @@
         "recover": 40,
         "end": 48
       },
+      "heavy_2": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy_3": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
       "elemental": {
         "wind": 15,
         "contact": 19,
@@ -209,6 +241,22 @@
         "recover": 18,
         "end": 24
       },
+      "heavy_2": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy_3": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
       "elemental": {
         "wind": 4,
         "contact": 6,
@@ -290,6 +338,22 @@
         "end": 24
       },
       "heavy": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy_2": {
+        "wind": 4,
+        "contact": 6,
+        "hold": 10,
+        "follow": 12,
+        "recover": 18,
+        "end": 24
+      },
+      "heavy_3": {
         "wind": 4,
         "contact": 6,
         "hold": 10,

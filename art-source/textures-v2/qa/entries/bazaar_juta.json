@@ -1,0 +1,31 @@
+{
+  "key": "bazaar_juta",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661224.5468051,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 172.40009765625,
+    "y": 82.5695571899414
+  },
+  "entries": [
+    {
+      "file": "textures-v2/bazaar/bazaar_juta_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/bazaar/preview_bazaar_juta_albedo.png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "key": "santuario_fundo-distante",
+  "status": "processed",
+  "source_native_size": [
+    2172,
+    724
+  ],
+  "source_mtime": 1793662022.4766417,
+  "pipeline_version": 4,
+  "cut_scores": {},
+  "entries": [
+    {
+      "file": "textures-v2/santuario/santuario_fundo-distante_albedo.png",
+      "type": "backdrop",
+      "size_px": [
+        4096,
+        1024
+      ],
+      "world_size_m": [
+        200,
+        50
+      ],
+      "repeat": "none",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none"
+    }
+  ]
+}

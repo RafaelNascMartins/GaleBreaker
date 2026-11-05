@@ -1,0 +1,31 @@
+{
+  "key": "forja_crosta-vulcanica",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793661243.448558,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 2.4045425415039063,
+    "y": 1.9964340925216675
+  },
+  "entries": [
+    {
+      "file": "textures-v2/forja/forja_crosta-vulcanica_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/forja/preview_forja_crosta-vulcanica_albedo.png"
+    }
+  ]
+}

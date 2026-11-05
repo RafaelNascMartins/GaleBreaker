@@ -62,7 +62,7 @@ def import_model(fid, height):
 
 
 def flat_face(mesh, fid):
-    """Replace the sculpted eyes, brows and nose with one flat skin patch, then project a second UV
+    """Remove the sculpted eyes and brows, paint the face plain skin, then project a second UV
     (FaceUV) from the front so the expression atlas can be drawn over the face in Godot."""
     face = json.loads((ROOT / "art-source" / "characters" / fid / "rig_joints.json").read_text(encoding="utf-8"))["face"]
     half, patch_half, front_y = face["half_width"], face["patch_half_width"], face["front_y"]
@@ -104,15 +104,21 @@ def flat_face(mesh, fid):
     filled = bmesh.ops.holes_fill(bm, edges=border, sides=0)["faces"]
     patch = bmesh.ops.triangulate(bm, faces=filled, quad_method="BEAUTY", ngon_method="BEAUTY")["faces"]
 
-    # Pull the front of the face onto one plane (fitted to the shell's face verts) so expressions
-    # read cleanly; the blend fades out toward the cheeks and the jaw.
-    face_verts = [v for v in bm.verts if in_face(v.co)]
-    plane_y = sum(v.co.y for v in face_verts) / max(len(face_verts), 1)
-    for v in face_verts:
-        edge = min(1.0, (patch_half - abs(v.co.x)) / 0.03, (v.co.z - z0) / 0.03, (z1 - v.co.z) / 0.03)
-        v.co.y += (plane_y - v.co.y) * max(edge, 0.0)
-    for f in {f for v in face_verts for f in v.link_faces} | set(patch):
-        f.smooth = False
+    # Round off the ridge down the middle of the face (it hides the far eye in a 3/4 view) with a
+    # curve fitted to the face itself, y = a + b*x^2, across the brow/eye band only; the jaw and
+    # chin keep the generated shape.
+    band_z0 = z0 + 0.05
+    band = [v for v in bm.verts if in_face(v.co) and v.co.z > band_z0]
+    xs2 = [v.co.x ** 2 for v in band]
+    mx, my = sum(xs2) / len(band), sum(v.co.y for v in band) / len(band)
+    b = sum((x2 - mx) * (v.co.y - my) for x2, v in zip(xs2, band)) / max(sum((x2 - mx) ** 2 for x2 in xs2), 1e-9)
+    # Keep a third of the fitted roundness: a gently curved face, flat enough for the far eye.
+    b *= 0.35
+    a = my - b * mx
+    for v in band:
+        w = min(1.0, (patch_half - abs(v.co.x)) / 0.03, (v.co.z - band_z0) / 0.04, (z1 - v.co.z) / 0.03)
+        v.co.y += (a + b * v.co.x ** 2 - v.co.y) * max(w, 0.0)
+    print(f"face curve: y = {a:.3f} + {b:.2f} x^2 over {len(band)} verts")
 
     # Every front face triangle becomes plain skin (the generated texture paints eyes and brows on
     # the shell too); the features come only from the expression atlas.
@@ -120,9 +126,10 @@ def flat_face(mesh, fid):
     flat = bm.faces.layers.int.new("flat_face")
     for f in bm.faces:
         c = f.calc_center_median()
-        facing = f.normal.y < -0.2 and c.y < 0 and abs(c.x) < half and c.z > face["decal_bottom"]
+        # Cheek sides count too, so the outer eye corners are not cut when the head turns.
+        facing = f.normal.y < 0.2 and c.y < -0.03 and abs(c.x) < half and c.z > face["decal_bottom"]
         front = facing and c.z < face["decal_bottom"] + 2 * half
-        f[flat] = int(facing)
+        f[flat] = int(facing and f.normal.y < -0.2)  # the cheek sides keep their own shading
         for l in f.loops:
             p = l.vert.co
             l[face_uv].uv = ((p.x + half) / (2 * half), (p.z - face["decal_bottom"]) / (2 * half)) if front else (-1.0, -1.0)

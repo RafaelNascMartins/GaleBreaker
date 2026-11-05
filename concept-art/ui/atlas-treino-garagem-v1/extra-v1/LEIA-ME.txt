@@ -1,0 +1,17 @@
+DETALHES EXTRA DA GARAGEM — V1
+
+Atlas 4×4, 1254×1254, no mesmo esquema do manifest anterior. O manifest principal foi ampliado para 48 células; manifest.json deste subdiretório descreve somente as 16 novas. Cada célula tem 313–314 px por lado, em resolução nativa das superfícies. Recortes foram reduzidos da fonte maior.
+
+1 saco com costura/faixa; 2 anilha sextavada 10; 3 cabo serrilhado; 4 pegboard; 5 concreto escuro; 6 madeira wing chun; 7 lona EQUIP.; 8 corrente; 9 ferramentas; 10 janela; 11 pendente; 12 lanterna; 13 toalha; 14 caneca; 15 feixes; 16 respingos.
+
+O atlas único é RGBA por conter materiais e recortes. Em textures/, as superfícies 1–8 são RGB sem alfa e os recortes 9–16 são RGBA. As quatro ferramentas também têm PNGs separados e sub-regiões no manifest. Os recortes sólidos têm interiores alfa 255, borda curta antialiasada e RGB dilatado 16 px; os feixes preservam o degradê.
+A corrente tem faixa separada repetível em X e prévia 3×. Suas colunas extremas foram igualadas após extração de um período; a prévia permite avaliar a repetição. Os demais materiais não foram certificados para repetição sem emendas. Não repita o atlas inteiro para repetir uma célula.
+Para feixes, use mistura aditiva (shader canvas incluído) e reduza gain conforme iluminação. Em 3D, use material transparente aditivo numa malha plana com teste de profundidade; não use como superfície opaca. O PNG mantém a intensidade e alfa graduais.
+
+FONTE DO PORTÃO
+fonts/StardosStencil-Bold.ttf é a fonte vetorial que já existia no projeto, com sua licença OFL. É uma aproximação tipográfica reutilizável da arte das inscrições; a concept gerada não identifica uma fonte exata. O desenho da TTF não foi modificado.
+fonts/PortaoStencil-Desgastado.fnt + página PNG formam uma fonte bitmap Unicode (ASCII e Latin-1) no mesmo desenho, com pequenos desgastes na tinta. Copie os dois juntos para o projeto. Cobre nomes, acentos, números, pontuação e os comportamentos do jogo, incluindo minúsculas.
+fonts/palavras-portao.png e os PNGs em fonts/palavras/ incluem BABUIN, TOPHIA, VOLT, IGNIS, KAZE, PASSIVO, DEFENDE ALTO, DEFENDE BAIXO, PULA, IA, SIM, NÃO e rótulos do menu. O mapa está em fonts/manifest-fonte.json. Novas palavras podem ser renderizadas com a TTF ou FNT.
+Para manter texto integrado ao portão, aplique a tinta no albedo/UV da chapa, com a iluminação e normal do metal, em vez de emissão. A fonte bitmap tem tamanho de origem 64 px; para textos grandes prefira a TTF.
+
+Arquivos de referência em sources/ preservam a geração original e não entram no ZIP. A geração inicial mista tinha alfa incorreto; as superfícies e recortes foram exportados em formatos próprios e verificados. O pacote não inclui modelos 3D nem altera o menu do jogo.

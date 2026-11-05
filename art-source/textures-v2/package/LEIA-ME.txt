@@ -1,0 +1,28 @@
+# Gale Breaker - Textures v2
+
+61 texturas individuais + 36 previas 2x2. PNG 8 bits com sinalizacao sRGB.
+Pastas: textures-v2/santuario, forja, bazaar, praia. O manifest informa tamanho,
+tipo, repeticao, escala em metros e os pares de albedo/emissao.
+
+Importe os PNGs com mipmaps no Godot 4. Use albedo com source_color; para
+mascaras de emissao use sampler de dados, sem source_color. Mascara preta
+nao emite; combine o valor com a cor do albedo e ajuste a energia no shader.
+Toon unshaded: cor_final = albedo * faixa + albedo * mascara * energia.
+O shader toon deve calcular as tres faixas de luz; as texturas nao trazem
+iluminacao direcional. Superficies solidas sao RGB sem alfa.
+
+Tileaveis: uma textura completa por material, Repeat XY, UV a cada world_size_m.
+Faixas: repita somente no eixo indicado (X do friso; Y da lava e da orla).
+Decalques e recortes: Repeat OFF, alfa reto, interior 255, AA de ate 2 px e
+RGB dilatado 16 px sob alfa zero. Nao premultiplique o PNG. Use alpha scissor
+ou alpha hash conforme o material. Tapete: RGB opaco, peca unica.
+
+world_size_m e uma sugestao de cobertura: numero = metros por lado; [w,h]
+= largura/altura. Fundos usam planos de referencia 200x50 m; posicione-os
+longe da camera e ajuste a escala. Nao sao cubemaps nem panoramas 360.
+
+As artes foram regeneradas individualmente a partir das quatro concepts.
+O acabamento tecnico faz costura periodica, normalizacao de alfa, dilatacao,
+extracao alinhada de emissao e dimensoes exatas. Resolucao nativa das fontes
+fica registrada no manifest; os fundos sao reamostrados para 4096x1024.
+Nenhum atlas v1 ou cena do jogo foi substituido.

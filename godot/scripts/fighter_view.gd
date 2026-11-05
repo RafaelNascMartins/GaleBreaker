@@ -49,10 +49,46 @@ const TRAIL_LIMBS := {
 }
 const MoveEffects = preload("res://scripts/move_effects.gd")
 # Cells of the expression atlas drawn on the flat face (art-source/tools/generate_faces.py).
-enum Face { NEUTRAL, BLINK, SHOUT, HURT, KO, VICTORY, EFFORT, FOCUS }
+enum Face { NEUTRAL, BLINK, SHOUT, HURT, KO, VICTORY, EFFORT, FOCUS, POSE, ULT_CHARGE, ULT_RELEASE, ULT_RECOVER }
 const BLINK_EVERY := 3.4
 const BLINK_SEC := 0.12
 var face: int = Face.NEUTRAL
+# Legends faces (6x4 atlas of 24 expressions): the atlas cell that plays each Face.
+# POSE: the Arcade select look; ULT_CHARGE / ULT_RELEASE / ULT_RECOVER: charging, firing and
+# recovering from the ultimate.
+const LEGENDS_FACE_CELLS := [0, 23, 10, 13, 4, 12, 6, 8, 7, 6, 10, 22]
+var face_cells: Array = []
+# Open hands (Legends models): swapped in for the fist on palm strikes; own page.
+var open_hands: Array[MeshInstance3D] = []
+var fists: Array[MeshInstance3D] = []
+# Which hands are open palms in each clip ("l", "r" or "lr"); every other clip shows fists.
+# Kaze: front palm raised in the monk stance, Palma de Jade J1/J2, Rajada de Vento, the
+# circular palm parry, the palm salute (select) and the bow (victory).
+const OPEN_HAND_CLIPS := {
+	"kaze": {
+		"idle": "l", "walk_forward": "l", "walk_back": "l", "dash": "l", "guard_high": "lr", "guard_low": "lr", "crouch": "l",
+		"light_1": "r", "light_2": "l", "light_3": "lr", "elemental": "lr", "parry": "lr", "select": "", "down_punch": "r", "air_punch": "r",
+		"ultimate": "lr", "breaker": "lr", "knockdown": "lr", "ko": "lr", "get_up": "lr", "sweep": "lr", "victory": "l", "jump_start": "l", "jump_air": "l", "jump_land": "l", "heavy": "l", "heavy_2": "l", "heavy_3": "l",
+	},
+}
+var open_hand_sides := "-"
+var hand_material: ShaderMaterial
+var base_page: Texture2D
+# PS1 look: Legends fighters hold each pose for 1/LEGENDS_ANIM_FPS s while the scene runs at 60.
+const LEGENDS_ANIM_FPS := 15.0
+var anim_fps := 0.0
+# Legends fighters cheat toward the camera like 2.5D anime fighters: the body turns a little out of
+# profile and the head a little more, so the face (and its expressions) reads. Visual only.
+const BODY_CHEAT_DEG := 22.0
+const HEAD_CHEAT_DEG := 34.0
+var head_turn: GaleHeadTurn
+# Clips authored as limited animation (art-source/tools/legends_anim.py): stepped keys, each
+# pose held for its own frames; they play as authored instead of on the 15 fps grid.
+const AUTHORED_STEPPED := {"kaze": ["idle", "walk_forward", "walk_back", "dash", "crouch", "guard_high", "guard_low", "parry", "hit", "jump_start", "jump_air", "jump_land", "victory", "light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3",
+	"knockdown", "ko", "get_up", "down_punch", "air_punch", "sweep", "elemental", "ultimate", "breaker", "select"],
+	# Dale (legends_dale_anim.py): clips re-authored so far; the rest are still the old Ignis clips.
+	"ignis": ["idle", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "light_1", "light_2", "light_3"]}
+const KEYED_ATTACKS := ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "sweep", "down_punch", "air_punch"]
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
 	var result := ShaderMaterial.new()
@@ -116,12 +152,22 @@ func build(data: GaleData, id: String, palette: int) -> void:
 		material.set_shader_parameter("mask_tex", load(catalog.mask_path))
 		material.set_shader_parameter("normal_tex", load(catalog.normal_path))
 
+	base_page = null
 	apply_palette(palette_index, data)
 	var face_path := "res://assets/characters/%s/textures/face.png" % id
 	if ResourceLoader.exists(face_path):
+		var face_tex: Texture2D = load(face_path)
 		material.set_shader_parameter("use_face", true)
-		material.set_shader_parameter("face_tex", load(face_path))
-		material.set_shader_parameter("face_cell", float(Face.NEUTRAL))
+		face_cells = []
+		if material.get_shader_parameter("pixelated") == true:
+			material.set_shader_parameter("face_px", face_tex)
+			material.set_shader_parameter("face_grid", Vector2(6, 4))
+			face_cells = LEGENDS_FACE_CELLS
+		else:
+			material.set_shader_parameter("face_tex", face_tex)
+		face = Face.NEUTRAL
+		material.set_shader_parameter("face_cell", float(face_cell(Face.NEUTRAL)))
+	anim_fps = LEGENDS_ANIM_FPS if material.get_shader_parameter("pixelated") == true else 0.0
 
 	var packed: PackedScene = load(catalog.scene_path) as PackedScene
 	scene_instance = packed.instantiate() as Node3D
@@ -135,14 +181,42 @@ func build(data: GaleData, id: String, palette: int) -> void:
 	var found := {}
 	_collect_nodes(scene_instance, meshes, found)
 	skeleton = found.get("skeleton") as Skeleton3D
+	head_turn = null
+	if skeleton != null and anim_fps > 0.0:
+		head_turn = GaleHeadTurn.new()
+		skeleton.add_child(head_turn)
+		head_turn.setup(skeleton)
 	anim_player = found.get("anim_player") as AnimationPlayer
 	if anim_player != null:
 		anim_player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
+		# glTF bakes stepped keys as per-frame samples; hold each one instead of blending them.
+		for clip: String in AUTHORED_STEPPED.get(id, []):
+			if anim_player.has_animation(clip):
+				var anim := anim_player.get_animation(clip)
+				for t in anim.get_track_count():
+					anim.track_set_interpolation_type(t, Animation.INTERPOLATION_NEAREST)
 
 	# Same ink outline as the cel-shaded scenery.
 	material.next_pass = preload("res://shaders/cel/outline.tres")
+	open_hands.clear()
+	fists.clear()
+	open_hand_sides = "-"
+	hand_material = null
 	for m: MeshInstance3D in meshes:
 		m.material_override = material
+		if m.name.contains("HandOpen"):
+			if hand_material == null:
+				hand_material = material.duplicate() as ShaderMaterial
+				hand_material.set_shader_parameter("use_face", false)
+				hand_material.set_shader_parameter("albedo_px", load("res://assets/characters/%s/textures/hand.png" % id))
+				hand_material.next_pass = material.next_pass
+			m.material_override = hand_material
+			m.visible = false
+			open_hands.append(m)
+		elif m.name.contains("Fist"):
+			fists.append(m)
+	if catalog.palettes.size() > palette_index:
+		apply_palette(palette_index)
 
 	sockets.clear()
 	for sname: String in ["socket_root", "socket_chest", "socket_hand_l", "socket_hand_r", "socket_foot_r", "socket_muzzle"]:
@@ -199,6 +273,16 @@ func apply_palette(palette: int, data: GaleData = null) -> void:
 	primary = Color(v2_pal.primary)
 	var sec := Color(v2_pal.secondary)
 	var acc := Color(v2_pal.accent)
+	if material != null and material.get_shader_parameter("pixelated") == true:
+		# Legends outfits: each palette is its own hand-painted page (default: the base page).
+		var page_path := String(v2_pal.get("page", ""))
+		if base_page == null:
+			base_page = material.get_shader_parameter("albedo_px")
+		material.set_shader_parameter("albedo_px", load(page_path) if page_path != "" and ResourceLoader.exists(page_path) else base_page)
+		show_outfit_body(String(v2_pal.get("body", "")))
+		if hand_material != null:
+			var hand_path := String(v2_pal.get("hand", "res://assets/characters/%s/textures/hand.png" % fighter_id))
+			hand_material.set_shader_parameter("albedo_px", load(hand_path))
 	if material != null:
 		material.set_shader_parameter("base_color", primary)
 		material.set_shader_parameter("palette_primary", primary)
@@ -223,7 +307,11 @@ func is_valid_asset() -> bool:
 			return false
 	if material == null or not bool(material.get_shader_parameter("use_textures")):
 		return false
-	if material.get_shader_parameter("albedo_tex") == null or material.get_shader_parameter("mask_tex") == null:
+	if material.get_shader_parameter("pixelated") == true:
+		# Legends page: one hand-painted 256 page, palettes are whole-page swaps.
+		if material.get_shader_parameter("albedo_px") == null:
+			return false
+	elif material.get_shader_parameter("albedo_tex") == null or material.get_shader_parameter("mask_tex") == null:
 		return false
 	for sname: String in ["socket_root", "socket_chest", "socket_hand_l", "socket_hand_r", "socket_foot_r", "socket_muzzle"]:
 		if not sockets.has(sname):
@@ -237,6 +325,18 @@ func play_clip(logical_name: String, seek_sec: float = 0.0) -> void:
 	if not anim_player.has_animation(clip_name):
 		return
 	var changed := current_clip != clip_name
+	var stepped := anim_fps > 0.0
+	if stepped and logical_name not in AUTHORED_STEPPED.get(fighter_id, []):
+		# Round up: a held pose never shows the impact late, and a reaction moves on its first frame.
+		var held := minf(ceilf(seek_sec * anim_fps - 0.0001) / anim_fps, anim_player.get_animation(clip_name).length)
+		# An attack's wind-up and contact poses are keys: they always show on time, never skipped.
+		if logical_name in KEYED_ATTACKS:
+			var marks := GaleAnimTiming.attack(fighter_id, logical_name)
+			for key: String in ["wind", "contact"]:
+				var mark := float(marks.get(key, -1)) / 60.0
+				if mark >= seek_sec - 0.0001 and mark < held:
+					held = mark
+		seek_sec = held
 	# Re-sampling an in-progress crossfade at zero delta can change the pose even
 	# though its clock is frozen. Keep the last evaluated pose through hitstop.
 	if not changed and is_equal_approx(current_anim_time, seek_sec) and (not syncing or presentation_delta <= 0.0):
@@ -244,12 +344,33 @@ func play_clip(logical_name: String, seek_sec: float = 0.0) -> void:
 		return
 	current_clip = clip_name
 	current_anim_time = seek_sec
+	set_open_hands(OPEN_HAND_CLIPS.get(fighter_id, {}).get(logical_name, ""))
 	if changed:
 		var blend := 0.045 if logical_name.begins_with("light") or logical_name in ["heavy", "hit", "parry"] else 0.09
-		anim_player.play(clip_name, blend if syncing else 0.0, 0.0)
+		anim_player.play(clip_name, blend if syncing and not stepped else 0.0, 0.0)
 	anim_player.seek(seek_sec, false)
-	anim_player.advance(presentation_delta if syncing else 0.0)
+	anim_player.advance(presentation_delta if syncing and not stepped else 0.0)
 	_update_sockets()
+
+## Outfits with their own pieces export a body per outfit (kaze_BodyExport is the default one);
+## only the chosen outfit's body is shown. Fists and open hands are shared by every outfit.
+func show_outfit_body(body: String) -> void:
+	for m: MeshInstance3D in meshes:
+		var n := String(m.name)
+		if n.contains("Fist") or n.contains("HandOpen"):
+			continue
+		var is_outfit := n.contains("ExecBody") or n.contains("PeixeBody")
+		m.visible = (n.contains(body) if body != "" else not is_outfit)
+
+## Swap fist and open-hand meshes, PS1 style (whole part, no blending). sides: "", "l", "r", "lr".
+func set_open_hands(sides: String) -> void:
+	if sides == open_hand_sides or open_hands.is_empty():
+		return
+	open_hand_sides = sides
+	for m: MeshInstance3D in open_hands:
+		m.visible = sides.contains(String(m.name).right(1))
+	for m: MeshInstance3D in fists:
+		m.visible = not sides.contains(String(m.name).right(1))
 
 func _update_sockets() -> void:
 	if skeleton == null:
@@ -274,8 +395,7 @@ func sync(f: Dictionary, time: float) -> void:
 	last_state = state_key
 	syncing = true
 	position = Vector3(f.x, f.y, 0)
-	rotation.y = -PI / 2.0 if f.facing > 0 else PI / 2.0
-	scale = Vector3.ONE
+	apply_facing(float(f.facing))
 
 	move_effects.visible = false
 
@@ -291,6 +411,8 @@ func sync(f: Dictionary, time: float) -> void:
 			clip = "light_%d" % clampi(int(f.move.get("chain_step", 1)), 1, 3)
 		elif mtype == "heavy" and String(f.move.get("animStyle", "")) == "low_sweep":
 			clip = "sweep"
+		elif mtype == "heavy" and int(f.move.get("chain_step", 1)) > 1 and anim_player != null and anim_player.has_animation("heavy_%d" % int(f.move.chain_step)):
+			clip = "heavy_%d" % int(f.move.chain_step)
 
 		var total_frames := maxi(1, int(f.get("phase_total", f.frames)))
 		var progress := clampf(1.0 - float(maxi(0, int(f.frames))) / float(total_frames), 0.0, 1.0)
@@ -337,13 +459,42 @@ func sync(f: Dictionary, time: float) -> void:
 	if material != null:
 		material.set_shader_parameter("flash_amount", 1.0 if flashes_enabled and int(f.flash) > 0 else 0.0)
 		material.set_shader_parameter("base_color", Color.WHITE if flashes_enabled and int(f.flash) > 0 else primary)
+		if hand_material != null:
+			hand_material.set_shader_parameter("flash_amount", material.get_shader_parameter("flash_amount"))
 		set_face(_face_for(f, state_key, time))
 	syncing = false
+
+## Profile toward the fight direction; Legends fighters cheat body and head toward the camera.
+func apply_facing(facing: float) -> void:
+	var side := 1.0 if facing > 0 else -1.0
+	if anim_fps > 0.0:
+		# Legends fighters are mirrored, not turned, like 2.5D anime fighters: the player-2 side
+		# is the player-1 pose flipped across the screen, so both show the same silhouette, the
+		# same lead hand and the face cheated toward the camera.
+		var turned := Basis(Vector3.UP, -(PI / 2.0 + deg_to_rad(BODY_CHEAT_DEG)))
+		basis = Basis.from_scale(Vector3(side, 1, 1)) * turned
+		if head_turn != null:
+			head_turn.degrees = -HEAD_CHEAT_DEG
+	else:
+		basis = Basis(Vector3.UP, -PI / 2.0 if side > 0 else PI / 2.0)
+
+func face_cell(expression: int) -> int:
+	if expression < face_cells.size():
+		return int(face_cells[expression])
+	# The 4x2 atlases of the other fighters have no cells past FOCUS.
+	match expression:
+		Face.ULT_CHARGE:
+			return Face.FOCUS
+		Face.ULT_RELEASE:
+			return Face.SHOUT
+		Face.ULT_RECOVER:
+			return Face.NEUTRAL
+	return Face.NEUTRAL if expression > Face.FOCUS else expression
 
 func set_face(expression: int) -> void:
 	if expression != face and material != null:
 		face = expression
-		material.set_shader_parameter("face_cell", float(face))
+		material.set_shader_parameter("face_cell", float(face_cell(face)))
 
 func _face_for(f: Dictionary, state_key: String, time: float) -> int:
 	match state_key:
@@ -355,12 +506,32 @@ func _face_for(f: Dictionary, state_key: String, time: float) -> int:
 			return Face.HURT
 		"guard", "blockstun", "parry":
 			return Face.EFFORT
-		"startup", "active":
+		"startup", "active", "recovery":
 			var move: Dictionary = f.get("move", {})
-			if not move.is_empty():
-				return Face.FOCUS if String(move.get("type", "light")) in ["elemental", "ultimate"] else Face.SHOUT
+			var mtype := String(move.get("type", "light"))
+			if mtype == "ultimate" and not move.is_empty():
+				match state_key:
+					"startup":
+						return Face.ULT_CHARGE
+					"active":
+						return Face.ULT_RELEASE
+					_:
+						return Face.ULT_RECOVER
+			if state_key != "recovery" and not move.is_empty():
+				return Face.FOCUS if mtype == "elemental" else Face.SHOUT
+	return idle_face(time)
+
+func idle_face(time: float) -> int:
 	# Each fighter blinks on its own beat.
 	return Face.BLINK if fmod(time + float(get_instance_id() % 7) * 0.37, BLINK_EVERY) < BLINK_SEC else Face.NEUTRAL
+
+## Outside a fight (menus, Arcade select): loop a presentation clip and keep blinking.
+func present(clip: String, time: float, speed: float = 0.5) -> void:
+	play_clip(clip, fmod(time * speed, GaleAnimTiming.state_sec(fighter_id, "victory" if clip == "select" else clip)))
+	var look := idle_face(time)
+	if clip == "select" and look == Face.NEUTRAL and not face_cells.is_empty():
+		look = Face.POSE
+	set_face(look)
 
 
 func _update_motion_fx(f: Dictionary, attack_clip: String) -> void:

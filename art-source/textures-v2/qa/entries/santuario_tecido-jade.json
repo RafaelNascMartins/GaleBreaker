@@ -1,0 +1,31 @@
+{
+  "key": "santuario_tecido-jade",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793660595.6071072,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 15.277192687988281,
+    "y": 12.785659790039062
+  },
+  "entries": [
+    {
+      "file": "textures-v2/santuario/santuario_tecido-jade_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 1,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_tecido-jade_albedo.png"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "key": "santuario_pedra-estrutural",
+  "status": "processed",
+  "source_native_size": [
+    1254,
+    1254
+  ],
+  "source_mtime": 1793660505.4421327,
+  "pipeline_version": 4,
+  "cut_scores": {
+    "x": 14.243571472167968,
+    "y": 9.91141414642334
+  },
+  "entries": [
+    {
+      "file": "textures-v2/santuario/santuario_pedra-estrutural_albedo.png",
+      "type": "tileable",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "world_size_m": 2,
+      "repeat": "xy",
+      "pair": null,
+      "color_space": "sRGB",
+      "bit_depth": 8,
+      "alpha": "none",
+      "preview": "textures-v2/santuario/preview_santuario_pedra-estrutural_albedo.png"
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_tr7as")
 fighter_id = "ignis"
-display_name = "Ignis"
+display_name = "Dale"
 subtitle = "Brutamontes do Sol escaldante"
 element_label = "FOGO"
 accent_color = Color(0.64705884, 0.2627451, 0.19607843, 1)
