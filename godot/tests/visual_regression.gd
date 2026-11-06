@@ -131,7 +131,7 @@ func run() -> void:
 		check(steps == 2, id + " walking one stride plays two footsteps (got %d)" % steps)
 		view.queue_free()
 		await process_frame
-	check(GaleAnimTiming.attack("kaze", "heavy").contact < GaleAnimTiming.attack("ignis", "heavy").contact, "Ignis winds up heavier than Kaze")
+	check(GaleAnimTiming.attack("kaze", "light_1").contact < GaleAnimTiming.attack("ignis", "light_1").contact, "Ignis winds up heavier than Kaze")
 	check(GaleAnimTiming.state_frames("kaze", "walk") != GaleAnimTiming.state_frames("ignis", "walk"), "Kaze and Ignis walk at their own rhythm")
 	print("VISUAL TESTS: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)

@@ -86,8 +86,9 @@ var head_turn: GaleHeadTurn
 # pose held for its own frames; they play as authored instead of on the 15 fps grid.
 const AUTHORED_STEPPED := {"kaze": ["idle", "walk_forward", "walk_back", "dash", "crouch", "guard_high", "guard_low", "parry", "hit", "jump_start", "jump_air", "jump_land", "victory", "light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3",
 	"knockdown", "ko", "get_up", "down_punch", "air_punch", "sweep", "elemental", "ultimate", "breaker", "select"],
-	# Dale (legends_dale_anim.py): clips re-authored so far; the rest are still the old Ignis clips.
-	"ignis": ["idle", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "light_1", "light_2", "light_3"]}
+	# Dale (legends_dale_anim.py): every clip re-authored.
+	"ignis": ["idle", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "light_1", "light_2", "light_3", "heavy", "heavy_2", "elemental", "ultimate", "hit", "knockdown", "ko", "get_up", "dash", "jump_start", "jump_air", "jump_land", "parry",
+		"down_punch", "air_punch", "sweep", "breaker", "select", "victory"]}
 const KEYED_ATTACKS := ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "sweep", "down_punch", "air_punch"]
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
@@ -280,6 +281,10 @@ func apply_palette(palette: int, data: GaleData = null) -> void:
 			base_page = material.get_shader_parameter("albedo_px")
 		material.set_shader_parameter("albedo_px", load(page_path) if page_path != "" and ResourceLoader.exists(page_path) else base_page)
 		show_outfit_body(String(v2_pal.get("body", "")))
+		# An outfit can bring its own expression atlas (Dale's clean-shaven Physique).
+		var face_path := String(v2_pal.get("face", "res://assets/characters/%s/textures/face.png" % fighter_id))
+		if ResourceLoader.exists(face_path) and material.get_shader_parameter("use_face") == true:
+			material.set_shader_parameter("face_px", load(face_path))
 		if hand_material != null:
 			var hand_path := String(v2_pal.get("hand", "res://assets/characters/%s/textures/hand.png" % fighter_id))
 			hand_material.set_shader_parameter("albedo_px", load(hand_path))
@@ -359,7 +364,9 @@ func show_outfit_body(body: String) -> void:
 		var n := String(m.name)
 		if n.contains("Fist") or n.contains("HandOpen"):
 			continue
-		var is_outfit := n.contains("ExecBody") or n.contains("PeixeBody")
+		# Outfit bodies are named <id>_<Outfit>Body (kaze_ExecBody, ignis_CoronelBody); the
+		# default body is <id>_BodyExport.
+		var is_outfit := n.contains("Body") and not n.contains("BodyExport")
 		m.visible = (n.contains(body) if body != "" else not is_outfit)
 
 ## Swap fist and open-hand meshes, PS1 style (whole part, no blending). sides: "", "l", "r", "lr".

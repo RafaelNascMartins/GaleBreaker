@@ -130,20 +130,20 @@
         "end": 40
       },
       "heavy": {
+        "wind": 6,
+        "contact": 9,
+        "hold": 12,
+        "follow": 15,
+        "recover": 21,
+        "end": 26
+      },
+      "heavy_2": {
         "wind": 17,
         "contact": 21,
         "hold": 26,
         "follow": 30,
         "recover": 40,
         "end": 48
-      },
-      "heavy_2": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
       },
       "heavy_3": {
         "wind": 4,
@@ -170,28 +170,28 @@
         "end": 58
       },
       "down_punch": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 6,
+        "contact": 9,
+        "hold": 13,
+        "follow": 16,
+        "recover": 22,
+        "end": 28
       },
       "air_punch": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 5,
+        "contact": 8,
+        "hold": 12,
+        "follow": 15,
+        "recover": 20,
+        "end": 26
       },
       "sweep": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 7,
+        "contact": 10,
+        "hold": 14,
+        "follow": 17,
+        "recover": 24,
+        "end": 30
       }
     },
     "states": {

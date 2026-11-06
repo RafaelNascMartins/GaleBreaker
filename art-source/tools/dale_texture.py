@@ -209,8 +209,8 @@ def paint(tris):
 LOOK_SHIFT = {16: -3, 17: 3}
 
 
-def face_atlas():
-    sheet = lt.load_view_path(EXPRESSIONS)
+def face_atlas(sheet_path=None, out_path=None):
+    sheet = lt.load_view_path(sheet_path or EXPRESSIONS)
     cols, rows = lt.FACE_GRID
     C = lt.FACE_CELL
     cw, ch = sheet.shape[1] // cols, sheet.shape[0] // rows
@@ -245,7 +245,7 @@ def face_atlas():
         alpha = np.full(q.shape[:2], 255, np.uint8)
         r, c = divmod(i, cols)
         out[r * C:(r + 1) * C, c * C:(c + 1) * C] = np.dstack([q, alpha])
-    Image.fromarray(out, 'RGBA').save(SRC / 'dale_rosto_atlas.png')
+    Image.fromarray(out, 'RGBA').save(out_path or SRC / 'dale_rosto_atlas.png')
     return out.shape
 
 

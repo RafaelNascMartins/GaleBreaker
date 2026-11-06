@@ -334,19 +334,38 @@ def export_godot(path=GODOT_GLB):
     nt.links.new(bsdf.outputs[0], out.inputs[0])
     exp.data.materials.clear()
     exp.data.materials.append(m)
+    # Outfits with their own pieces (legends_dale_outfits): exported as ignis_<Outfit>Body; the
+    # game shows the one the palette names ("body") and hides the default ignis_BodyExport.
+    extra = []
+    for outfit in ('Coronel', 'Physique'):
+        src = bpy.data.objects.get(f'dale_{outfit}_Body')
+        if src is None:
+            continue
+        o = src.copy()
+        o.data = src.data.copy()
+        o.name = o.data.name = f'ignis_{outfit}Body'
+        o.location = (0, 0, 0)
+        o.hide_set(False)
+        bpy.context.scene.collection.objects.link(o)
+        o.data.materials.clear()
+        o.data.materials.append(m)
+        extra.append(o)
     for o in bpy.context.view_layer.objects:
         o.select_set(False)
     rig.select_set(True)
     exp.select_set(True)
+    for o in extra:
+        o.select_set(True)
     try:
         with contextlib.redirect_stdout(io.StringIO()):
             bpy.ops.export_scene.gltf(filepath=str(path), export_format='GLB', use_selection=True, export_yup=True,
                                       export_apply=False, export_animations=True, export_animation_mode='NLA_TRACKS',
                                       export_skins=True, export_materials='EXPORT')
     finally:
-        me = exp.data
-        bpy.data.objects.remove(exp)
-        bpy.data.meshes.remove(me)
+        for o in [exp] + extra:
+            me = o.data
+            bpy.data.objects.remove(o)
+            bpy.data.meshes.remove(me)
         # Back to editing: with every NLA track playing at once the pose can't be moved by hand.
         import legends_anim
         legends_anim.edit(rig, 'idle')

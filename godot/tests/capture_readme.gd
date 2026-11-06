@@ -65,11 +65,12 @@ func capture() -> void:
 		await frames(40)
 		app.sim.banner = ""
 		app.sim.banner_frames = 0
-		# Dale throws the hammer (J3) at Babuin; the shot lands near the impact.
+		# Dale throws the hammer (J3) at Babuin; the shot is the wind-up just before the impact
+		# (on the contact frame Babuin is in the white hit flash).
 		var p2: Dictionary = app.sim.p2
 		p2.chain = 3
 		p2.chain_frames = 30
 		app.sim.attack(p2, "light", false)
-		await frames(17)
+		await frames(13)
 		shot("luta_" + stage)
 	quit()

@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3 uid="uid://ctsy6xrhax2we"]
 
-[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_tr7as"]
+[ext_resource type="Script" uid="uid://cdnamr8pddn83" path="res://scripts/visual_catalog.gd" id="1_tr7as"]
 
 [resource]
 script = ExtResource("1_tr7as")
@@ -22,20 +22,26 @@ palettes = [{
 "primary": "#5B7088",
 "secondary": "#5C4028"
 }, {
-"accent": "#38BDF8",
-"name": "Chama Azul",
-"primary": "#1E293B",
-"secondary": "#334155"
-}, {
-"accent": "#C084FC",
-"name": "Cinza da Forja",
-"primary": "#3F2E3E",
-"secondary": "#18181B"
-}, {
 "accent": "#FACC15",
-"name": "Poeira Dourada",
-"primary": "#78350F",
-"secondary": "#D97706"
+"name": "Preto",
+"page": "res://assets/characters/ignis/textures/page_preto.png",
+"primary": "#1F1F22",
+"secondary": "#2B2B2E"
+}, {
+"accent": "#E9DDB8",
+"body": "ignis_CoronelBody",
+"name": "Coronel",
+"page": "res://assets/characters/ignis/textures/page_coronel.png",
+"primary": "#EDE4D3",
+"secondary": "#4A2E1E"
+}, {
+"accent": "#F08A3A",
+"body": "ignis_PhysiqueBody",
+"face": "res://assets/characters/ignis/textures/face_physique.png",
+"name": "Men's Physique",
+"page": "res://assets/characters/ignis/textures/page_physique.png",
+"primary": "#C8692E",
+"secondary": "#1C1C1C"
 }]
 attack_icons = {
 "elemental": "res://assets/ui/icons/ignis_elemental.png",

@@ -1,460 +1,399 @@
-from pathlib import Path
-import base64
+"""Gale Breaker GDD (single document, v0.10): a 1997 fighting-game instruction booklet.
+
+One source: this script writes index.html (pages of 1080 x 675 px, HTML + CSS) and Edge prints
+it to Gale_Breaker_GDD_Visual_v0_10.pdf. Images come from the real game where they exist:
+  docs/gdd/assets/renders/  fighter renders (godot/tests/capture_gdd.gd)
+  docs/readme/              screens of the game (godot/tests/capture_readme.gd)
+X12 and Orsted (ex-Tophia, ex-Volt) still show their old concepts, marked as in revitalization.
+
+python docs/gdd/build_gdd.py
+"""
 import html
 import json
 import shutil
-from io import BytesIO
-from PIL import Image
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.colors import HexColor
-from reportlab.lib.utils import ImageReader
+import subprocess
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[1]
 ASSETS = OUT / 'assets'
-ASSETS.mkdir(exist_ok=True)
-W, H = 1080, 675
-BG, PANEL, WHITE, MUTED = '#F8F5EE', '#EDE8DD', '#27372F', '#62695F'
-GREEN, RED, ORANGE, CYAN, GOLD = '#28654F', '#A54332', '#98531F', '#206A7C', '#806531'
-pdfmetrics.registerFont(TTFont('Arial', 'C:/Windows/Fonts/arial.ttf'))
-pdfmetrics.registerFont(TTFont('ArialBold', 'C:/Windows/Fonts/arialbd.ttf'))
-FONT_FILES={'Editorial':'georgia.ttf','Jade':'georgia.ttf','Rural':'impact.ttf','Stone':'georgiab.ttf','Tech':'consolab.ttf'}
-for family,filename in FONT_FILES.items():
-    pdfmetrics.registerFont(TTFont(family,'C:/Windows/Fonts/'+filename))
-    shutil.copy2('C:/Windows/Fonts/'+filename,ASSETS/filename)
-DISPLAY={GREEN:'Jade',RED:'Rural',ORANGE:'Stone',CYAN:'Tech'}
+EDGE = Path(r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe')
 PDF = OUT / 'Gale_Breaker_GDD_Visual_v0_10.pdf'
-c = canvas.Canvas(str(PDF), pagesize=(W, H))
-c.setTitle('Gale Breaker GDD Visual v0.10')
-c.setAuthor('Gale Breaker')
+EDITION, DATE = '0.10', 'NOVEMBRO 2026'
+
+JADE, SUN, GOLD, STONE, CYAN = '#2fb58a', '#e8572f', '#e2b04a', '#e08a3c', '#3cc6e0'
+
+# Two families for the whole document: Barlow Condensed for titles and labels, Barlow for text.
+FONTS = [('Title', 'BarlowCondensed-ExtraBoldItalic.ttf', 800, 'italic'), ('Title', 'BarlowCondensed-SemiBold.ttf', 600, 'normal'),
+         ('Text', 'Barlow-Regular.ttf', 400, 'normal'), ('Text', 'Barlow-SemiBold.ttf', 600, 'normal'), ('Text', 'Barlow-Italic.ttf', 400, 'italic')]
+
+
+def asset(src, sub='img'):
+    """Copy a project file into assets/<sub>/ and return its path relative to index.html."""
+    src = ROOT / src
+    (ASSETS / sub).mkdir(parents=True, exist_ok=True)
+    dst = ASSETS / sub / src.name
+    if src.exists() and src.resolve() != dst.resolve():
+        shutil.copy2(src, dst)
+    return f'assets/{sub}/{src.name}'
+
+
+def render(name):
+    return f'assets/renders/{name}.png'
+
+
+def screen(name):
+    """A game screen: assets/screens/ holds the GDD captures (capture_readme.gd with this folder as
+    out_dir); a screen not captured there yet falls back to the README's copy."""
+    if not (ASSETS / 'screens' / f'{name}.png').exists():
+        asset(f'docs/readme/{name}.png', 'screens')
+    return f'assets/screens/{name}.png'
+
+
+e = html.escape
 pages = []
-copied = {}
-pdf_images = {}
 
-def pdf_image(path):
-    # Keep source assets intact; embed bounded, compressed illustrations in PDF.
-    if path not in pdf_images:
-        with Image.open(path) as original:
-            image = original.copy()
-        if image.mode == 'RGBA' and image.getextrema()[3] != (255,255):
-            pdf_images[path] = ImageReader(image)
-        else:
-            image = image.convert('RGB')
-            image.thumbnail((2400,2400),Image.Resampling.LANCZOS)
-            buffer = BytesIO()
-            image.save(buffer,format='JPEG',quality=92,optimize=True)
-            buffer.seek(0)
-            pdf_images[path] = ImageReader(buffer)
-    return pdf_images[path]
 
-def asset(name):
-    source = ROOT / 'concept-art' / name
-    target = ASSETS / source.name
-    if source not in copied:
-        shutil.copy2(source, target)
-        with Image.open(target) as im:
-            copied[source] = (target, im.size)
-    return copied[source]
+def page(chapter, title, accent, body, kicker='', cls=''):
+    pages.append((chapter, title, accent, body, kicker, cls))
 
-def wrap(text, size, width, bold=False):
-    font = 'ArialBold' if bold else 'Arial'
-    lines = []
-    for block in text.split('\n'):
-        line = ''
-        for word in block.split():
-            candidate = (line + ' ' + word).strip()
-            if line and pdfmetrics.stringWidth(candidate, font, size) > width:
-                lines.append(line)
-                line = word
-            else:
-                line = candidate
-        lines.append(line)
-    return lines
 
-class Page:
-    def __init__(self, section, title='', intro='', accent=GREEN, cover=False):
-        self.parts = []
-        self.accent = accent
-        self.section = section
-        self.title = title
-        self.number = len(pages) + 1
-        self.rect(0, 0, W, H, BG)
-        if not cover:
-            self.rect(0,0,8,H,accent)
-            self.line(48,128,1032,128,'#D7D0C2',.7)
-            self.text(48, 24, section.upper(), 10, accent, True)
-            self.text(48, 49, title, 30, WHITE, font=DISPLAY.get(accent,'Editorial') if section.startswith(('03','09')) else 'Editorial')
-            if intro:
-                self.para(48, 96, intro, 970, 12, MUTED,leading=16)
-        pages.append(self)
+def tag(text, color):
+    return f'<span class="tag" style="--c:{color}">{e(text)}</span>'
 
-    def rect(self, x, y, w, h, fill=PANEL, stroke=None, radius=0, dashed=False):
-        c.setFillColor(HexColor(fill))
-        c.setStrokeColor(HexColor(stroke or fill))
-        c.setLineWidth(.8)
-        if dashed:
-            c.setDash(5, 4)
-        if radius:
-            c.roundRect(x, H-y-h, w, h, radius, fill=1, stroke=bool(stroke))
-        else:
-            c.rect(x, H-y-h, w, h, fill=1, stroke=bool(stroke))
-        c.setDash()
-        border = f'border:1px {"dashed" if dashed else "solid"} {stroke};' if stroke else ''
-        self.parts.append(f'<div class="shape" style="left:{x}px;top:{y}px;width:{w}px;height:{h}px;background:{fill};{border}border-radius:{radius}px"></div>')
 
-    def line(self, x1, y1, x2, y2, color=MUTED, width=1):
-        c.setStrokeColor(HexColor(color)); c.setLineWidth(width)
-        c.line(x1, H-y1, x2, H-y2)
-        self.parts.append(f'<svg class="shape" style="left:0;top:0;width:{W}px;height:{H}px"><line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="{width}"/></svg>')
-
-    def text(self, x, y, text, size=14, color=WHITE, bold=False, width=None, font=None):
-        font=font or ('ArialBold' if bold else 'Arial')
-        c.setFillColor(HexColor(color))
-        c.setFont(font, size)
-        c.drawString(x, H-y-size*.82, text)
-        self.parts.append(f'<div class="txt editable" style="left:{x}px;top:{y}px;font-family:{font},Arial,sans-serif;font-size:{size}px;color:{color};font-weight:{700 if bold and font.startswith("Arial") else 400};{f"width:{width}px;" if width else ""}">{html.escape(text)}</div>')
-
-    def para(self, x, y, text, width, size=14, color=WHITE, bold=False, leading=None):
-        leading = leading or size*1.42
-        lines = wrap(text, size, width, bold)
-        c.setFillColor(HexColor(color)); c.setFont('ArialBold' if bold else 'Arial', size)
-        for i, line in enumerate(lines):
-            c.drawString(x, H-y-i*leading-size*.82, line)
-        rendered = '<br>'.join(html.escape(s) for s in lines)
-        self.parts.append(f'<div class="txt editable" style="left:{x}px;top:{y}px;width:{width}px;font-size:{size}px;line-height:{leading}px;color:{color};font-weight:{700 if bold else 400}">{rendered}</div>')
-        return y+len(lines)*leading
-
-    def image(self, name, x, y, w, h, crop=None, fill=None):
-        path, (iw, ih) = asset(name)
-        if fill:
-            self.rect(x,y,w,h,fill)
-        if crop:
-            l,t,r,b = crop
-            scale = min(w/((r-l)*iw), h/((b-t)*ih))
-            cw,ch=(r-l)*iw*scale,(b-t)*ih*scale
-            dx=x+(w-cw)/2-l*iw*scale
-            dy=y+(h-ch)/2-t*ih*scale
-            c.saveState()
-            cx,cy=x+(w-cw)/2,y+(h-ch)/2
-            clip=c.beginPath(); clip.rect(cx,H-cy-ch,cw,ch); c.clipPath(clip,stroke=0,fill=0)
-            c.drawImage(pdf_image(path),dx,H-dy-ih*scale,width=iw*scale,height=ih*scale,mask='auto')
-            c.restoreState()
-            self.parts.append(f'<div class="shape" style="left:{cx}px;top:{cy}px;width:{cw}px;height:{ch}px;overflow:hidden"><img alt="{html.escape(name)}" src="assets/{path.name}" style="position:absolute;left:{dx-cx}px;top:{dy-cy}px;width:{iw*scale}px;height:{ih*scale}px"></div>')
-        else:
-            scale=min(w/iw,h/ih)
-            dw,dh=iw*scale,ih*scale
-            dx,dy=x+(w-dw)/2,y+(h-dh)/2
-            c.drawImage(pdf_image(path),dx,H-dy-dh,width=dw,height=dh,mask='auto')
-            self.parts.append(f'<img class="shape" alt="{html.escape(name)}" src="assets/{path.name}" style="left:{dx}px;top:{dy}px;width:{dw}px;height:{dh}px">')
-
-    def arrow(self,x,y,w=20):
-        self.line(x,y,x+w,y,self.accent,1.5)
-        self.line(x+w-5,y-4,x+w,y,self.accent,1.5)
-        self.line(x+w-5,y+4,x+w,y,self.accent,1.5)
-
-    def command(self,action,x,y,size=32,color=None):
-        """Document-native command glyphs, independent of keyboard/controller bindings."""
-        color=color or self.accent
-        self.rect(x,y,size,size,BG,stroke=color,radius=7)
-        def segment(a,b,d,e):self.line(x+a*size,y+b*size,x+d*size,y+e*size,color,1.6)
-        if action=='light':
-            segment(.32,.68,.66,.32)
-        elif action=='heavy':
-            segment(.23,.68,.57,.32);segment(.44,.68,.78,.32)
-        elif action=='elemental':
-            for a,b,d,e in [(.5,.2,.5,.8),(.2,.5,.8,.5),(.29,.29,.71,.71),(.29,.71,.71,.29)]:segment(a,b,d,e)
-        else:
-            for a,b,d,e in [(.5,.17,.8,.5),(.8,.5,.5,.83),(.5,.83,.2,.5),(.2,.5,.5,.17),(.5,.32,.65,.5),(.65,.5,.5,.68),(.5,.68,.35,.5),(.35,.5,.5,.32)]:segment(a,b,d,e)
-
-    def portrait(self,f,x,y,w,h):
-        self.rect(x,y,w,h,'#F0EBE1',stroke='#D8D0C2',radius=3)
-        self.image(f['art'],x+8,y+10,w-16,h-20,crop=f['crop'])
-        self.rect(x,y+h-4,w,4,f['color'])
-
-    def note(self, x, y, tag, text, width=440):
-        self.text(x,y,tag.upper(),10,self.accent,True)
-        return self.para(x,y+20,text,width,14,WHITE)
-
-    def finish(self):
-        self.line(48,637,1032,637,'#D7D0C2',.6)
-        self.text(48,649,'GALE BREAKER  /  DOCUMENTO DE DESIGN',8,MUTED)
-        self.text(840,649,'EDIÇÃO 0.10',8,MUTED)
-        self.text(1008,646,f'{self.number:02d}',13,self.accent,font='Editorial')
-        c.showPage()
-
-icons=json.loads((ROOT/'concept-art/attack-icons/manifest.json').read_text(encoding='utf-8'))['icons']
-fighter_info=[
-    dict(id='kaze',name='Babuin',color=GREEN,art='personagens-v2.png',crop=(0,.03,.245,.63),
-         desc='Monge alto e careca, postura ereta, roupas verdes de jade e pés descalços.',
-         identity='Silhueta vertical e calma. O vento aparece no movimento do tecido e na direção dos golpes.',
-         pending='Jogável: combo de palmas e chute, onda de vento e tornado com quatro impactos. Validar facilidade de aprendizado e mobilidade.'),
-    dict(id='ignis',name='Ignis',color=RED,art='personagens-v2.png',crop=(.252,.03,.494,.63),
-         desc='Brutamontes caipira e corcunda. Chapéu de cowboy, peito claro, cabeça e braços vermelhos de sol, jeans e botas.',
-         identity='Massa, peso e humor rural. Preservar o contraste entre a pele queimada de sol e o peito branco.',
-         pending='Jogável: socos alternados, martelo, pisada e avanço pesado. Validar alcance e recuperação para preservar o peso sem frustrar.'),
-    dict(id='tophia',name='Tophia',color=ORANGE,art='tophia-retrato-gdd-v1.png',crop=(0,0,1,1),
-         desc='Armadura completa de pedra laranja em estilo de cavaleiro. Apenas a cabeça exposta, cabelo curto preto.',
-         identity='A pedra se move por licença fantástica. Pose de apresentação sorridente, perna recolhida e sinal de paz.',
-         pending='Jogável: armadura visual sem invencibilidade automática, sequência baixa, espinhos escalonados e punho de pedra. Validar leitura e peso.'),
-    dict(id='volt',name='Volt',color=CYAN,art='volt-retrato-gdd-v1.png',crop=(0,0,1,1),
-         desc='Jovem loiro de pontas chamuscadas. Armadura de sucata e lixo reaproveitado, com um canhão de mão.',
-         identity='Equipamento improvisado, assimétrico e gasto. Energia ciano; pose agachada, mirando o canhão para o lado.',
-         pending='Jogável: tiros independentes, disparo carregado, pulso e feixe anunciado. Bloqueio, salto e parry respondem aos disparos.')
+# ---------------------------------------------------------------- content
+FIGHTERS = [
+    dict(id='kaze', name='Babuin', sub='Monge do Vento Jade', color=JADE, element='VENTO', hp=1000,
+         style='Rápido e fluido. Palmas, chutes giratórios e tecido que acompanha cada golpe.',
+         bio='Monge alto e careca de postura ereta, túnica verde de jade e pés descalços. Silhueta vertical e calma: o vento aparece no movimento do tecido e na direção dos golpes.',
+         stats=[('VELOCIDADE', 5), ('FORÇA', 3), ('ALCANCE', 4), ('DEFESA', 3)],
+         outfits=['Jade Monástico', 'Jade Dourado', 'Peixão', 'Executivo'],
+         moves=[('light_3', 'Palma de Jade', 'BÁSICO · J1 J2 J3', 'Duas palmas rápidas e um terceiro golpe de palma aberta com o peso do corpo.'),
+                ('heavy_2', 'Chute do Vendaval', 'FORTE · K1 K2 K3', 'Corrente de chutes: canela baixa, chute frontal e chute giratório para trás.'),
+                ('elemental', 'Rajada de Vento', 'ELEMENTAL', 'Junta o vento entre as palmas na cintura e solta a rajada com um passo à frente.'),
+                ('ultimate', 'Tufão Celestial', 'ULTIMATE · 50 DE ENERGIA', 'Gira uma volta inteira enquanto o tufão cresce e dispara uma palma dupla gigante.'),
+                ('victory', 'Saudação', 'VITÓRIA', 'Punho na palma diante do peito e uma reverência profunda.')]),
+    dict(id='ignis', name='Dale', sub='Brutamontes do Sol Escaldante', color=SUN, element='FOGO', hp=1200,
+         style='Grappler pesado, à la luta livre: antecipação curta, corte seco para o contato e pose segurada no impacto.',
+         bio='Brutamontes caipira, mais alto que o Babuin, queimado de sol e de chapéu de cowboy. Base larga e baixa, braços abertos para agarrar; cada golpe leva o corpo inteiro.',
+         stats=[('VELOCIDADE', 2), ('FORÇA', 5), ('ALCANCE', 3), ('DEFESA', 5)],
+         outfits=['Sol do Meio-Dia', 'Preto', 'Coronel', "Men's Physique"],
+         moves=[('light_3', 'Soco de Roça', 'BÁSICO · J1 J2 J3', 'Antebraço que desce como clava, lariat curto e martelo com os dois punhos.'),
+                ('heavy', 'Botada', 'FORTE · K1 (K2 MARRETA CAIPIRA)', 'O joelho sobe e a bota entra chapada na barriga. Em seguida, a marreta no chão.'),
+                ('elemental', 'Pisada da Fornalha', 'ELEMENTAL', 'Joelho alto, punhos recolhidos e uma pisada que derruba todo o peso no chão.'),
+                ('ultimate', 'Fúria do Meio-Dia', 'ULTIMATE · 50 DE ENERGIA', 'Ajeita o chapéu, se abaixa atrás do ombro e explode numa ombrada quase horizontal.'),
+                ('victory', 'Duplo Bíceps', 'VITÓRIA', 'Planta os pés e flexiona os dois braços, cabeça para trás, rindo.')]),
+]
+REVAMP = [
+    dict(name='X12', was='Tophia', color=STONE, element='TERRA', art='concept-art/tophia-retrato-gdd-v1.png',
+         why='O nome vem da origem: ela é um experimento. Armadura de pedra, cavaleira.',
+         moves=['Punho de Arenito', 'Martelo de Pedra', 'Erupção Rochosa', 'Colosso de Terra']),
+    dict(name='Orsted', was='Volt', color=CYAN, element='RAIO', art='concept-art/volt-v5.png',
+         why='Mesmo nome do cientista. Armadura de sucata e canhão de mão.',
+         moves=['Tiro de Sucata', 'Disparo Carregado', 'Curto-Circuito', 'Sobrecarga Total']),
 ]
 
-# 01 — Cover
-p=Page('Capa',cover=True)
-p.rect(0,0,12,H,GREEN)
-p.text(48,35,'PROJETO DE JOGO  /  DOCUMENTO DE DESIGN',10,GREEN,True)
-p.text(48,72,'GALE BREAKER',49,WHITE,font='Editorial')
-p.text(50,137,'Quatro elementos. Uma boa confusão.',17,MUTED,font='Editorial')
-p.image('menu-principal-v3.png',48,186,984,360,crop=(0,.22,1,.86))
-p.line(48,572,1032,572,'#CFC6B5',.8)
-p.text(48,592,'GAME DESIGN DOCUMENT',12,GREEN,True)
-p.text(48,621,'Direção visual, personagens e sistemas de combate',12,MUTED)
-p.text(820,592,'EDIÇÃO 0.10',13,WHITE,font='Editorial')
-p.text(820,621,'02 NOVEMBRO 2026',10,MUTED)
-c.showPage()
 
-# 02 — Product vision and loop
-p=Page('01  Visão do jogo','Combate exagerado e divertido','As duas decisões centrais orientam o restante do documento.')
-p.note(48,146,'Definido','Combate caótico e exagerado, com foco em diversão.',460)
-p.note(570,146,'Definido','Habilidades escolhidas livremente antes da luta, respeitando um limite de pontos.',450)
-p.text(48,247,'Fluxo de partida proposto',19,WHITE,True)
-flow=['MENU','MODO','LUTADOR','HABILIDADES','LUTA','RESULTADO']
-for i,title in enumerate(flow):
-    x=48+i*166
-    p.rect(x,283,146,60,PANEL,radius=7)
-    p.text(x+15,304,title,12,WHITE,True)
-    if i<5:p.arrow(x+148,313,14)
-p.note(48,385,'Direção proposta','A arena participa da luta. Ações e objetos criam oportunidades, surpresas e vontade de pedir revanche.',450)
-p.note(570,385,'Clareza do caos','Mesmo com exagero, o jogador precisa perceber de onde vem o perigo e ter uma forma de reagir.',450)
-p.para(48,528,'Leitura do GDD: DEFINIDO = decisão tomada; PROTÓTIPO = regra atual sujeita a revisão; EM ABERTO = decisão de design ainda necessária.',980,13,MUTED)
-p.finish()
+def stats(f):
+    rows = ''.join(f'<div class="stat"><b>{k}</b><i>{"".join("<s class=on></s>" if j < v else "<s></s>" for j in range(5))}</i></div>' for k, v in f['stats'])
+    return f'<div class="stats">{rows}</div>'
 
-# 03 — Current cast overview
-p=Page('02  Elenco','Quatro silhuetas bem diferentes','Referências atuais de personagem. A simplificação v3 não é a direção escolhida.')
-for i,f in enumerate(fighter_info):
-    x=48+i*251
-    p.portrait(f,x,143,231,320)
-    p.text(x,484,f['name'].upper(),22,f['color'],font=DISPLAY[f['color']])
-    p.para(x,518,f['desc'],225,12,MUTED)
-p.finish()
 
-# 04–07 — Character sheets with actual concepts and icons
-for f in fighter_info:
-    p=Page('03  Personagens',f['name'],f['desc'],f['color'])
-    p.portrait(f,48,147,350,458)
-    p.note(438,150,'Identidade visual',f['identity'],594)
-    p.note(438,250,'Gameplay implementado',f['pending'],594)
-    p.line(438,350,1032,350,'#D7D0C2',.6)
-    p.text(438,369,'Repertório de combate',19,WHITE,font='Editorial')
-    fi=[item for item in icons if item['fighter']==f['id']]
-    for j,item in enumerate(fi):
-        x=438+j*151
-        p.rect(x,407,139,174,PANEL,radius=5)
-        p.image('attack-icons/'+item['filename'],x+18,416,102,102)
-        p.command(['light','heavy','elemental','ultimate'][j],x+10,522,25)
-        p.text(x+43,529,['BÁSICO','FORTE','ELEMENTAL','ULTIMATE'][j],9,f['color'],True)
-        p.para(x+10,557,item['name'],122,10,MUTED,leading=13)
-    p.para(438,601,'Movimentos e respostas nas fichas de ataque. Regras finais dependem de teste.',594,11,MUTED)
-    p.finish()
-# 08 — Arenas with full-width panoramic crops
-p=Page('04  Arenas','Três lugares para criar confusão','Três arenas nativas com objetos arremessáveis e ciclos previsíveis de perigo. Concepts preservadas como direção visual.')
-arenas=[('ZEPHYR PEAK','Santuário, cerejeiras e vento.','Rajada anunciada empurra lutadores e lança objetos.',(.0,.045,.797,.355)),
-        ('CRIMSON ANVIL','Forja, lava e correntes.','Erupção localizada: aviso de 1,5 s; saltar, sair ou bloquear.',(.0,.365,.797,.668)),
-        ('GOLDEN BAZAAR','Arcos, lanternas e especiarias.','Queda de carga anunciada; sair da marca ou bloquear.',(.0,.675,.797,.985))]
-for i,(name,desc,question,crop) in enumerate(arenas):
-    y=145+i*155
-    p.image('cenarios-v1.png',48,y,658,135,crop=crop)
-    p.text(730,y+3,name,17,[GREEN,RED,GOLD][i],True)
-    p.para(730,y+34,desc,300,13,WHITE)
-    p.para(730,y+78,question,300,12,MUTED)
-p.finish()
+# 01 cover
+page('', '', JADE, f'''
+<div class="cover-band"></div>
+<h1 class="cover-logo">GALE<br>BREAKER</h1>
+<div class="cover-sub">QUATRO ELEMENTOS. UMA BOA CONFUSÃO.</div>
+<img class="cover-hero a" src="{render('ignis_heavy')}" alt="Dale">
+<img class="cover-hero b" src="{render('kaze_light_3')}" alt="Babuin">
+<div class="cover-foot"><span>GAME DESIGN DOCUMENT</span><span>EDIÇÃO {EDITION} · {DATE}</span></div>
+''', cls='cover')
 
-# 09 — Combat and arena interaction
-p=Page('05  Combate','O jogador precisa entender a pancada','Base do protótipo: quatro comandos principais, movimento e ações auxiliares.')
-for i,(title,body) in enumerate([
-    ('BÁSICO','Pode ter variantes no chão, agachado e no ar.'),
-    ('FORTE','Impacto maior e uma abertura mais evidente.'),
-    ('ELEMENTAL','Poder do lutador e interação com a arena.'),
-    ('ULTIMATE','Ação de grande impacto ligada ao medidor.')]):
-    x=48+i*251
-    p.rect(x,145,231,116,PANEL,radius=6)
-    p.command(['light','heavy','elemental','ultimate'][i],x+14,157,32,[GREEN,RED,ORANGE,CYAN][i])
-    p.text(x+57,169,title,13,[GREEN,RED,ORANGE,CYAN][i],True)
-    p.para(x+16,202,body,198,12,MUTED)
-p.text(48,299,'Ritmo de um golpe',19,WHITE,True)
-for x,width,label,color in [(48,225,'PREPARAÇÃO',MUTED),(273,180,'CONTATO',GREEN),(453,220,'RECUPERAÇÃO',ORANGE)]:
-    p.rect(x,337,width,47,color)
-    p.text(x+14,353,label,12,BG,True)
-p.para(48,401,'Startup, frames ativos e recuperação existem no protótipo. Seus valores finais dependem dos novos ataques e dos testes de diversão.',625,13,MUTED)
-p.note(735,299,'No protótipo','Melhor de três, timer de 99 segundos e ultimate com custo de 50 em um medidor de 100.',290)
-p.note(48,492,'Caos de cenário','Objetos arremessáveis causam dano, quebram e reaparecem. Eventos de arena têm aviso de 1,5 s e ciclo de cerca de 15 s.',630)
-p.note(735,492,'Implementado','Jogador lança objetos; a arena acrescenta eventos previsíveis. Treino desativa esses eventos.',290)
-p.finish()
+# 02 contents
+CONTENTS = [('01', 'Visão do jogo'), ('02', 'Estilo de arte'), ('03', 'Elenco'), ('04', 'Babuin'), ('05', 'Dale'),
+            ('06', 'X12 e Orsted'), ('07', 'Combate'), ('08', 'Animação'), ('09', 'Modos'), ('10', 'Interface'),
+            ('11', 'Arenas'), ('12', 'Produção'), ('13', 'Roadmap')]
+page('00', 'Índice', JADE, '<ol class="toc">' + ''.join(f'<li><b>{n}</b><span>{e(t)}</span></li>' for n, t in CONTENTS) + '</ol>'
+     + f'<img class="toc-hero" src="{render("kaze_frente")}" alt="">')
 
-# 10 — Illustrated pre-match choices and mode overview
-p=Page('06  Modos e habilidades','Escolha. Combine. Entre na luta.','Habilidades escolhidas livremente antes da luta, com limite de pontos. Quatro pontos é a referência atual do protótipo.')
-p.image('infografico-habilidades-v1.png',48,143,984,328)
-for i,(title,body,pending) in enumerate([
-    ('ARCADE','Torre de quatro etapas e chefe com overcharge.','Implementado: três dificuldades, introduções, continue salvo e encerramento.'),
-    ('VERSUS LOCAL','Dois jogadores disputam uma partida.','Implementado: loadouts separados, dois controles e teclado remapeável.'),
-    ('TREINO','Adversário passivo e recuperação de vida e energia.','Implementado: oito lições, dummy configurável, hitboxes e avanço de frame.')]):
-    x=48+i*337
-    p.text(x,491,title,14,GREEN,True)
-    p.para(x,516,body,307,12,WHITE,leading=16)
-    p.para(x,556,pending,307,11,MUTED,leading=15)
-p.para(48,600,'Seleção livre sem pré-requisitos. P1 e P2 têm configurações salvas separadas. Custos finais dependem de playtest.',984,10,MUTED)
-p.para(48,618,'Escolhas de estilo de jogo; não há decisão de criar XP, moeda ou grind para obter vantagem.',984,10,MUTED)
-p.finish()
+# 03 vision
+page('01', 'Combate exagerado e divertido', JADE, f'''
+<div class="grid3">
+ <div class="card"><h3>CAOS COM CLAREZA</h3><p>Golpes grandes, reações exageradas e arenas que participam da luta. Mesmo no exagero, o jogador sempre vê de onde vem o perigo e tem uma resposta.</p></div>
+ <div class="card"><h3>PESO EM CADA PANCADA</h3><p>Antecipação curta, corte seco para o contato e a pose segurada no impacto. Cada lutador tem o próprio ritmo: o Babuin chicoteia, o Dale esmaga.</p></div>
+ <div class="card"><h3>ESCOLHA LIVRE</h3><p>Habilidades escolhidas antes da luta com um limite de pontos. Sem XP, moeda ou grind: são escolhas de estilo, não vantagem comprada.</p></div>
+</div>
+<h4 class="sec">FLUXO DE PARTIDA</h4>
+<div class="flow">{''.join(f'<span>{s}</span>' for s in ['MENU', 'MODO', 'LUTADOR', 'HABILIDADES', 'LUTA', 'RESULTADO'])}</div>
+<img class="corner-shot" src="{screen('luta_molten_forge')}" alt="">
+''')
 
-# 11 — Main menu approved concept
-p=Page('07  Interface','Menu principal minimalista','Referência visual escolhida: menu principal v3.')
-p.image('menu-principal-v3.png',48,145,756,425)
-p.note(830,153,'Direção','Lista textual, bastante respiro e destaque discreto de jade.',202)
-p.note(830,296,'No jogo','Título apenas Gale Breaker, sem subtítulo. Santuário vazio, sem Babuin ou outros personagens.',202)
-p.note(830,470,'A preservar','Legibilidade e navegação por teclado e mouse.',202)
-p.para(48,591,'Concept de referência; menu nativo implementado. Captura real na página 32.',756,12,MUTED)
-p.finish()
+# 04 art style
+page('02', 'Estilo PS1 · Legends 1997', GOLD, f'''
+<div class="split">
+ <div>
+  <p class="lead">Os lutadores seguem o visual dos jogos 3D de 1997: peças rígidas, poucas faces e toda a sombra pintada à mão na textura.</p>
+  <ul class="rules">
+   <li><b>~6 cabeças</b> de altura. Cabeça, mãos e pés grandes; membros retos.</li>
+   <li><b>Peças rígidas</b>, cada uma num osso só. Cerca de 700 triângulos por lutador.</li>
+   <li><b>Uma página de 256 px</b> com 15 cores, filtro nearest, sombra pintada.</li>
+   <li><b>Rosto trocável</b>: 24 expressões num atlas, sem animar a malha.</li>
+   <li><b>Roupas</b> com peças próprias sobre o mesmo esqueleto e as mesmas animações.</li>
+  </ul>
+ </div>
+ <div class="texgrid">
+  <figure><img class="px" src="{asset('godot/assets/characters/ignis/textures/page.png', 'style/dale')}"><figcaption>PÁGINA 256 · DALE</figcaption></figure>
+  <figure><img class="px" src="{asset('godot/assets/characters/kaze/textures/page.png', 'style/babuin')}"><figcaption>PÁGINA 256 · BABUIN</figcaption></figure>
+  <figure class="wide"><img class="px" src="{asset('godot/assets/characters/ignis/textures/face.png', 'style/dale')}"><figcaption>ATLAS DE EXPRESSÕES · 6 × 4</figcaption></figure>
+ </div>
+</div>
+''')
 
-# 12 — Updated pause and combat HUD concepts
-p=Page('07  Interface','Pausa e combate, na mesma linguagem','Concepts atuais: Babuin monge careca, Ignis cowboy e interface minimalista com detalhes de jade e marfim.')
-p.text(48,143,'01  PAUSA',11,GREEN,True)
-p.text(552,143,'02  HUD DE COMBATE',11,RED,True)
-p.image('menu-pausa-v2.png',48,167,480,270)
-p.image('hud-combate-v2.png',552,167,480,270)
-p.note(48,462,'Pausa','Combate congelado, fundo suavizado e Continuar em destaque. O painel mantém os lutadores visíveis.',302)
-p.note(385,462,'Informação essencial','Vida, tempo e rounds no alto. Energia e elemento nos cantos inferiores; espaço livre para acompanhar os golpes.',302)
-p.note(722,462,'Leitura e acesso','Nomes e símbolos acompanham as cores. Validar tamanho do texto, contraste, flashes e intensidade do shake.',310)
-p.para(48,591,'Pausa e HUD nativos implementados. Opções de flashes, shake e vibração disponíveis; validar conforto com jogadores.',984,11,MUTED)
-p.finish()
+# 05 cast
+cast = ''.join(f'''<div class="fighter" style="--c:{f['color']}"><img src="{render(f['id'] + '_0')}" alt=""><h3>{f['name']}</h3><small>{e(f['sub'])}</small>{tag(f['element'], f['color'])}</div>''' for f in FIGHTERS)
+cast += ''.join(f'''<div class="fighter wip" style="--c:{r['color']}"><img src="{asset(r['art'], 'concepts')}" alt=""><h3>{r['name']}</h3><small>ex-{r['was']} · em revitalização</small>{tag(r['element'], r['color'])}</div>''' for r in REVAMP)
+page('03', 'Quatro lutadores', SUN, f'<div class="cast">{cast}</div>')
 
-# 13 — Complete icons atlas, document-native layout
-p=Page('08  Ataques','Os 16 ícones principais','Nomes artísticos propostos. As imagens não definem sozinhas dano, alcance ou efeitos de gameplay.')
-for j,label in enumerate(['BÁSICO','FORTE','ELEMENTAL','ULTIMATE']):
-    p.command(['light','heavy','elemental','ultimate'][j],203+j*205,137,23,GREEN)
-    p.text(235+j*205,143,label,10,MUTED,True)
-for i,f in enumerate(fighter_info):
-    y=170+i*108
-    p.text(48,y+30,f['name'].upper(),15,f['color'],True)
-    for j,item in enumerate([k for k in icons if k['fighter']==f['id']]):
-        x=203+j*205
-        p.image('attack-icons/'+item['filename'],x,y-5,78,78)
-        p.para(x+87,y+16,item['name'],110,11,WHITE)
-p.finish()
+# fighter spreads
+for n, f in zip(('04', '05'), FIGHTERS):
+    outfits = ''.join(f'<figure><img src="{render(f["id"] + "_" + str(i))}"><figcaption>{e(o)}</figcaption></figure>' for i, o in enumerate(f['outfits']))
+    page(n, f['name'], f['color'], f'''
+<div class="hero">
+ <img class="hero-img" src="{render(f['id'] + '_0')}" alt="">
+ <div class="hero-text">
+  <div class="sub">{e(f['sub'])}</div>
+  {tag('ELEMENTO · ' + f['element'], f['color'])} {tag(f'VIDA {f["hp"]}', f['color'])}
+  <p class="lead">{e(f['bio'])}</p>
+  <p>{e(f['style'])}</p>
+  {stats(f)}
+ </div>
+</div>
+<h4 class="sec">ROUPAS</h4>
+<div class="outfits">{outfits}</div>
+''', kicker=f['sub'])
+    moves = ''.join(f'''<div class="move"><div class="mimg"><img src="{render(f['id'] + '_' + clip)}" alt=""></div><em>{e(kind)}</em><h3>{e(name)}</h3><p>{e(desc)}</p></div>''' for clip, name, kind, desc in f['moves'])
+    page(n, f'{f["name"]} · Golpes', f['color'], f'<div class="moves">{moves}</div><p class="note">Poses capturadas no quadro de contato de cada animação, no próprio jogo.</p>')
 
-# Illustrated attack chapter: four actions per fighter.
-sequences=json.loads((ROOT/'concept-art/attacks/sequences.json').read_text(encoding='utf-8'))
-action_labels={'light':'BÁSICO','heavy':'FORTE','elemental':'ELEMENTAL','ultimate':'ULTIMATE'}
-for attack in sequences:
-    f=next(f for f in fighter_info if f['id']==attack['fighter'])
-    p=Page('09  '+f['name']+' / '+action_labels[attack['action']],attack['name'],'Implementado no Godot; ilustração de referência. Dano, alcance e tempos em ajuste de playtest.',f['color'])
-    p.command(attack['action'],982,45,42,f['color'])
-    p.image('attacks/'+attack['filename'],48,143,984,328)
-    original=attack['action']=='light' and attack['fighter'] in ['kaze','ignis']
-    if original:
-        p.text(48,486,'ESBOÇO DO AUTOR',10,f['color'],True)
-        p.image('attacks/'+attack['fighter']+'-j123-esboco.png',48,507,270,112)
-        p.text(344,486,'SEQUÊNCIA E EFEITO PROPOSTO',10,f['color'],True)
-        p.para(344,506,attack['sequence']+' '+attack['behavior'],415,12,WHITE,leading=17)
-        p.text(786,486,'RESPOSTA DO ADVERSÁRIO',10,f['color'],True)
-        p.para(786,506,attack['counter'],245,12,WHITE,leading=17)
-        p.para(786,578,attack['cost'],245,11,MUTED)
-    else:
-        for x,label,body in [(48,'MOVIMENTO',attack['sequence']),(385,'FUNÇÃO EM COMBATE',attack['behavior']),(722,'RESPOSTA DO ADVERSÁRIO',attack['counter'])]:
-            p.text(x,486,label,10,f['color'],True)
-            p.para(x,506,body,310,12,WHITE,leading=17)
-        p.para(48,598,attack['cost']+' Parâmetros iniciais no jogo; balanceamento final depende de playtest.',980,11,MUTED)
-        p.text(48,620,'J1/J2/J3 = três ataques encadeados.' if attack['action']=='light' else 'Três poses de referência de um golpe. O jogo já possui animação de preparação, contato e recuperação.',10,MUTED)
-    p.finish()
+# X12 / Orsted
+wip = ''.join(f'''<div class="wipcard" style="--c:{r['color']}"><img src="{asset(r['art'], 'concepts')}" alt="">
+<div><h3>{r['name']}</h3><small>ex-{r['was']}</small>{tag(r['element'], r['color'])}<p>{e(r['why'])}</p>
+<ul>{''.join(f'<li>{e(m)}</li>' for m in r['moves'])}</ul>
+<div class="stamp">EM REVITALIZAÇÃO</div></div></div>''' for r in REVAMP)
+page('06', 'X12 e Orsted', STONE, f'<div class="wipgrid">{wip}</div><p class="note">Próximos na revitalização Legends: turnaround, expressões, painéis de textura, modelo, rig e animações. Concepts antigas apenas como referência.</p>')
 
-# 18 — Open creative decisions
-p=Page('10  Próximas definições','Próxima rodada de avaliação','Sistemas implementados; decisões criativas e qualidade final continuam em avaliação.')
-columns=[
-    ('KITS E ARENAS',GREEN,[
-        ('Golpes','16 ataques principais jogáveis. Avaliar alcance, dano, cancelamentos e tempo sem agir.'),
-        ('Canhão de Volt','Projéteis visíveis, carga fixa e sem munição/calor. Avaliar pressão à distância e respostas.'),
-        ('Pedra de Tophia','Armadura visual implementada. Avaliar clareza dos espinhos e do punho de pedra.'),
-        ('Caos','Objetos acionados por golpes e eventos anunciados. Avaliar frequência e diversão.')]),
-    ('MUNDO E FEEDBACK',ORANGE,[
-        ('Universo','Por que estes quatro lutam? Quais são suas relações e motivações?'),
-        ('Humor','Como o exagero aparece em falas, reações, vitórias e derrotas?'),
-        ('Áudio','Música sintetizada por arena e efeitos por personagem. Avaliar mix e clareza dos avisos.'),
-        ('Arcade','Fluxo, chefe, continue e encerramento funcionam. Narrativa e diálogos permanecem em aberto.')]),
-    ('REGRAS E ESCOPO',CYAN,[
-        ('Ritmo','Duração de luta e combos, formas de escapar, rounds e timer.'),
-        ('Habilidades','P1/P2 livres e separados. Avaliar custos e combinações dominantes.'),
-        ('Controles','Mapeamento de gamepad e acessibilidade disponíveis. Validar controles físicos e conforto.'),
-        ('Lançamento','Confirmar público, plataforma, modos e conteúdo da primeira versão.')])]
-for i,(heading,color,items) in enumerate(columns):
-    x=48+i*337
-    p.text(x,148,heading,15,color,True)
-    for j,(label,body) in enumerate(items):
-        y=193+j*99
-        p.text(x,y,label,15,WHITE,True)
-        p.para(x,y+26,body,302,12,MUTED)
-p.finish()
+# combat
+cmds = [('BÁSICO', JADE, 'J1 J2 J3', 'Corrente de três golpes. Variantes agachado e no ar.'),
+        ('FORTE', SUN, 'K1 K2', 'Impacto maior, abertura mais evidente.'),
+        ('ELEMENTAL', GOLD, 'ENERGIA', 'Poder do lutador e interação com a arena.'),
+        ('ULTIMATE', CYAN, '50 / 100', 'Golpe de grande impacto ligado ao medidor.')]
+page('07', 'Entender a pancada', JADE, f'''
+<div class="grid4">{''.join(f'<div class="card cmd" style="--c:{c}"><h3>{t}</h3><em>{k}</em><p>{d}</p></div>' for t, c, k, d in cmds)}</div>
+<h4 class="sec">RITMO DE UM GOLPE</h4>
+<div class="timeline"><span class="s">PREPARAÇÃO</span><span class="a">CONTATO + HITSTOP</span><span class="r">RECUPERAÇÃO</span></div>
+<div class="grid3 small">
+ <div><h3>REGRAS</h3><p>Melhor de três, 99 segundos por round, ultimate custa 50 de um medidor de 100.</p></div>
+ <div><h3>DEFESA</h3><p>Bloqueio alto e baixo, parry com janela curta e dash para fugir da pressão.</p></div>
+ <div><h3>ARENA</h3><p>Objetos arremessáveis e eventos anunciados 1,5 s antes, a cada ~15 s. O Treino os desliga.</p></div>
+</div>
+<img class="strip" src="{screen('luta_molten_forge')}" alt="">''')
 
-# 19 — Asset production pipeline and next actions
-p=Page('11  Produção','Da concept ao jogo','Pipeline em uso: arquivos Blender, exportação GLB, simulação e apresentação no Godot.')
-stages=[('CONCEPT','Referência e vistas'),('BLENDER','Malha e materiais'),('RIG','Ossos e animação'),('GLB','Exportação'),('GODOT','Cena e gameplay')]
-for i,(title,subtitle) in enumerate(stages):
-    x=48+i*201
-    p.rect(x,150,179,88,PANEL,radius=6)
-    p.text(x+14,167,title,16,[GREEN,GOLD,ORANGE,CYAN,GREEN][i],True)
-    p.text(x+14,202,subtitle,11,MUTED)
-    if i<4:p.arrow(x+183,194,14)
-p.note(48,287,'Marco entregue','Quatro lutadores jogáveis, três arenas e menu minimalista. Cada personagem tem rig e 27 clips exportados do Blender.',460)
-p.note(570,287,'Autoridade do combate','Movimento e dano continuam na simulação. A animação acompanha preparação, contato, recuperação, cancelamentos e hitstop.',460)
-p.note(48,426,'Animação integrada','Transições, apoio de mãos e pés, canhão estabilizado e hitstop. Babuin e Ignis preservam a direção dos esboços do autor.',460)
-p.note(570,426,'Critério de teste','O jogador entende o que acontece, encontra uma resposta e quer revanche. Observar legibilidade, tempo sem agir e desempenho.',460)
-p.para(48,563,'Build Windows de avaliação disponível. 158 verificações passaram e 16 confrontos automáticos terminaram. Acabamento artístico e balanceamento competitivo exigem avaliação humana.',980,13,MUTED)
-p.finish()
+# animation
+f = FIGHTERS[1]
+page('08', 'Animação limitada', SUN, f'''
+<p class="lead">Poses fortes seguradas por quadros, como desenho animado: nada de interpolação mole. A cada golpe, três ideias.</p>
+<div class="beats">
+ <figure><img src="{render('ignis_0')}"><figcaption><b>1 · GUARDA</b>Base larga, braços abertos para agarrar.</figcaption></figure>
+ <figure><img src="{render('ignis_heavy')}"><figcaption><b>2 · CORTE PARA O CONTATO</b>Antecipação curta e salto direto para a pose do impacto.</figcaption></figure>
+ <figure><img src="{render('ignis_victory')}"><figcaption><b>3 · SEGURA A POSE</b>O hitstop congela o acerto; o corpo exagera a forma.</figcaption></figure>
+</div>
+<p class="note">Próximo passo do roadmap: poses ainda mais exageradas e dinâmicas, irrealistas mas com anatomia humana básica, e vitórias com cutscene.</p>''')
 
-# Native build evidence: real captures, kept separate from approved concepts.
-p=Page('12  Build nativa','O documento virou jogo','Capturas reais do Godot 4.7.2 / Windows / OpenGL. Build de avaliação v0.10.')
-p.image('../art-source/previews/gdd-build/menu.png',48,145,608,342)
-p.image('../art-source/previews/gdd-build/pause.png',678,145,354,199)
-p.image('../art-source/previews/gdd-build/selection.png',678,358,354,199)
-p.note(48,513,'Fluxo completo','Menu sem personagens, seleção, habilidades, luta e resultado. Arcade com apresentação, continue salvo e encerramento.',600)
-p.para(48,602,'Executável: godot/builds/GaleBreaker.exe  |  Prévia: art-source/previews/index.html',984,11,MUTED)
-p.finish()
+# modes
+page('09', 'Modos de jogo', GOLD, f'''
+<div class="modes">
+ <figure><img src="{screen('arcade')}"><figcaption><b>ARCADE</b>Torre de quatro etapas com chefe, três dificuldades, continue salvo e encerramento. Escolha de lutador e roupa no pátio.</figcaption></figure>
+ <figure><img src="{screen('treino')}"><figcaption><b>TREINO</b>Garagem com dummy configurável, hitboxes, reposição e avanço de quadro.</figcaption></figure>
+</div>
+<div class="grid3 small">
+ <div><h3>VERSUS</h3><p>Hoje local, dois controles e loadouts separados. Roadmap: Online e LAN dentro do Versus.</p></div>
+ <div><h3>TUTORIAL</h3><p>Oito lições: mover, saltar, agachar, defender, combo, forte, elemental e ultimate.</p></div>
+ <div><h3>HABILIDADES</h3><p>Seleção livre com limite de pontos. Roadmap: aba Lutadores, com as habilidades de cada um.</p></div>
+</div>''')
 
-p=Page('12  Build nativa','Três arenas em funcionamento','Geometria Blender, materiais toon e perigos anunciados ligados à simulação.')
-for i,(file,title,body) in enumerate([
-    ('zephyr_dojo','ZEPHYR PEAK','Rajada e objetos. Treino mantém a arena tranquila.'),
-    ('molten_forge','CRIMSON ANVIL','Erupção localizada com marcação e tempo para reagir.'),
-    ('storm_market','GOLDEN BAZAAR','Carga em queda anunciada; bloquear ou sair da área.')]):
-    y=145+i*155
-    p.image('../art-source/previews/gdd-build/'+file+'.png',48,y,440,140)
-    p.image('../art-source/previews/gdd-build/'+file+'-warning.png',505,y,249,140)
-    p.text(777,y+5,title,15,[GREEN,RED,GOLD][i],True)
-    p.para(777,y+38,body,255,12,MUTED)
-p.finish()
+# interface
+page('10', 'Interface', JADE, f'''
+<div class="ui">
+ <figure class="big"><img src="{screen('menu')}"><figcaption><b>MENU NA PRAIA</b>Título e lista de texto sobre a praia ao vivo.</figcaption></figure>
+ <figure><img src="{screen('opcoes')}"><figcaption><b>OPÇÕES NO QUADRO</b>Pergaminho no quadro de missões da floresta.</figcaption></figure>
+ <figure><img src="{screen('luta_zephyr_dojo')}"><figcaption><b>HUD DE LUTA</b>Vida, tempo e rounds no alto; energia nos cantos.</figcaption></figure>
+</div>''')
 
-p=Page('12  Build nativa','Aprender, configurar e continuar','Tutorial guiado, laboratório de treino e acessibilidade disponíveis no jogo.')
-for i,(file,title,body) in enumerate([
-    ('tutorial','OITO LIÇÕES','Mover, saltar, agachar, defender, combo, forte, elemental e ultimate.'),
-    ('training','LABORATÓRIO','Dummy configurável, hitboxes, reposição e avanço de frame com F2.'),
-    ('settings','PREFERÊNCIAS','Volumes separados, flashes, shake, vibração, dificuldade e remapeamento.'),
-    ('arcade-ending','ARCADE','Quatro etapas, chefe, continue e retomada após fechar o jogo.')]):
-    x=48+(i%2)*504;y=145+(i//2)*231
-    p.image('../art-source/previews/gdd-build/'+file+'.png',x,y,270,152)
-    p.text(x+286,y+5,title,12,GREEN,True)
-    p.para(x+286,y+32,body,194,12,MUTED)
-p.para(48,609,'Gamepad: mapeamentos validados por código. Teste físico de controles e playtests de conforto ainda necessários.',984,10,MUTED)
-p.finish()
+# arenas
+arenas = [('luta_zephyr_dojo', 'ZEPHYR PEAK', JADE, 'Santuário entre cerejeiras. Rajada anunciada empurra lutadores e lança objetos.'),
+          ('luta_molten_forge', 'CRIMSON ANVIL', SUN, 'Forja de lava e correntes. Erupção marcada no chão: saltar, sair ou bloquear.'),
+          ('luta_storm_market', 'GOLDEN BAZAAR', GOLD, 'Arcos, lanternas e especiarias. Queda de carga anunciada sobre a marca.')]
+page('11', 'Três arenas', SUN, '<div class="arenas">' + ''.join(f'<figure style="--c:{c}"><img src="{screen(s)}"><figcaption><b>{t}</b>{d}</figcaption></figure>' for s, t, c, d in arenas) + '</div>')
 
-c.save()
+# production
+steps = [('CONCEPT', 'Turnaround, expressões e 20 painéis de textura'), ('BLENDER', 'Peças rígidas medidas na concept'),
+         ('TEXTURA', 'Página 256, pintura à mão'), ('RIG + ANIM', 'Poses-chave por código e à mão'), ('GODOT', 'GLB, shader toon e combate')]
+page('12', 'Da concept ao jogo', CYAN, f'''
+<div class="flow steps">{''.join(f'<span><b>{t}</b><small>{d}</small></span>' for t, d in steps)}</div>
+<div class="pipe">
+ <img src="{asset('concept-art/characters/dale/dale-turnaround-psx-v1.png', 'pipeline')}">
+ <img src="{asset('art-source/characters/ignis/legends/dale_frente_facetas.png', 'pipeline')}">
+ <img class="px" src="{asset('godot/assets/characters/ignis/textures/page.png', 'style/dale')}">
+ <img class="fit" src="{render('ignis_heavy')}">
+ <img src="{screen('luta_storm_market')}">
+</div>
+<div class="grid3 small">
+ <div><h3>AUTORIDADE DO COMBATE</h3><p>Dano e movimento vivem na simulação. A animação acompanha preparação, contato e recuperação, sem mudar os quadros de jogo.</p></div>
+ <div><h3>VERIFICAÇÃO</h3><p>Testes do Godot a cada mudança: combate, regressão visual e recursos do jogo. Capturas do próprio motor neste documento.</p></div>
+ <div><h3>FONTES</h3><p>Blender em art-source/, jogo em godot/, este GDD em docs/gdd/build_gdd.py.</p></div>
+</div>''')
 
-font_css=''.join(f"@font-face{{font-family:{name};src:url('assets/{filename}')}}" for name,filename in FONT_FILES.items())
-style=font_css+'''*{box-sizing:border-box}body{margin:0;background:#DEDAD0;font-family:Arial,sans-serif;color:#27372F}.toolbar{position:sticky;top:0;z-index:9;background:#FAF8F2F5;border-bottom:1px solid #CFC8BA;padding:14px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;backdrop-filter:blur(12px)}.toolbar strong{margin-right:auto;font-family:Editorial,Georgia,serif;font-weight:400}button,a.action{font:inherit;font-size:13px;border:1px solid #B9C5B9;background:#F7F5EE;color:#285B48;border-radius:4px;padding:9px 14px;cursor:pointer;text-decoration:none}button:hover{background:#E9EFE5}.page{position:relative;width:1080px;height:675px;margin:32px auto;overflow:hidden;box-shadow:0 5px 24px #39342119}.shape,.txt{position:absolute}.shape{pointer-events:none}.txt{white-space:nowrap}.txt[contenteditable=true]{outline:1px dashed #28654F70;white-space:normal;min-height:1em}.txt:focus{outline:2px solid #28654F;background:#EBF1E6}.hint{font-size:11px;color:#62695F}body.editing .hint{color:#28654F}@page{size:1080px 675px;margin:0}@media print{body{background:white}.toolbar{display:none}.page{margin:0;box-shadow:none;break-after:page;page-break-after:always}.page:last-child{break-after:auto}.txt[contenteditable=true]{outline:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'''
-body='\n'.join(f'<section class="page" aria-label="Página {p.number} {html.escape(p.title or p.section)}">'+''.join(p.parts)+'</section>' for p in pages)
-script='''let editing=false;function toggleEdit(){editing=!editing;document.body.classList.toggle('editing',editing);document.querySelectorAll('.editable').forEach(e=>e.contentEditable=editing?'true':'false');document.getElementById('edit').textContent=editing?'Concluir edição':'Editar textos'}function saveDocument(){document.querySelectorAll('.editable').forEach(e=>e.contentEditable='false');editing=false;document.body.classList.remove('editing');document.getElementById('edit').textContent='Editar textos';const blob=new Blob(['<!doctype html>\\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Gale_Breaker_GDD_Visual_editado.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}'''
-html_doc=f'''<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gale Breaker GDD visual</title><style>{style}</style></head><body><nav class="toolbar"><strong>GALE BREAKER · GDD VISUAL v0.10</strong><button id="edit" onclick="toggleEdit()">Editar textos</button><button onclick="saveDocument()">Salvar edição HTML</button><button onclick="window.print()">Imprimir PDF</button><span class="hint">Ao salvar, mantenha o HTML ao lado da pasta assets.</span></nav>{body}<script>{script}</script></body></html>'''
-(OUT/'index.html').write_text(html_doc,encoding='utf-8')
-(OUT/'page_index.json').write_text(json.dumps([{'page':p.number,'title':p.title or p.section} for p in pages],ensure_ascii=False,indent=2),encoding='utf-8')
-print(f'Created {len(pages)} pages: {PDF.name} and index.html')
+# roadmap
+ROADMAP = [('REVITALIZAÇÃO DOS PERSONAGENS', JADE, [(1, 'Babuin'), (1, 'Dale'), (0, 'X12 (ex-Tophia): ela é um experimento'), (0, 'Orsted (ex-Volt): mesmo nome do cientista')]),
+           ('REVITALIZAR ANIMAÇÕES', SUN, [(0, 'Mais exageradas e dinâmicas: poses irrealistas, anatomia humana básica'), (0, 'Vitórias com cutscene')]),
+           ('REVITALIZAR MENUS', GOLD, [(0, 'Versus com Online e Local (LAN)'), (0, 'Aba "Lutadores" com as habilidades'), (0, 'Retrabalhar habilidades'), (0, 'Tutorial')]),
+           ('CUTSCENE INICIAL', STONE, [(0, 'Primeira pessoa num quarto de adolescente: um CD no PS1 antigo e o jogo abre')]),
+           ('COMBOS E BALANCEAMENTO', CYAN, [(0, 'Retrabalhar combos e balanceamento'), (0, 'Hitboxes e game feel')]),
+           ('TOQUES FINAIS', JADE, [(0, 'Detalhamento de todos os pontos'), (0, 'Preparação para a Alpha 0.1')])]
+road = ''.join(f'''<div class="road" style="--c:{c}"><b>{i + 1}</b><h3>{t}</h3><ul>{''.join(f'<li class="{"done" if d else ""}">{e(x)}</li>' for d, x in items)}</ul></div>''' for i, (t, c, items) in enumerate(ROADMAP))
+page('13', 'Rumo à Alpha 0.1', JADE, f'<div class="roadmap">{road}</div>')
+
+# ---------------------------------------------------------------- render
+CSS = ''.join(f"@font-face{{font-family:{k};src:url('assets/fonts/{f}');font-weight:{w};font-style:{st}}}" for k, f, w, st in FONTS) + '''
+:root{--ink:#14111c;--ink2:#1f1b2b;--paper:#efe6d2;--muted:#a59db3;--line:#3a3348}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0a10;font-family:Text,Arial,sans-serif;color:var(--paper)}
+.page{position:relative;width:1080px;height:675px;margin:28px auto;overflow:hidden;background:
+ repeating-linear-gradient(0deg,#ffffff05 0 1px,transparent 1px 3px),
+ radial-gradient(120% 90% at 85% 0%,#2a2340 0%,var(--ink) 60%);box-shadow:0 8px 30px #000a}
+.page::before{content:"";position:absolute;right:-160px;top:-40px;width:520px;height:900px;background:var(--a);opacity:.13;transform:skewX(-18deg)}
+.page::after{content:"";position:absolute;left:0;top:0;width:100%;height:6px;background:linear-gradient(90deg,var(--a) 0 30%,transparent 30%)}
+header{position:absolute;left:44px;top:26px;right:44px;display:flex;align-items:flex-end;gap:18px}
+header .ch{font:italic 800 46px Title;color:var(--ink);background:var(--a);padding:0 14px 2px 10px;transform:skewX(-12deg);line-height:1}
+header h1{margin:0;font:italic 800 40px Title;text-transform:uppercase;letter-spacing:.5px;color:var(--paper);text-shadow:3px 3px 0 var(--a);line-height:1}
+header .k{margin-left:auto;font:600 12px Title;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+main{position:absolute;left:44px;right:44px;top:104px;bottom:46px}
+footer{position:absolute;left:44px;right:44px;bottom:14px;display:flex;font:600 10px Title;color:var(--muted);letter-spacing:2px}
+footer b{margin-left:auto;font:italic 800 22px Title;color:var(--a);letter-spacing:0;margin-top:-10px}
+h3{margin:0 0 6px;font:italic 800 20px Title;letter-spacing:.5px;color:var(--a);text-transform:uppercase}
+p{margin:0 0 8px;font-size:13px;line-height:1.45}
+.lead{font:18px/1.4 Text;color:var(--paper)}
+.note{position:absolute;bottom:0;left:0;font:600 11px Title;color:var(--muted)}
+.sec{margin:22px 0 10px;font:600 13px Title;letter-spacing:3px;color:var(--a)}
+.sec::after{content:"";display:inline-block;width:60px;height:2px;background:var(--a);margin-left:10px;vertical-align:middle}
+.tag{display:inline-block;font:italic 800 13px Title;letter-spacing:1px;color:var(--ink);background:var(--c);padding:2px 10px;transform:skewX(-12deg);margin:0 6px 6px 0}
+.card{background:var(--ink2);border-left:4px solid var(--c,var(--a));padding:16px 18px;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid3.small{margin-top:20px}.grid3.small h3{font-size:16px}
+.flow{display:flex;gap:6px}.flow span{flex:1;background:var(--ink2);padding:12px 14px;font:italic 800 17px Title;letter-spacing:1px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%,14px 50%)}
+.flow span:first-child{clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%)}
+.flow span:nth-child(odd){background:#2a2438}
+.steps span{padding:14px 22px}.steps small{display:block;font:11px Text;color:var(--muted);margin-top:6px;letter-spacing:0}.steps b{color:var(--a);font-weight:400}
+.corner-shot{position:absolute;right:0;bottom:0;width:430px;border:3px solid var(--a);transform:rotate(-2deg);box-shadow:8px 8px 0 #0008}
+img.px{image-rendering:pixelated}
+.split{display:grid;grid-template-columns:1fr 1.05fr;gap:30px}
+.rules{list-style:none;padding:0;margin:14px 0}.rules li{font-size:13px;line-height:1.4;padding:8px 0 8px 22px;border-bottom:1px solid var(--line);position:relative}
+.rules li::before{content:"";position:absolute;left:0;top:13px;width:10px;height:10px;background:var(--a);transform:rotate(45deg)}
+.rules b{color:var(--a)}
+.texgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.texgrid img{width:100%;display:block;border:2px solid var(--line)}
+.texgrid .wide{grid-column:span 2}.texgrid .wide img{height:150px;object-fit:contain;background:var(--ink2)}
+figure{margin:0}figcaption{font:600 10px Title;letter-spacing:1.5px;color:var(--muted);margin-top:5px}
+.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:100%}
+.fighter{position:relative;background:linear-gradient(180deg,transparent 40%,color-mix(in srgb,var(--c) 30%,transparent));border-bottom:5px solid var(--c);padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end}
+.fighter img{position:absolute;left:0;right:0;top:0;bottom:90px;margin:auto;max-width:100%;max-height:calc(100% - 100px);object-fit:contain;filter:drop-shadow(5px 5px 0 #0009)}
+.fighter.wip img{filter:grayscale(.65) brightness(.7);object-fit:cover;width:100%;height:calc(100% - 100px);max-height:none}
+.fighter h3{font-size:34px;color:var(--paper);text-shadow:3px 3px 0 var(--c);margin:0}.fighter small{font:600 11px Title;color:var(--muted);margin-bottom:6px}
+.fighter .tag{align-self:flex-start}
+.hero{display:grid;grid-template-columns:300px 1fr;gap:30px;height:300px}
+.hero-img{height:300px;margin:auto;filter:drop-shadow(6px 6px 0 #000a)}
+.sub{font:italic 22px Text;color:var(--a);margin-bottom:10px}
+.stats{display:grid;grid-template-columns:1fr;gap:7px;margin-top:14px;width:330px}.stat{display:flex;align-items:center;justify-content:space-between;font:600 11px Title;letter-spacing:2px}
+.stat i{display:flex;gap:3px}.stat s{width:22px;height:10px;background:var(--line);transform:skewX(-20deg)}.stat s.on{background:var(--a)}
+.outfits{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.outfits figure{background:var(--ink2);height:150px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:6px;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+.outfits img{height:118px;filter:drop-shadow(3px 3px 0 #0009)}.outfits figcaption{font:italic 800 13px Title;letter-spacing:1px;color:var(--paper)}
+.moves{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.mimg{height:330px;background:linear-gradient(160deg,#2a2438,var(--ink2));display:flex;align-items:center;justify-content:center;margin-bottom:10px;border-bottom:4px solid var(--a);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.mimg img{max-width:94%;max-height:92%;filter:drop-shadow(4px 4px 0 #000a)}
+.move em{font:600 10px Title;letter-spacing:1px;color:var(--muted);font-style:normal}.move h3{font-size:19px;margin-top:4px;color:var(--paper)}.move p{font-size:12px}
+.wipgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.wipcard{display:grid;grid-template-columns:190px 1fr;gap:16px;background:var(--ink2);border-top:5px solid var(--c);padding:14px;height:420px}
+.wipcard img{width:190px;height:390px;object-fit:cover;filter:grayscale(.5) brightness(.8)}
+.wipcard h3{font-size:42px;color:var(--paper);text-shadow:3px 3px 0 var(--c)}.wipcard small{display:block;font:600 11px Title;color:var(--muted);margin-bottom:10px}
+.wipcard ul{padding-left:18px;font-size:13px;line-height:1.7}.stamp{display:inline-block;margin-top:14px;font:italic 800 20px Title;color:var(--c);border:3px solid var(--c);padding:4px 12px;transform:rotate(-6deg)}
+.cmd em{display:block;font:600 11px Title;color:var(--muted);font-style:normal;margin-bottom:8px}.cmd{height:130px}
+.timeline{display:flex;height:46px;font:italic 800 16px Title;letter-spacing:1px;color:var(--ink)}
+.timeline span{display:flex;align-items:center;padding-left:16px;transform:skewX(-12deg)}.timeline .s{width:28%;background:var(--muted)}.timeline .a{width:30%;background:var(--a)}.timeline .r{width:42%;background:#e08a3c}
+.beats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+.beats figure{background:var(--ink2);height:420px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.beats img{max-height:310px;max-width:100%;filter:drop-shadow(4px 4px 0 #000a);margin-bottom:auto}
+.beats figcaption{font:12px Text;color:var(--paper);letter-spacing:0;text-align:center}.beats b{display:block;font:italic 800 18px Title;color:var(--a);letter-spacing:1px;margin-bottom:4px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.modes img,.ui img,.arenas img{width:100%;display:block;border:3px solid var(--a)}.modes img{height:290px;object-fit:cover}
+.modes figcaption,.ui figcaption,.arenas figcaption{font:12px Text;color:var(--paper);letter-spacing:0;margin-top:8px}
+.modes b,.ui b,.arenas b{display:block;font:italic 800 18px Title;color:var(--a);letter-spacing:1px}
+.ui{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:1fr 1fr;gap:14px 18px;height:100%}.ui .big{grid-row:span 2}
+.ui figure:not(.big) img{height:150px;object-fit:cover}
+.arenas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.arenas img{border-color:var(--c);height:390px;object-fit:cover}.arenas b{color:var(--c)}
+.strip{position:absolute;left:0;right:0;bottom:0;width:100%;height:170px;object-fit:cover;object-position:50% 45%;border:3px solid var(--a)}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 4px}.pipe img{width:100%;height:150px;object-fit:cover;object-position:50% 20%;border:2px solid var(--line);background:var(--ink2)}.pipe .fit{object-fit:contain}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.road{background:var(--ink2);border-top:4px solid var(--c);padding:14px 16px 10px 16px;height:250px;position:relative}
+.road>b{position:absolute;right:12px;top:2px;font:italic 800 46px Title;color:var(--c);opacity:.35}
+.road h3{color:var(--c);font-size:17px;padding-right:40px}.road ul{list-style:none;padding:0;margin:8px 0}
+.road li{font-size:12.5px;line-height:1.35;padding:5px 0 5px 24px;position:relative}
+.road li::before{content:"";position:absolute;left:0;top:6px;width:13px;height:13px;border:2px solid var(--c)}
+.road li.done{color:var(--muted)}.road li.done::before{background:var(--c)}
+.road li.done::after{content:"";position:absolute;left:4px;top:8px;width:5px;height:8px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.toc{columns:2;column-gap:40px;list-style:none;padding:0;margin:10px 0;width:600px}
+.toc li{display:flex;gap:16px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);break-inside:avoid}
+.toc b{font:italic 800 26px Title;color:var(--a);width:40px}.toc span{font:italic 800 20px Title;letter-spacing:.5px;text-transform:uppercase}
+.toc-hero{position:absolute;right:10px;bottom:0;height:500px;filter:drop-shadow(8px 8px 0 #000a)}
+.cover{background:radial-gradient(90% 90% at 70% 40%,#3a2a3a 0%,#120f18 70%)}
+.cover::before{right:-40px;width:640px;opacity:.9;background:linear-gradient(180deg,#e8572f,#e2b04a)}
+.cover-band{position:absolute;right:120px;top:-40px;width:90px;height:900px;background:#2fb58a;transform:skewX(-18deg);opacity:.9}
+.cover-logo{position:absolute;left:52px;top:60px;margin:0;font:italic 800 112px/0.86 Title;letter-spacing:1px;color:#e2b04a;text-shadow:6px 6px 0 #000,10px 10px 0 #2fb58a}
+.cover-sub{position:absolute;left:58px;top:270px;font-size:21px!important;font:italic 800 22px Title;letter-spacing:2px;color:var(--paper)}
+.cover-hero{position:absolute;filter:drop-shadow(10px 10px 0 #000b)}.cover-hero.a{right:40px;bottom:56px;height:500px}.cover-hero.b{right:330px;bottom:60px;height:240px}
+.cover-foot{position:absolute;left:56px;right:56px;bottom:22px;display:flex;justify-content:space-between;font:600 12px Title;letter-spacing:3px;color:var(--paper)}
+@page{size:1080px 675px;margin:0}
+@media print{body{background:none}.page{margin:0;box-shadow:none;break-after:page}.page:last-child{break-after:auto}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+'''
+
+
+def build():
+    sections = []
+    for i, (ch, title, accent, body, kicker, cls) in enumerate(pages, start=1):
+        head = '' if cls == 'cover' else f'<header><span class="ch">{ch}</span><h1>{e(title)}</h1><span class="k">{e(kicker)}</span></header>'
+        foot = '' if cls == 'cover' else f'<footer><span>GALE BREAKER · MANUAL DE DESIGN · EDIÇÃO {EDITION}</span><b>{i:02d}</b></footer>'
+        sections.append(f'<section class="page {cls}" style="--a:{accent}" aria-label="Página {i} {e(title or "Capa")}">{head}<main>{body}</main>{foot}</section>')
+    doc = (f'<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+           f'<title>Gale Breaker GDD</title><style>{CSS}</style></head><body>{"".join(sections)}</body></html>')
+    (OUT / 'index.html').write_text(doc, encoding='utf-8')
+    (OUT / 'page_index.json').write_text(json.dumps([{'page': i, 'title': p[1] or 'Capa'} for i, p in enumerate(pages, start=1)], ensure_ascii=False, indent=2), encoding='utf-8')
+    if EDGE.exists():
+        import tempfile
+        profile = tempfile.mkdtemp(prefix='gdd-edge-')            # a running Edge would swallow the call
+        before = PDF.stat().st_mtime if PDF.exists() else 0
+        subprocess.run([str(EDGE), '--headless=new', '--disable-gpu', f'--user-data-dir={profile}', '--no-pdf-header-footer', '--run-all-compositor-stages-before-draw',
+                        '--virtual-time-budget=8000', f'--print-to-pdf={PDF}', (OUT / 'index.html').as_uri()], check=True, timeout=180)
+        import time                                              # Edge returns before the PDF is written
+        for _ in range(240):
+            if PDF.exists() and PDF.stat().st_mtime > before:
+                size = -1
+                while size != PDF.stat().st_size:
+                    size = PDF.stat().st_size
+                    time.sleep(1)
+                break
+            time.sleep(.5)
+        assert PDF.exists() and PDF.stat().st_mtime > before, 'Edge did not write the PDF'
+    print(f'{len(pages)} pages: index.html' + (f' and {PDF.name}' if EDGE.exists() else ''))
+
+
+if __name__ == '__main__':
+    build()

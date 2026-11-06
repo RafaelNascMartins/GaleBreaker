@@ -35,6 +35,15 @@ const HEAVY_CHAIN := {
 		{"name": "Chute Giratório", "startupFrames": 11, "activeFrames": 5, "recoveryFrames": 18, "damage": 110,
 			"back": 0.0, "advance": 0.45, "hitstop": 9},
 	],
+	# Dale: K1 a big boot to the gut, K2 the Marreta Caipira (the fighter's own heavy move, so it
+	# keeps its damage and armour; only the step and the freeze are set here).
+	"ignis": [
+		{"name": "Botada", "hitHeight": "mid", "startupFrames": 9, "activeFrames": 3, "recoveryFrames": 14,
+			"damage": 75, "hitstunFrames": 18, "blockstunFrames": 10, "launchY": 0, "knockback": 3.2,
+			"hitbox": {"offsetX": 1.3, "offsetY": 0.8, "width": 1.7, "height": 0.9},
+			"back": 0.0, "advance": 0.15, "hitstop": 10},
+		{"name": "Marreta Caipira", "back": 0.0, "advance": 0.20, "hitstop": 16},
+	],
 }
 
 ## Speed that covers `metres` within `frames` steps, given the per-frame decay of step().
@@ -174,8 +183,8 @@ func attack(f: Dictionary, requested: String, crouching: bool) -> bool:
 		move["back"] = float(over.back)
 		move["advance"] = float(over.advance)
 		move["hitstopFrames"] = int(over.hitstop)
-		f.kchain = kstep % 3 + 1
-		f.kchain_frames = 60 if kstep < 3 else 0
+		f.kchain = kstep % kicks.size() + 1
+		f.kchain_frames = 60 if kstep < kicks.size() else 0
 	elif kind != "heavy":
 		f.kchain = 1
 		f.kchain_frames = 0

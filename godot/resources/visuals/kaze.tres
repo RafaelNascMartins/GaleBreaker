@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3]
+[gd_resource type="Resource" script_class="GaleVisualCatalog" format=3 uid="uid://cf0rwvq0succ"]
 
-[ext_resource type="Script" path="res://scripts/visual_catalog.gd" id="1_ix4jw"]
+[ext_resource type="Script" uid="uid://cdnamr8pddn83" path="res://scripts/visual_catalog.gd" id="1_ix4jw"]
 
 [resource]
 script = ExtResource("1_ix4jw")

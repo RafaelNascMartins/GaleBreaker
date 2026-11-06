@@ -214,10 +214,10 @@ func run() -> void:
 	app.palette1 = 2
 	app.preview()
 	var ignis_view: GaleFighterView = app.arena.fighters[0]
-	var mask_img: Image = (ignis_view.material.get_shader_parameter("mask_tex") as Texture2D).get_image()
-	if mask_img.is_compressed():
-		mask_img.decompress()
-	check(mask_img.get_pixel(64, 512).r == 0.0 and mask_img.get_pixel(192, 512).r == 0.0 and mask_img.get_pixel(320, 512).r > 0.9, "Ignis mask preserves pale chest and sunburn zones while recoloring jeans")
+	# Dale (Legends): one hand-painted 256 page, no recolour mask; the face comes from the atlas.
+	var page: Texture2D = ignis_view.material.get_shader_parameter("albedo_px")
+	check(ignis_view.material.get_shader_parameter("pixelated") == true and page != null and page.get_width() == 256, "Dale uses his hand-painted 256 Legends page")
+	check(ignis_view.material.get_shader_parameter("face_px") != null, "Dale shows expressions from his face atlas")
 	# Validate animation sync with startup/active/recovery, freeze, cancel, side switch and round reset
 	app.fighter1 = "kaze"
 	app.fighter2 = "volt"

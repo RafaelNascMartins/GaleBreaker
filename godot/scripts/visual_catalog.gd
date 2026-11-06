@@ -83,9 +83,9 @@ static func build_default(id: String) -> GaleVisualCatalog:
 			cat.accent_color = Color("A54332")
 			cat.palettes = [
 				{"name": "Sol do Meio-Dia", "primary": "#5B7088", "secondary": "#5C4028", "accent": "#F97316"},
-				{"name": "Chama Azul", "primary": "#1E293B", "secondary": "#334155", "accent": "#38BDF8"},
-				{"name": "Cinza da Forja", "primary": "#3F2E3E", "secondary": "#18181B", "accent": "#C084FC"},
-				{"name": "Poeira Dourada", "primary": "#78350F", "secondary": "#D97706", "accent": "#FACC15"},
+				{"name": "Preto", "primary": "#1F1F22", "secondary": "#2B2B2E", "accent": "#FACC15", "page": "res://assets/characters/ignis/textures/page_preto.png"},
+				{"name": "Coronel", "primary": "#EDE4D3", "secondary": "#4A2E1E", "accent": "#E9DDB8", "page": "res://assets/characters/ignis/textures/page_coronel.png", "body": "ignis_CoronelBody"},
+				{"name": "Men's Physique", "primary": "#C8692E", "secondary": "#1C1C1C", "accent": "#F08A3A", "page": "res://assets/characters/ignis/textures/page_physique.png", "body": "ignis_PhysiqueBody", "face": "res://assets/characters/ignis/textures/face_physique.png"},
 			]
 			cat.gdd_moves = {
 				"light": {"name": "Soco de Roça", "sequence": "J1 direito; J2 esquerdo com direito oculto; J3 marretada descendente com os dois braços.", "behavior": "Curto alcance. Três entradas pesadas; o último contato empurra para baixo.", "counter": "Bloquear ou recuar; a marretada expõe recuperação maior."},

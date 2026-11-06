@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://41mv3k0hif8i"
-path="res://.godot/imported/kaze_babuin_pagina_256.png-e0e23ae3ebf5103ae4b17761acf1b02d.ctex"
+path.s3tc="res://.godot/imported/kaze_babuin_pagina_256.png-e0e23ae3ebf5103ae4b17761acf1b02d.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "88fbd4b55fffcf2f6bb97966c5c89787"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/characters/kaze/kaze_babuin_pagina_256.png"
-dest_files=["res://.godot/imported/kaze_babuin_pagina_256.png-e0e23ae3ebf5103ae4b17761acf1b02d.ctex"]
+dest_files=["res://.godot/imported/kaze_babuin_pagina_256.png-e0e23ae3ebf5103ae4b17761acf1b02d.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
