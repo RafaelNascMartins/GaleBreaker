@@ -52,6 +52,18 @@ static func travel_speed(metres: float, frames: int) -> float:
 	return metres / (DT * (1.0 - pow(r, maxi(1, frames))) / (1.0 - r))
 # Long enough for the full "three, two, one, FIGHT" announcer line.
 const COUNTDOWN_FRAMES := 216
+# Command moves (motion + button, like fighting games): the directions are numpad notation
+# relative to the facing (4 back, 6 forward, 2 down, 1/3 diagonals, 5 neutral). A command
+# replaces the button's normal move when the motion was made just before the press.
+const MOTION_WINDOW := 20      # frames the whole motion may take
+const MOTION_HISTORY := 30
+const MOTIONS := {
+	# half circle forward (41236); the short form 4-2-6 counts, diagonals are optional
+	"hcf": [4, 2, 6],
+}
+const COMMANDS := {
+	"tophia": [{"motion": "hcf", "button": "elemental", "move": "rock_spike"}],
+}
 var data: GaleData
 var p1: Dictionary
 var p2: Dictionary
@@ -65,6 +77,9 @@ var winner := 0
 var remaining := 99.0
 var countdown := COUNTDOWN_FRAMES
 var freeze := 0
+# Slow motion: while > 0 the simulation advances only every other frame (counter hits); the
+# presentation also slows during it and after a KO (arena.gd reads it).
+var slow := 0
 var round_wait := 0
 var banner := "PREPARE-SE"
 var banner_frames := 180
@@ -82,6 +97,53 @@ static func idle_input() -> Dictionary:
 	return {"axis": 0.0, "jump": false, "crouch": false, "guard": false,
 		"parry": false, "dash": false, "breaker": false, "attack": ""}
 
+## Numpad direction of this frame's input, relative to the fighter's facing.
+static func numpad(inp: Dictionary, facing: float) -> int:
+	var x := signi(roundi(float(inp.axis) * facing)) if absf(float(inp.axis)) > 0.3 else 0
+	var down: bool = inp.crouch
+	var up: bool = inp.get("jump", false)
+	var row := 0 if down else (2 if up else 1)
+	return 1 + (x + 1) + row * 3
+
+## True when the fighter's last MOTION_WINDOW directions contain the motion's steps in order,
+## the last one held now or within the last few frames (a press right after the motion).
+static func did_motion(dirs: Array, motion: String) -> bool:
+	var steps: Array = MOTIONS[motion]
+	var start := maxi(0, dirs.size() - MOTION_WINDOW)
+	var k := steps.size() - 1
+	var i := dirs.size() - 1
+	# the final step must be recent (pressed within 6 frames of reaching it)
+	var recent := false
+	while i >= maxi(start, dirs.size() - 6):
+		if _step_matches(int(dirs[i]), int(steps[k])):
+			recent = true
+			break
+		i -= 1
+	if not recent:
+		return false
+	k -= 1
+	while i >= start and k >= 0:
+		if _step_matches(int(dirs[i]), int(steps[k])):
+			k -= 1
+		i -= 1
+	return k < 0
+
+static func _step_matches(d: int, step: int) -> bool:
+	if step == 2:
+		return d in [1, 2, 3]       # any down direction
+	if step == 4:
+		return d in [4, 1]          # back or down-back
+	if step == 6:
+		return d in [6, 3]          # forward or down-forward
+	return d == step
+
+## The command move a button press becomes (or the press itself).
+func command_attack(f: Dictionary, pressed: String) -> String:
+	for c: Dictionary in COMMANDS.get(f.id, []):
+		if c.button == pressed and did_motion(f.dirs, c.motion):
+			return c.move
+	return pressed
+
 func make_fighter(id: String, player: int, skills: Array, palette: int = 0, boss: bool = false) -> Dictionary:
 	var hp := data.max_hp(id, skills)
 	if boss:
@@ -95,7 +157,8 @@ func make_fighter(id: String, player: int, skills: Array, palette: int = 0, boss
 		"combo": 0, "combo_damage": 0, "combo_frames": 0, "dribbles": 0,
 		"juggle": 1.0, "breaker_cd": 0, "immunity": 0, "invuln": 0,
 		"stunlock": 0, "wall_bounced": false, "hard_down": false,
-		"parry_frames": 0, "armor": 0, "flash": 0, "ai_wait": 0, "boss": boss,"attack_serial":0,"blocks":0,"parries":0}
+		"parry_frames": 0, "armor": 0, "flash": 0, "ai_wait": 0, "boss": boss,"attack_serial":0,"blocks":0,"parries":0,
+		"dirs": []}
 
 func start(id1: String, id2: String, stage: String, game_mode: String, skills1: Array = [], skills2: Array = [], index: int = 1, palette1: int = 0, palette2: int = 0) -> void:
 	mode = game_mode
@@ -259,6 +322,8 @@ func ai_input(force: bool = false) -> Dictionary:
 		result.attack="ultimate"
 	elif p2.id=="volt" and distance>2.6:
 		result.attack="heavy" if rng.randf()<0.25 else "light"
+	elif p2.id == "tophia" and distance > 3.0 and distance < 5.5 and p2.meter >= 15 and rng.randf() < 0.35:
+		result.attack = "rock_spike"
 	elif distance > 4.0:
 		if arcade_index >= 3:
 			result.dash = true
@@ -277,6 +342,8 @@ func ai_input(force: bool = false) -> Dictionary:
 
 func step(input1: Dictionary, input2: Dictionary) -> void:
 	events.clear()
+	if slow > 0:
+		slow -= 1
 	if banner_frames > 0:
 		banner_frames -= 1
 	if winner != 0:
@@ -291,12 +358,21 @@ func step(input1: Dictionary, input2: Dictionary) -> void:
 		if countdown == 0:
 			announce("LUTE!", 45)
 		return
-	if freeze > 0:
-		freeze -= 1
+	# The hit flash counts real frames, so it shows at the start of the freeze and then the hurt
+	# pose reads (a long white flash hid the pose for the whole hitstop).
+	for f: Dictionary in [p1, p2]:
+		if freeze > 0 and int(f.flash) > 0:
+			f.flash = int(f.flash) - 1
+	if freeze > 0 or (slow > 0 and slow % 2 == 1):
+		freeze = maxi(0, freeze - 1)
 		for pair: Array in [[p1, input1], [p2, input2]]:
+			var fz: Dictionary = pair[0]
+			fz.dirs.append(numpad(pair[1], float(fz.facing)))   # motions made during the freeze count
+			if fz.dirs.size() > MOTION_HISTORY:
+				fz.dirs.pop_front()
 			if pair[1].attack != "":
-				pair[0].buffer = pair[1].attack
-				pair[0].buffer_frames = 10
+				fz.buffer = command_attack(fz, pair[1].attack)
+				fz.buffer_frames = 10
 		return
 	if mode != "training":
 		remaining = maxf(0.0, remaining - DT)
@@ -347,8 +423,11 @@ func update_fighter(f: Dictionary, opponent: Dictionary, inp: Dictionary) -> voi
 		f.dribbles = 0
 	if f.buffer_frames == 0:
 		f.buffer = ""
+	f.dirs.append(numpad(inp, float(f.facing)))
+	if f.dirs.size() > MOTION_HISTORY:
+		f.dirs.pop_front()
 	if inp.attack != "":
-		f.buffer = inp.attack
+		f.buffer = command_attack(f, inp.attack)
 		f.buffer_frames = 10
 	if inp.breaker and f.action in ["hitstun", "blockstun", "knockdown"] and f.breaker_cd == 0:
 		f.action = "idle"
@@ -496,7 +575,7 @@ func resolve_hit(a: Dictionary, d: Dictionary, inp: Dictionary, move_override: D
 	if d.immunity > 0 or (d.armor > 0 and move.type != "ultimate"):
 		d.hp = maxf(1, d.hp - float(move.damage) * 0.4)
 		d.armor = maxi(0, d.armor - 1)
-		d.flash = 7
+		d.flash = 3
 		a.vx = -direction * 3.5
 		announce("ARMOR!")
 		emit("block", d, Color.ORANGE)
@@ -505,7 +584,7 @@ func resolve_hit(a: Dictionary, d: Dictionary, inp: Dictionary, move_override: D
 	var damage := roundi(float(move.damage) * maxf(0.45, 1.0 - a.combo * 0.08) * (1.2 if counter else 1.0))
 	d.hp = maxf(0, d.hp - damage)
 	d.stunlock += 1
-	d.flash = 8
+	d.flash = 3
 	a.combo += 1
 	a.combo_damage += damage
 	a.combo_frames = 75
@@ -537,6 +616,10 @@ func resolve_hit(a: Dictionary, d: Dictionary, inp: Dictionary, move_override: D
 	elif counter:
 		announce("COUNTER HIT!", 45)
 	freeze = int(move.hitstopFrames) if move.has("hitstopFrames") else maxi(1, roundi(float(move.hitstopMs) * 0.06))
+	if counter:
+		# Counter hit (Guilty Gear Strive): a longer freeze and a moment of slow motion.
+		freeze += 4
+		slow = maxi(slow, 24)
 	emit("heavy" if move.type in ["heavy", "ultimate"] else "hit", d, Color(data.fighter(a.id).primaryColor))
 	events[-1].fighter = a.id
 	# Which move landed, so presentation can pick a per-move sound.
@@ -601,6 +684,7 @@ func check_round() -> void:
 	else:
 		announce("ROUND %d — %s VENCE" % [round_number, String(data.fighter(p1.id if result == 1 else p2.id).name).split(" ")[0]], 100)
 		round_wait = 100
+	slow = 50
 	emit("ko", p2 if result == 1 else p1, Color.GOLD)
 
 func next_round() -> void:

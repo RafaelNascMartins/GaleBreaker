@@ -31,6 +31,74 @@ func attack_input(kind: String, crouch: bool = false) -> Dictionary:
 	inp.crouch = crouch
 	return inp
 
+## One frame of a direction in numpad notation (relative to P1 facing right) plus a button.
+func dir_input(d: int, button: String = "") -> Dictionary:
+	var inp := GaleCombat.idle_input()
+	inp.axis = float(((d - 1) % 3) - 1)
+	inp.crouch = d in [1, 2, 3]
+	inp.attack = button
+	return inp
+
+func command_sim() -> GaleCombat:
+	var sim := GaleCombat.new(database)
+	sim.start("tophia", "kaze", "zephyr_dojo", "versus")
+	sim.countdown = 0
+	sim.p1.meter = 100.0
+	sim.p1.x = -3.5
+	sim.p2.x = 3.0
+	return sim
+
+func play_motion(sim: GaleCombat, dirs: Array, button: String, frames_each: int = 2) -> void:
+	for i in dirs.size():
+		for k in frames_each:
+			var last: bool = i == dirs.size() - 1 and k == frames_each - 1
+			sim.step(dir_input(int(dirs[i]), button if last else ""), GaleCombat.idle_input())
+
+func command_input_checks() -> void:
+	var sim := command_sim()
+	play_motion(sim, [4, 1, 2, 3, 6], "elemental")
+	check(String(sim.p1.move.get("type", "")) == "rock_spike", "half circle forward + elemental throws X12's rock spike")
+	sim = command_sim()
+	play_motion(sim, [4, 2, 6], "elemental", 3)
+	check(String(sim.p1.move.get("type", "")) == "rock_spike", "the short half circle (4-2-6) also counts")
+	sim = command_sim()
+	play_motion(sim, [5], "elemental")
+	check(String(sim.p1.move.get("type", "")) == "elemental", "elemental alone stays the straight stone jab")
+	sim = command_sim()
+	play_motion(sim, [4, 4, 5, 6, 6], "elemental", 3)
+	check(String(sim.p1.move.get("type", "")) == "elemental", "walking back then forward does not throw the rock")
+	sim = command_sim()
+	play_motion(sim, [2, 3, 6], "elemental", 3)
+	check(String(sim.p1.move.get("type", "")) == "elemental", "a quarter circle (2-3-6) is not the half circle")
+	sim = command_sim()
+	play_motion(sim, [4, 1, 2, 3, 6], "")
+	for i in 20:
+		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+	sim.step(dir_input(5, "elemental"), GaleCombat.idle_input())
+	check(String(sim.p1.move.get("type", "")) == "elemental", "an old motion expires (no rock long after it)")
+	var kaze := GaleCombat.new(database)
+	kaze.start("kaze", "tophia", "zephyr_dojo", "versus")
+	kaze.countdown = 0
+	play_motion(kaze, [4, 1, 2, 3, 6], "elemental")
+	check(String(kaze.p1.move.get("type", "")) == "elemental", "fighters without the command keep their elemental")
+	# the stone flies, lands where it was aimed and the spike launches the opponent
+	sim = command_sim()
+	sim.p2.x = sim.p1.x + 3.9
+	play_motion(sim, [4, 1, 2, 3, 6], "elemental")
+	var landed := false
+	for i in 90:
+		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+		if sim.p2.hp < sim.p2.max_hp:
+			landed = true
+			break
+	check(landed and not sim.p2.grounded, "the falling stone raises a spike that hits and launches")
+	sim = command_sim()
+	sim.p2.x = sim.p1.x + 1.0
+	play_motion(sim, [4, 1, 2, 3, 6], "elemental")
+	for i in 90:
+		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+	check(sim.p2.hp == sim.p2.max_hp, "the spike rises where the stone lands, not at point blank")
+
 func _initialize() -> void:
 	call_deferred("run")
 
@@ -49,6 +117,7 @@ func run() -> void:
 	check(database.toggle_skill("kaze", full, "kaze_def_1") == full, "skill budget cannot be exceeded")
 	check(GaleCombat.blocks(true, "low") and not GaleCombat.blocks(false, "low"), "low guard rule")
 	check(GaleCombat.blocks(false, "overhead") and not GaleCombat.blocks(true, "overhead"), "overhead guard rule")
+	command_input_checks()
 	var sim := fresh()
 	sim.step(attack_input("light"), GaleCombat.idle_input())
 	advance(sim, 12)
@@ -181,6 +250,23 @@ func run() -> void:
 		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
 		froze = maxi(froze, sim.freeze)
 	check(froze >= 3, "Babuin J1 holds a visible hitstop on connect")
+	# Counter hit: the same J1 landing while the opponent is starting an attack freezes longer
+	# and adds a moment of slow motion.
+	sim = fresh()
+	sim.attack(sim.p1, "light", false)
+	var counter_freeze := 0
+	var counter_slow := 0
+	for i in 30:
+		if sim.freeze == 0:
+			if sim.p2.action != "startup":
+				sim.p2.action = "idle"
+				sim.attack(sim.p2, "light", false)   # (his heavy has armour)
+			sim.p2.frames = 30
+		sim.step(GaleCombat.idle_input(), GaleCombat.idle_input())
+		counter_freeze = maxi(counter_freeze, sim.freeze)
+		counter_slow = maxi(counter_slow, sim.slow)
+	check(counter_freeze >= froze + 3 and counter_slow > 0, "a counter hit freezes longer than a normal hit and slows the action")
+	check(int(sim.p2.flash) <= 3, "the hit flash is short, so the hurt pose reads during the freeze")
 	sim = fresh()
 	var kick_steps: Array = []
 	for press in 3:

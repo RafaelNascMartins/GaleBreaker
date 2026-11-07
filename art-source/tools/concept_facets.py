@@ -80,6 +80,59 @@ def facets(src, mpp=MPP, top_z=TOP_Z, edge=None, sr=7, fade=0.6, dark_l=85, min_
     return len(polys)
 
 
+def facets_detail(src, mpp=MPP, top_z=TOP_Z, scale=3, tiles=(2, 3), edge=None, sr=7, dark_l=85,
+                  min_area=MIN_AREA, fade=0.6):
+    """Finer tracing: the crop is enlarged `scale` times (cubic) and segmented whole, so small
+    facets (knuckles, cuff rivet plates, hair locks) survive the minimum area and the polygon
+    tolerance keeps more corners. Segmenting the whole enlarged image avoids seams; it is then
+    cut into tiles (cols x rows) only to review and count the facets piece by piece at full size.
+    Writes <crop>_facetas.json/png like facets() plus <crop>_facetas_t<r><c>.png tiles."""
+    src = Path(src)
+    bgr0 = cv2.imread(str(src))
+    h0, w0 = bgr0.shape[:2]
+    bgr = cv2.resize(bgr0, (w0 * scale, h0 * scale), interpolation=cv2.INTER_CUBIC)
+    markers, flat = segment(bgr, edge, sr, dark_l, min_area * scale)
+    h, w = markers.shape
+    cols, rows = tiles
+    th, tw = h / rows, w / cols
+    polys = []
+    for k in np.unique(markers):
+        if k <= 1:
+            continue
+        mask = (markers == k).astype(np.uint8)
+        mask = cv2.dilate(mask, np.ones((3, 3), np.uint8))
+        cs, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        c = max(cs, key=cv2.contourArea)
+        if cv2.contourArea(c) < min_area * scale:
+            continue
+        p = cv2.approxPolyDP(c, EPS * scale * 0.8, True)[:, 0, :] / scale
+        m = cv2.moments(c)
+        cx, cy = m['m10'] / max(m['m00'], 1), m['m01'] / max(m['m00'], 1)
+        colour = cv2.mean(bgr, mask)[:3][::-1]
+        polys.append({'colour': [round(v) for v in colour], 'area_px': round(cv2.contourArea(c) / scale ** 2, 1),
+                      'tile': [int(cy // th), int(cx // tw)], 'px': np.round(p, 2).tolist(),
+                      'm': [[round((x - w0 / 2) * mpp, 4), round(top_z - y * mpp, 4)] for x, y in p]})
+    faded = (bgr * (1 - fade) + 255 * fade).astype(np.uint8)
+    lines = faded.copy()
+    for q in polys:
+        pts = (np.array(q['px']) * scale).astype(np.int32)
+        cv2.polylines(lines, [pts], True, (190, 0, 210), 1, cv2.LINE_AA)
+        for x, y in pts:
+            cv2.circle(lines, (int(x), int(y)), 2, (255, 90, 0), -1)
+    counts = {}
+    for r in range(rows):
+        for c in range(cols):
+            y0, y1, x0, x1 = int(r * th), int((r + 1) * th), int(c * tw), int((c + 1) * tw)
+            n = sum(1 for q in polys if q['tile'] == [r, c])
+            counts[f'{r}{c}'] = n
+            tile = lines[y0:y1, x0:x1].copy()
+            cv2.putText(tile, f'{r}{c}: {n} facetas', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (20, 20, 20), 2, cv2.LINE_AA)
+            cv2.imwrite(str(src.with_name(f'{src.stem}_facetas_t{r}{c}.png')), tile)
+    cv2.imwrite(str(src.with_name(src.stem + '_facetas.png')), cv2.resize(lines, (w0 * 2, h0 * 2), interpolation=cv2.INTER_AREA))
+    src.with_name(src.stem + '_facetas.json').write_text(json.dumps(polys))
+    return len(polys), counts
+
+
 if __name__ == '__main__':
     # python concept_facets.py                       -> the Babuin body views
     # python concept_facets.py <crop.png> ... --mpp M --top Z   -> any other crops
@@ -94,7 +147,15 @@ if __name__ == '__main__':
     ap.add_argument('--dark', type=int, default=85, help='L below which a pixel is outline')
     ap.add_argument('--min-area', type=int, default=MIN_AREA, help='px; smaller facets are dropped')
     ap.add_argument('--fade', type=float, default=0.6, help='how much the drawing is whitened in the overlay')
+    ap.add_argument('--detail', type=int, default=0, help='enlarge N times and write review tiles (facets_detail)')
+    ap.add_argument('--tiles', type=int, nargs=2, default=(2, 3), help='review tiles: cols rows')
     a = ap.parse_args()
+    if a.detail:
+        for crop in a.crops:
+            h = cv2.imread(crop).shape[0]
+            print(crop, facets_detail(crop, a.mpp, a.top if a.top is not None else h * a.mpp, a.detail, tuple(a.tiles),
+                                      a.edge, a.sr, a.dark, a.min_area, a.fade))
+        raise SystemExit
     if not a.crops:
         for view in ('frente', 'perfil', 'costas'):
             print(view, facets(SRC / f'babuin_{view}.png'), 'facets')

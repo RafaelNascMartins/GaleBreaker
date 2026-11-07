@@ -103,66 +103,86 @@ GUARD_LOW = {**CROUCH, 'shrug': {'l': (14, 14), 'r': (14, 14)},
 
 # ---- Soco de Roça (anim_timing ignis light: wind 8, contact 11, hold 14, follow 17, end 30;
 # J3 wind 13, contact 17, hold 21, follow 25, end 40) ----
+def held(pose, settle=.01):
+    """The hold key after a contact: the same pose without the scale pop, settled a hair lower."""
+    out = {k: v for k, v in pose.items() if k != 'scale'}
+    if 'hips' in out:
+        out['hips'] = (out['hips'][0], out['hips'][1] + settle)
+    return out
+
+
+# Contact poses (attack-poses skill): the whole body goes into the blow - the lead foot steps
+# in, the rear leg straightens behind on the line of the torso, the shoulders turn side-on with
+# the striking one forward, the other arm pulls back (opposition), the head tucks in.
+J1_HIT = {'hips': (.36, .20), 'turn': {'hips': (14, 0, 34), 'spine': (14, 0, 12), 'chest': (34, 0, 30), 'head': (-38, 0, -26)},
+          'feet': {'l': ankle(L0, .46), 'r': ankle(R0, -.04, .06)}, 'shrug': {'r': (4, 24), 'l': (10, -10)},
+          'hands': {'r': (-.06, -1.22, 1.12), 'l': (.40, .16, 1.10)}, 'elbow': {'r': (-1, -.2, .5), 'l': (1, .6, -.2)},
+          'aim': {'r': (1, -.3, -.4)},
+          'scale': {'forearm_r': (1.2, 1.2, 1.2), 'hand_r': (1.35, 1.35, 1.35)}}
+J2_HIT = {'hips': (.30, .16), 'turn': {'hips': (8, 0, -36), 'spine': (6, 0, -16), 'chest': (16, 0, -46), 'head': (-28, 0, 34)},
+          'feet': {'l': ankle(L0, .38), 'r': ankle(R0, -.10, .05)}, 'shrug': {'l': (6, 24), 'r': (8, -14)},
+          'hands': {'l': (-.20, -1.18, 1.56), 'r': (-.52, .34, 1.24)}, 'elbow': {'l': (.2, 0, -1), 'r': (-1, .6, -.3)},
+          'aim': {'l': (-1, -.6, 0)},
+          'scale': {'upper_arm_l': (1.2, 1.1, 1.2), 'forearm_l': (1.15, 1.15, 1.15), 'hand_l': (1.3, 1.3, 1.3)}}
+J3_HIT = {'hips': (.32, .24), 'turn': {'hips': (14, 0, 0), 'spine': (14, 0, 0), 'chest': (28, 0, 0), 'head': (-30, 0, 0)},
+          'feet': {'l': ankle(L0, .42), 'r': ankle(R0, -.12, .07)}, 'shrug': {'l': (0, 22), 'r': (0, 22)},
+          'hands': {'l': (.06, -1.20, 1.02), 'r': (-.06, -1.20, 1.00)}, 'aim': {'l': (0, -.6, -.8), 'r': (0, -.6, -.8)},
+          'elbow': {'l': (1, .2, -.2), 'r': (-1, .2, -.2)},
+          'scale': {'hand_l': (1.35, 1.35, 1.35), 'hand_r': (1.35, 1.35, 1.35), 'forearm_l': (1.1, 1.2, 1.1), 'forearm_r': (1.1, 1.2, 1.1)}}
+
+# ---- Soco de Roça (anim_timing ignis light: wind 8, contact 11, hold 14, follow 17, end 30;
+# J3 wind 13, contact 17, hold 21, follow 25, end 40) ----
 LIGHT = {
-    # J1: forearm club. The right arm swings up and back over the shoulder, then the whole
-    # body drops behind it and the forearm clubs down across the front; held on impact.
+    # J1: overhand forearm club. Winds the right arm up and back with the weight on the rear
+    # foot, then lunges in: the lead foot steps far forward, the rear leg straightens behind and
+    # the whole body drops behind the forearm clubbing down; the left fist pulls back to the hip.
     'light_1': [
         (0, {}),
-        (5, {'hips': (-.05, -.01), 'turn': {'hips': (4, 0, -12), 'spine': (2, 0, 0), 'chest': (-2, 0, -24), 'head': (-10, 0, 16)},
-             'shrug': {'r': (24, -12)}, 'feet': {'l': ankle(L0, .02, .05)},
-             'hands': {'r': (-.34, .06, 1.84)}, 'elbow': {'r': (-.6, .4, 1)}, 'aim': {'r': (0, .3, 1)}}),
-        (11, {'hips': (.15, .14), 'turn': {'hips': (12, 0, 18), 'spine': (10, 0, 8), 'chest': (26, 0, 20), 'head': (-30, 0, -14)},
-              'feet': {'l': ankle(L0, .16)}, 'shrug': {'r': (6, 18)},
-              'hands': {'r': (-.02, -.86, 1.18)}, 'elbow': {'r': (-1, -.2, .5)}, 'aim': {'r': (1, -.3, -.3)},
-              'scale': {'forearm_r': (1.2, 1.15, 1.2), 'hand_r': (1.25, 1.25, 1.25)}}),
-        (14, {'hips': (.14, .14), 'turn': {'hips': (11, 0, 16), 'spine': (9, 0, 7), 'chest': (24, 0, 18), 'head': (-28, 0, -12)},
-              'feet': {'l': ankle(L0, .16)}, 'shrug': {'r': (5, 15)},
-              'hands': {'r': (-.02, -.84, 1.16)}, 'elbow': {'r': (-1, -.2, .5)}, 'aim': {'r': (1, -.3, -.3)}}),
-        (17, {'hips': (.10, .10), 'turn': {'chest': (18, 0, 10), 'head': (-24, 0, -6)},
-              'feet': {'l': ankle(L0, .10)}, 'hands': {'r': (-.12, -.66, 1.14)}}),
-        (24, {'hips': (.04, .04), 'feet': {'l': ankle(L0, .03)}}),
+        (5, {'hips': (-.10, .04), 'turn': {'hips': (2, 0, -18), 'spine': (-2, 0, -6), 'chest': (-8, 0, -30), 'head': (-12, 0, 20)},
+             'shrug': {'r': (26, -14)}, 'feet': {'l': ankle(L0, .04, .06)},
+             'hands': {'r': (-.36, .14, 1.90), 'l': (.44, -.50, 1.14)}, 'elbow': {'r': (-.6, .4, 1)}, 'aim': {'r': (0, .3, 1)}}),
+        (11, J1_HIT),
+        (14, held(J1_HIT)),
+        (17, {'hips': (.30, .18), 'turn': {'hips': (12, 0, 26), 'chest': (28, 0, 22), 'head': (-32, 0, -18)},
+              'feet': {'l': ankle(L0, .46), 'r': ankle(R0, -.04, .03)},
+              'hands': {'r': (-.10, -1.00, 1.02), 'l': (.40, .06, 1.10)}}),
+        (24, {'hips': (.16, .10), 'feet': {'l': ankle(L0, .20)}}),
         (30, {}),
     ],
-    # J2: short lariat. From the end of J1 the left arm swings out wide and back, then the body
-    # turns over and the straight arm sweeps across at neck height, the right arm left open.
+    # J2: lariat. From the J1 lunge the left arm swings out wide and back, then the hips and
+    # shoulders whip round, the straight arm sweeps across at neck height and the right arm is
+    # flung back for the counterweight.
     'light_2': [
         (0, {'from': ('light_1', 17)}),
-        (5, {'hips': (.05, .07), 'turn': {'hips': (6, 0, 20), 'chest': (8, 0, 32), 'head': (-18, 0, -20)},
-             'shrug': {'l': (14, -18)}, 'hands': {'l': (.66, .10, 1.44)}, 'elbow': {'l': (.2, .5, -1)}}),
-        (11, {'hips': (.15, .12), 'turn': {'hips': (10, 0, -22), 'spine': (8, 0, -10), 'chest': (18, 0, -32), 'head': (-24, 0, 18)},
-              'shrug': {'l': (8, 16), 'r': (0, -8)},
-              'hands': {'l': (-.10, -1.02, 1.52), 'r': (-.42, -.18, 1.12)}, 'elbow': {'l': (.2, 0, -1)}, 'aim': {'l': (-1, -.6, 0)},
-              'scale': {'upper_arm_l': (1.15, 1.1, 1.15), 'hand_l': (1.25, 1.25, 1.25)}}),
-        (14, {'hips': (.14, .12), 'turn': {'hips': (9, 0, -20), 'chest': (16, 0, -29), 'head': (-22, 0, 16)},
-              'shrug': {'l': (6, 13)},
-              'hands': {'l': (-.08, -1.00, 1.51), 'r': (-.42, -.18, 1.12)}, 'elbow': {'l': (.2, 0, -1)}, 'aim': {'l': (-1, -.6, 0)}}),
-        (17, {'hips': (.08, .08), 'turn': {'chest': (14, 0, -14)}, 'hands': {'l': (.12, -.80, 1.40)}}),
-        (24, {'hips': (.03, .03)}),
+        (5, {'hips': (.18, .12), 'turn': {'hips': (6, 0, 28), 'chest': (8, 0, 42), 'head': (-20, 0, -26)},
+             'feet': {'l': ankle(L0, .30)}, 'shrug': {'l': (16, -20)},
+             'hands': {'l': (.74, .20, 1.46), 'r': (-.30, -.70, 1.16)}, 'elbow': {'l': (.2, .5, -1)}}),
+        (11, J2_HIT),
+        (14, held(J2_HIT)),
+        (17, {'hips': (.24, .14), 'turn': {'hips': (6, 0, -24), 'chest': (14, 0, -30), 'head': (-24, 0, 20)},
+              'feet': {'l': ankle(L0, .34)}, 'hands': {'l': (.04, -.96, 1.44), 'r': (-.50, .20, 1.20)}}),
+        (24, {'hips': (.10, .06), 'feet': {'l': ankle(L0, .14)}}),
         (30, {}),
     ],
-    # J3: two-fist hammer. Joins the fists and raises them high over the hat, rising on the toes
-    # of the stance, then drives everything down into a deep squat, fists smashing low in front.
+    # J3: two-fist hammer. Joins the fists high over the hat, rising tall on straight legs and
+    # arching back, then drops into a deep lunge - lead foot far forward, rear leg long behind -
+    # and smashes the fists down low in front.
     'light_3': [
         (0, {'from': ('light_2', 17)}),
-        (10, {'hips': (-.04, -.02), 'turn': {'spine': (-6, 0, 0), 'chest': (-14, 0, 0), 'head': (8, 0, 0)},
-              'shrug': {'l': (24, -6), 'r': (24, -6)},
-              'hands': {'l': (.05, -.12, 2.12), 'r': (-.05, -.12, 2.10)}, 'aim': {'l': (0, .3, 1), 'r': (0, .3, 1)},
+        (10, {'hips': (-.06, -.06), 'turn': {'spine': (-10, 0, 0), 'chest': (-22, 0, 0), 'head': (12, 0, 0)},
+              'feet': {'l': ankle(L0, .16)}, 'shrug': {'l': (28, -8), 'r': (28, -8)},
+              'hands': {'l': (.05, .02, 2.20), 'r': (-.05, .02, 2.18)}, 'aim': {'l': (0, .5, .9), 'r': (0, .5, .9)},
               'elbow': {'l': (1, .2, .2), 'r': (-1, .2, .2)}}),
-        (13, {'hips': (-.06, -.04), 'turn': {'spine': (-8, 0, 0), 'chest': (-18, 0, 0), 'head': (10, 0, 0)},
-              'shrug': {'l': (28, -10), 'r': (28, -10)},
-              'hands': {'l': (.05, -.02, 2.18), 'r': (-.05, -.02, 2.16)}, 'aim': {'l': (0, .6, .8), 'r': (0, .6, .8)},
+        (13, {'hips': (-.08, -.08), 'turn': {'spine': (-12, 0, 0), 'chest': (-26, 0, 0), 'head': (14, 0, 0)},
+              'feet': {'l': ankle(L0, .16)}, 'shrug': {'l': (30, -12), 'r': (30, -12)},
+              'hands': {'l': (.05, .12, 2.24), 'r': (-.05, .12, 2.22)}, 'aim': {'l': (0, .7, .7), 'r': (0, .7, .7)},
               'elbow': {'l': (1, .3, .3), 'r': (-1, .3, .3)}}),
-        (17, {'hips': (.16, .36), 'turn': {'hips': (14, 0, 0), 'spine': (14, 0, 0), 'chest': (26, 0, 0), 'head': (-24, 0, 0)},
-              'feet': {'l': ankle(L0, .14)}, 'shrug': {'l': (2, 16), 'r': (2, 16)},
-              'hands': {'l': (.05, -.88, .78), 'r': (-.05, -.88, .76)}, 'aim': {'l': (0, -.3, -1), 'r': (0, -.3, -1)},
-              'scale': {'hand_l': (1.3, 1.3, 1.3), 'hand_r': (1.3, 1.3, 1.3)}}),
-        (21, {'hips': (.15, .38), 'turn': {'hips': (14, 0, 0), 'spine': (12, 0, 0), 'chest': (24, 0, 0), 'head': (-22, 0, 0)},
-              'feet': {'l': ankle(L0, .14)}, 'shrug': {'l': (2, 14), 'r': (2, 14)},
-              'hands': {'l': (.05, -.86, .74), 'r': (-.05, -.86, .72)}, 'aim': {'l': (0, -.3, -1), 'r': (0, -.3, -1)}}),
-        (25, {'hips': (.12, .30), 'turn': {'hips': (10, 0, 0), 'chest': (18, 0, 0), 'head': (-16, 0, 0)},
-              'feet': {'l': ankle(L0, .12)},
-              'hands': {'l': (.08, -.70, .90), 'r': (-.06, -.66, .88)}}),
-        (33, {'hips': (.05, .12), 'turn': {'chest': (6, 0, 0)}, 'feet': {'l': ankle(L0, .04)}}),
+        (17, J3_HIT),
+        (21, held(J3_HIT, .02)),
+        (25, {'hips': (.26, .38), 'turn': {'hips': (12, 0, 0), 'chest': (24, 0, 0), 'head': (-20, 0, 0)},
+              'feet': {'l': ankle(L0, .40), 'r': ankle(R0, -.10, .04)},
+              'hands': {'l': (.10, -.90, .70), 'r': (-.08, -.88, .68)}}),
+        (33, {'hips': (.10, .14), 'turn': {'chest': (8, 0, 0)}, 'feet': {'l': ankle(L0, .16)}}),
         (40, {}),
     ],
 }
@@ -170,6 +190,20 @@ LIGHT = {
 # ---- Specials. Same logic as the light chain: one short wind-up key, a hard cut to the contact
 # pose, held through the hit. Timings (anim_timing ignis): heavy contact 21 / follow 30 / end 48,
 # elemental contact 19 / follow 28 / end 44, ultimate contact 28 / follow 40 / end 58. ----
+# K1 Botada contact: the boot drives flat at chest height on a straight leg, sole first; the
+# support leg straightens and its foot pivots out, the torso leans far back as the counterweight
+# and both arms fly open.
+K1_HIT = {'hips': (-.10, -.04), 'turn': {'hips': (-26, 0, 0), 'spine': (-12, 0, 0), 'chest': (-16, 0, 6), 'head': (18, 0, -4)},
+          'feet': {'l': (.16, -1.12, 1.22), 'r': ankle(R0, .04)}, 'knee': {'l': (.2, -1, .2)}, 'sole': {'l': ((0, -1, 0), (0, 0, 1))},
+          'pivot': {'r': 35}, 'shrug': {'l': (18, -8), 'r': (18, -8)},
+          'hands': {'l': (.74, -.06, 1.52), 'r': (-.70, .22, 1.40)}, 'elbow': {'l': (.3, .4, -1), 'r': (-.3, .4, -1)},
+          'scale': {'foot_l': (1.4, 1.4, 1.4), 'shin_l': (1.1, 1.1, 1.1)}}
+# K2 Marreta contact: steps into a deep lunge and hammers the ground far in front.
+K2_HIT = {'hips': (.40, .40), 'turn': {'hips': (34, 0, 0), 'spine': (22, 0, 0), 'chest': (34, 0, 0), 'head': (-44, 0, 0)},
+          'shrug': {'l': (0, 24), 'r': (0, 24)},
+          'feet': {'l': ankle(L0, .46), 'r': (R0[0], R0[1] + .10, .62)}, 'knee': {'r': (-.2, 1, .3)},
+          'hands': {'l': (.06, -1.26, .26), 'r': (-.06, -1.26, .24)}, 'aim': {'l': (0, -.2, -1), 'r': (0, -.2, -1)},
+          'scale': {'hand_l': (1.45, 1.45, 1.45), 'hand_r': (1.45, 1.45, 1.45), 'forearm_l': (1.15, 1.15, 1.15), 'forearm_r': (1.15, 1.15, 1.15)}}
 OVERHEAD = {'l': (.06, -.10, 2.20), 'r': (-.06, -.10, 2.18)}
 SPECIALS = {
     # K1 Botada: a short hop of the rear foot in, the lead knee chambers high, then the boot drives
@@ -179,14 +213,10 @@ SPECIALS = {
         (4, {'hips': (-.04, .02), 'turn': {'hips': (-4, 0, 0), 'chest': (-6, 0, 4), 'head': (-16, 0, -2)},
              'feet': {'l': (.20, -.30, .60), 'r': ankle(R0, .04)}, 'knee': {'l': (.2, -1, .5)}, 'foot_turn': {'l': -25},
              'hands': {'l': (.42, -.30, 1.10), 'r': (-.40, -.14, 1.06)}}),
-        (9, {'hips': (-.06, -.04), 'turn': {'hips': (-14, 0, 0), 'spine': (-6, 0, 0), 'chest': (-10, 0, 4), 'head': (-12, 0, 0)},
-             'feet': {'l': (.18, -.88, .66), 'r': ankle(R0, .06)}, 'knee': {'l': (.2, -1, .4)}, 'sole': {'l': ((0, -1, 0), (0, 0, 1))},
-             'hands': {'l': (.46, -.18, 1.14), 'r': (-.44, -.02, 1.10)},
-             'scale': {'foot_l': (1.35, 1.35, 1.35), 'shin_l': (1.1, 1.05, 1.1)}}),
-        (12, {'hips': (-.06, -.04), 'turn': {'hips': (-14, 0, 0), 'spine': (-6, 0, 0), 'chest': (-10, 0, 4), 'head': (-12, 0, 0)},
-              'feet': {'l': (.18, -.86, .66), 'r': ankle(R0, .06)}, 'knee': {'l': (.2, -1, .4)}, 'sole': {'l': ((0, -1, 0), (0, 0, 1))},
-              'hands': {'l': (.46, -.18, 1.14), 'r': (-.44, -.02, 1.10)}}),
-        (15, {'hips': (.0, .02), 'feet': {'l': (.20, -.50, .40), 'r': ankle(R0, .06)}, 'knee': {'l': (.2, -1, .5)}}),
+        (9, K1_HIT),
+        (12, held(K1_HIT)),
+        (15, {'hips': (-.02, .02), 'turn': {'hips': (-8, 0, 0), 'chest': (-6, 0, 0)}, 'feet': {'l': (.20, -.56, .44), 'r': ankle(R0, .06)},
+              'knee': {'l': (.2, -1, .5)}, 'pivot': {'r': 20}, 'hands': {'l': (.56, -.20, 1.30), 'r': (-.52, .0, 1.24)}}),
         (21, {'hips': (.02, .04), 'feet': {'l': ankle(L0, .04), 'r': ankle(R0, .04)}}),
         (26, {}),
     ],
@@ -199,19 +229,12 @@ SPECIALS = {
              'feet': {'l': ankle(L0, .04), 'r': ankle(R0, -.02)},
              'hands': OVERHEAD, 'aim': {'l': (0, .5, .8), 'r': (0, .5, .8)},
              'elbow': {'l': (1, .3, .3), 'r': (-1, .3, .3)}}),
-        (21, {'hips': (.14, 0.29), 'turn': {'hips': (18, 0, 0), 'spine': (18, 0, 0), 'chest': (30, 0, 0), 'head': (-28, 0, 0)},
-              'shrug': {'l': (0, 20), 'r': (0, 20)},
-              'feet': {'l': ankle(L0, .04), 'r': ankle(R0, -.02)},
-              'hands': {'l': (.06, -.92, .36), 'r': (-.06, -.92, .34)}, 'aim': {'l': (0, -.2, -1), 'r': (0, -.2, -1)},
-              'scale': {'hand_l': (1.35, 1.35, 1.35), 'hand_r': (1.35, 1.35, 1.35), 'forearm_l': (1.15, 1.1, 1.15), 'forearm_r': (1.15, 1.1, 1.15)}}),
-        (26, {'hips': (.14, 0.29), 'turn': {'hips': (18, 0, 0), 'spine': (18, 0, 0), 'chest': (30, 0, 0), 'head': (-28, 0, 0)},
-              'shrug': {'l': (0, 18), 'r': (0, 18)},
-              'feet': {'l': ankle(L0, .04), 'r': ankle(R0, -.02)},
-              'hands': {'l': (.06, -.92, .34), 'r': (-.06, -.92, .32)}, 'aim': {'l': (0, -.2, -1), 'r': (0, -.2, -1)}}),
-        (30, {'hips': (.12, 0.25), 'turn': {'hips': (14, 0, 0), 'spine': (14, 0, 0), 'chest': (24, 0, 0), 'head': (-22, 0, 0)},
-              'feet': {'l': ankle(L0, .04), 'r': ankle(R0, -.02)},
+        (21, K2_HIT),
+        (26, held(K2_HIT, .02)),
+        (30, {'hips': (.30, 0.34), 'turn': {'hips': (14, 0, 0), 'spine': (14, 0, 0), 'chest': (24, 0, 0), 'head': (-22, 0, 0)},
+              'feet': {'l': ankle(L0, .42), 'r': ankle(R0, -.14, .04)},
               'hands': {'l': (.10, -.84, .46), 'r': (-.08, -.82, .44)}}),
-        (40, {'hips': (.06, 0.18), 'turn': {'chest': (14, 0, -4)}, 'feet': {'l': ankle(L0, .02)}}),
+        (40, {'hips': (.14, 0.18), 'turn': {'chest': (14, 0, -4)}, 'feet': {'l': ankle(L0, .16)}}),
         (48, {}),
     ],
     # Pisada da Fornalha: the lead knee comes up high, fists pulled in, then the boot stamps down
@@ -236,12 +259,12 @@ SPECIALS = {
         (19, {'hips': (.10, 0.25), 'turn': {'hips': (16, 0, 0), 'spine': (10, 0, 0), 'chest': (20, 0, 0), 'head': (-24, 0, 0)},
               'shrug': {'l': (2, -6), 'r': (2, -6)},
               'feet': {'l': ankle(L0, .16)},
-              'hands': {'l': (.66, -.30, 1.04), 'r': (-.62, -.10, 1.00)}, 'elbow': {'l': (.2, .4, -1), 'r': (-.2, .4, -1)},
+              'hands': {'l': (.78, -.20, 1.96), 'r': (-.74, .02, 1.92)}, 'elbow': {'l': (1, .3, -.4), 'r': (-1, .3, -.4)}, 'aim': {'l': (.5, 0, 1), 'r': (-.5, 0, 1)},
               'scale': {'foot_l': (1.3, 1.3, 1.3), 'shin_l': (1.1, 1, 1.1)}}),
         (24, {'hips': (.10, 0.25), 'turn': {'hips': (16, 0, 0), 'spine': (10, 0, 0), 'chest': (20, 0, 0), 'head': (-24, 0, 0)},
               'shrug': {'l': (2, -6), 'r': (2, -6)},
               'feet': {'l': ankle(L0, .16)},
-              'hands': {'l': (.66, -.30, 1.02), 'r': (-.62, -.10, .98)}, 'elbow': {'l': (.2, .4, -1), 'r': (-.2, .4, -1)}}),
+              'hands': {'l': (.76, -.20, 1.92), 'r': (-.72, .02, 1.88)}, 'elbow': {'l': (1, .3, -.4), 'r': (-1, .3, -.4)}, 'aim': {'l': (.5, 0, 1), 'r': (-.5, 0, 1)}}),
         (28, {'hips': (.08, 0.21), 'turn': {'hips': (12, 0, 0), 'chest': (16, 0, 0), 'head': (-22, 0, 0)},
               'feet': {'l': ankle(L0, .14)}, 'hands': {'l': (.56, -.36, 1.04), 'r': (-.52, -.18, 1.00)}}),
         (37, {'hips': (.04, 0.12), 'feet': {'l': ankle(L0, .05)}}),
@@ -401,6 +424,19 @@ MOVES = {
 
 # ---- Crouch / air / sweep attacks (anim_timing ignis: down_punch contact 9 / end 28, air_punch
 # contact 8 / end 26, sweep contact 10 / end 30) and the presentation clips. ----
+# Down punch contact: from the crouch the lead foot slides in and the right fist drives straight
+# out at knee height, shoulders side-on, the left fist pulled back - low and long, not a hammer.
+DP_HIT = {**CROUCH, 'hips': (.30, .46), 'turn': {'hips': (16, 0, 30), 'spine': (10, 0, 10), 'chest': (24, 0, 30), 'head': (-26, 0, -24)},
+          'shrug': {'r': (2, 24), 'l': (10, -10)}, 'feet': {'l': ankle(L0, .34), 'r': ankle(R0, -.08, .05)},
+          'hands': {'r': (-.04, -1.16, .62), 'l': (.40, .12, .96)}, 'elbow': {'r': (-1, -.2, .3), 'l': (1, .6, -.2)},
+          'aim': {'r': (0, -1, -.1)}, 'scale': {'forearm_r': (1.1, 1.25, 1.1), 'hand_r': (1.35, 1.35, 1.35)}}
+# Air punch contact: the body tips forward into a diagonal dive, legs trailing back, both fists
+# driving down-forward ahead of the hat.
+AP_HIT = {**D_TUCK, 'turn': {'hips': (24, 0, 0), 'spine': (14, 0, 0), 'chest': (30, 0, 0), 'head': (-30, 0, 0)},
+          'feet': {'l': (.20, .26, .52), 'r': (-.20, .44, .66)}, 'knee': {'l': (.3, -1, -.2), 'r': (-.3, -1, -.2)},
+          'shrug': {'l': (2, 20), 'r': (2, 20)},
+          'hands': {'l': (.08, -1.06, .86), 'r': (-.08, -1.06, .84)}, 'aim': {'l': (0, -.6, -1), 'r': (0, -.6, -1)},
+          'scale': {'hand_l': (1.35, 1.35, 1.35), 'hand_r': (1.35, 1.35, 1.35)}}
 OTHER = {
     # Down punch: from the crouch the right fist cocks up by the ear, then the forearm clubs
     # down low in front at shin height, the shoulders dropping over it.
@@ -409,13 +445,8 @@ OTHER = {
         (6, {**CROUCH, 'hips': (.0, .36), 'turn': {'hips': (12, 0, -8), 'chest': (8, 0, -18), 'head': (-16, 0, 12)},
              'shrug': {'r': (20, -10)}, 'hands': {'l': (.20, -.50, 1.06), 'r': (-.30, .0, 1.40)},
              'elbow': {'r': (-.6, .4, 1)}, 'aim': {'r': (0, .3, 1)}}),
-        (9, {**CROUCH, 'hips': (.12, .40), 'turn': {'hips': (16, 0, 12), 'spine': (10, 0, 6), 'chest': (26, 0, 18), 'head': (-28, 0, -10)},
-             'shrug': {'r': (4, 18)}, 'feet': {'l': ankle(L0, .12), 'r': ankle(R0, -.04)},
-             'hands': {'l': (.22, -.46, 1.00), 'r': (-.04, -.84, .62)}, 'elbow': {'r': (-1, -.2, .5)}, 'aim': {'r': (1, -.3, -.6)},
-             'scale': {'forearm_r': (1.2, 1.15, 1.2), 'hand_r': (1.3, 1.3, 1.3)}}),
-        (13, {**CROUCH, 'hips': (.12, .40), 'turn': {'hips': (15, 0, 11), 'spine': (9, 0, 5), 'chest': (24, 0, 16), 'head': (-26, 0, -9)},
-              'shrug': {'r': (4, 16)}, 'feet': {'l': ankle(L0, .12), 'r': ankle(R0, -.04)},
-              'hands': {'l': (.22, -.46, 1.00), 'r': (-.04, -.82, .60)}, 'elbow': {'r': (-1, -.2, .5)}, 'aim': {'r': (1, -.3, -.6)}}),
+        (9, DP_HIT),
+        (13, held(DP_HIT)),
         (16, {**CROUCH, 'hips': (.08, .36), 'feet': {'l': ankle(L0, .08)}, 'hands': {'l': (.20, -.48, 1.06), 'r': (-.10, -.66, .80)}}),
         (22, CROUCH),
         (28, CROUCH),
@@ -427,13 +458,8 @@ OTHER = {
              'shrug': {'l': (24, -6), 'r': (24, -6)},
              'hands': {'l': (.06, -.14, 2.10), 'r': (-.06, -.14, 2.08)}, 'aim': {'l': (0, .4, .9), 'r': (0, .4, .9)},
              'elbow': {'l': (1, .2, .2), 'r': (-1, .2, .2)}}),
-        (8, {**D_TUCK, 'turn': {'hips': (12, 0, 0), 'spine': (12, 0, 0), 'chest': (28, 0, 0), 'head': (-26, 0, 0)},
-             'shrug': {'l': (2, 18), 'r': (2, 18)},
-             'hands': {'l': (.06, -.86, .92), 'r': (-.06, -.86, .90)}, 'aim': {'l': (0, -.5, -1), 'r': (0, -.5, -1)},
-             'scale': {'hand_l': (1.3, 1.3, 1.3), 'hand_r': (1.3, 1.3, 1.3)}}),
-        (12, {**D_TUCK, 'turn': {'hips': (11, 0, 0), 'spine': (11, 0, 0), 'chest': (26, 0, 0), 'head': (-24, 0, 0)},
-              'shrug': {'l': (2, 16), 'r': (2, 16)},
-              'hands': {'l': (.06, -.84, .94), 'r': (-.06, -.84, .92)}, 'aim': {'l': (0, -.5, -1), 'r': (0, -.5, -1)}}),
+        (8, AP_HIT),
+        (12, held(AP_HIT)),
         (15, {**D_TUCK, 'hands': {'l': (.20, -.66, 1.06), 'r': (-.18, -.60, 1.04)}}),
         (26, D_TUCK),
     ],
@@ -556,4 +582,9 @@ def author(rig, clips=None, force=False):
     """Author Dale's sheets on dale_Rig (all, or the named clips, in order)."""
     for c in (clips or SHEETS):
         ensure_clip(rig, c)
-    return [la.author(rig, c, 'ignis', force).name for c in (clips or SHEETS)]
+    out = [la.author(rig, c, 'ignis', force).name for c in (clips or SHEETS)]
+    la.sync_strips(rig)
+    return out
+
+
+sync_strips = la.sync_strips

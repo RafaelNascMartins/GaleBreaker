@@ -617,6 +617,60 @@ SHEETS = {
     },
 }
 
+def _contact(clip, frames, pose, fid='kaze'):
+    """Replace the contact key (frames[0]) and its hold (frames[1]) of a sheet with one pose: the
+    hold is the same pose settled a hair lower, without the scale pop."""
+    held = {k: v for k, v in pose.items() if k != 'scale'}
+    if 'hips' in held:
+        held['hips'] = (held['hips'][0], held['hips'][1] + .01)
+    keys = dict(SHEETS[fid][clip])
+    keys[frames[0]], keys[frames[1]] = pose, held
+    SHEETS[fid][clip] = sorted(keys.items())
+
+
+# Whole-body contact poses for Babuin (attack-poses skill, docs/estudos): the lead foot steps
+# far in, the rear leg straightens on the line of the torso, the shoulders turn side-on with the
+# striking one forward, the free hand pulls back; kicks go high on a straight support leg, the
+# torso leaning away as the counterweight, the arms open. Babuin whips: long straight lines.
+_contact('light_1', (7, 10), {
+    'hips': (.30, .12), 'turn': {'hips': (10, 0, -16), 'spine': (8, 0, -12), 'chest': (20, 0, -34), 'head': (-22, 0, 26)},
+    'feet': {'l': ankle(L0, .36), 'r': ankle(R0, -.02, .05)}, 'shrug': {'l': (4, 22), 'r': (6, -10)},
+    'hands': {'l': (.02, -1.30, 1.44), 'r': (-.12, .06, 1.30)}, 'aim': {'l': FIST},
+    'scale': {'forearm_l': (1, 1.25, 1), 'hand_l': (1.25, 1.25, 1.25)}})
+_contact('light_2', (7, 10), {
+    'hips': (.36, .13), 'turn': {'hips': (10, 0, 16), 'spine': (10, 0, 14), 'chest': (24, 0, 38), 'head': (-24, 0, -28)},
+    'feet': {'l': ankle(L0, .42), 'r': ankle(R0, .02, .06)}, 'shrug': {'r': (4, 22), 'l': (4, -12)},
+    'hands': {'l': (.16, .10, 1.26), 'r': (-.02, -1.30, 1.36)}, 'aim': {'r': (0, -1, -.3)},
+    'scale': {'forearm_r': (1, 1.25, 1), 'hand_r': (1.25, 1.25, 1.25)}})
+_contact('light_3', (10, 13), {
+    'hips': (.42, .16), 'turn': {'hips': (12, 0, 14), 'spine': (10, 0, 14), 'chest': (24, 0, 40), 'head': (-22, 0, -30)},
+    'feet': {'r': (-.12, -.66, GROUND), 'l': ankle(L0, -.20, .06)}, 'shrug': {'r': (4, 24), 'l': (0, -12)},
+    'hands': {'l': (.16, .12, 1.20), 'r': (-.02, -1.40, 1.38)}, 'aim': {'r': PALM},
+    'scale': {'forearm_r': (1, 1.25, 1), 'hand_r': (1.35, 1.35, 1.35)}})
+# K1 low roundhouse: still low (it takes the thigh), but the body leans far away, the arms swing.
+_contact('heavy', (9, 12), {
+    'hips': (.16, .12), 'turn': {'hips': (-14, 0, 70), 'spine': (-8, 0, 10), 'chest': (-22, 0, 30), 'head': (14, 0, -40)},
+    'shrug': {'l': (14, 6), 'r': (-4, -14)},
+    'robe': {'robe_side_r': (-50, 0, 0), 'robe_side_l': (-30, 0, 0), 'robe_front': (-24, 0, 0)},
+    'feet': {'l': (.20, -.14, GROUND), 'r': (.26, -1.00, .70)}, 'knee': {'r': (-.6, 0, 1)},
+    'sole': {'r': SHIN}, 'pivot': {'l': 85},
+    'hands': {'l': (.30, -.20, 1.72), 'r': (-.52, .34, 1.10)}, 'scale': {'foot_r': (1.25, 1.25, 1.25)}})
+# K2 front kick: the ball of the foot at chest height on a straight leg, torso far back.
+_contact('heavy_2', (11, 14), {
+    'hips': (.10, .0), 'turn': {'hips': (-18, 0, -6), 'spine': (-10, 0, 0), 'chest': (-20, 0, -10), 'head': (22, 0, 6)},
+    'shrug': {'l': (14, -6), 'r': (14, -6)},
+    'feet': {'l': (.08, -1.06, 1.34), 'r': R_FRONT}, 'knee': {'l': (0, -1, .2)}, 'sole': {'l': SOLE_FWD},
+    'pivot': {'r': 35}, 'robe': {'robe_front': (-65, 0, 0), 'robe_side_l': (-30, 0, 0)},
+    'hands': {'l': (.46, .04, 1.52), 'r': (-.42, .16, 1.46)}, 'scale': {'foot_l': (1.3, 1.3, 1.3)}})
+# K3 spinning back kick: back to the opponent, the body tips nearly level into a T, heel high.
+_contact('heavy_3', (13, 16), {
+    'hips': (.12, .02), 'spin': -180, 'turn': {'hips': (-30, 0, 0), 'chest': (-30, 0, 0), 'head': (-24, 0, -75)},
+    'shrug': {'l': (16, 0), 'r': (16, 0)},
+    'feet': {'l': (.04, -.12, GROUND), 'r': (.02, -1.10, 1.30)}, 'knee': {'r': (0, 0, -1)},
+    'sole': {'r': HEEL_BACK}, 'pivot': {'l': -180},
+    'robe': {'robe_back': (-50, 0, 0), 'robe_side_r': (-40, 0, 0)},
+    'hands': {'l': (.08, .40, 1.20), 'r': (-.30, .30, 1.30)}, 'scale': {'foot_r': (1.35, 1.35, 1.35)}})
+
 SPINE_ORDER = ['hips', 'spine', 'chest', 'neck', 'head']
 
 # Per-fighter stance used by place(): guard foot spots, ankle height on the ground, how far every
@@ -792,7 +846,11 @@ def author(rig, clip, fid='kaze', force=False):
     use(fid)
     sheet = SHEETS[fid][clip]
     bones = [b.name for b in rig.pose.bones]
-    guard = sample(generated('light_1'), 0, bones)
+    if PROFILES[fid].get('START') == 'rest':
+        # a new body (its old clips were made for other proportions): poses start from the rest pose
+        guard = {b: (Vector((0, 0, 0)), Quaternion((1, 0, 0, 0)), Vector((1, 1, 1))) for b in bones}
+    else:
+        guard = sample(generated('light_1'), 0, bones)
     old = bpy.data.actions[clip]
     if bpy.data.actions.get(clip + '_generated'):
         old.name = clip + '_old'
@@ -835,6 +893,17 @@ def author(rig, clip, fid='kaze', force=False):
         b.location, b.rotation_quaternion, b.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
     act['authored'] = signature(act)
     return act
+
+
+def sync_strips(rig):
+    """Each NLA strip spans its whole action. A strip shorter or longer than its action (a clip
+    created empty, or keys added past the end) is exported cut or frozen."""
+    for track in rig.animation_data.nla_tracks:
+        for strip in track.strips:
+            start, end = strip.action.frame_range
+            strip.action_frame_start, strip.action_frame_end = start, end
+            strip.scale, strip.repeat = 1.0, 1.0
+            strip.frame_start, strip.frame_end = start, end
 
 
 def edit(rig, clip):

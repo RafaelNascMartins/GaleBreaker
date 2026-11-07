@@ -32,6 +32,8 @@ func spawn(f: Dictionary) -> void:
 				speed = 8.0; width = 0.85; height = 1.1; life = 46; y = 0.70
 			"fist":
 				speed = 7.0; width = 1.0; height = 1.1; life = 44
+			"stone":
+				speed = 10.0; width = 0.45; height = 0.40; life = 42; y = float(f.y) + 1.3; distance = 1.1
 			"vortex":
 				width = 1.65; height = 3.2; y = 1.6; distance = 1.9; life = 40; interval = 12
 				move.multi = true
@@ -43,11 +45,15 @@ func spawn(f: Dictionary) -> void:
 				width = 3.0; height = 0.65; y = 0.325; distance = 0.0
 			"beam":
 				width = 6.5; height = 0.50; y = 1.15; distance = width * 0.5 + 0.65; life = 12
+			"rock_spike":
+				# the spike where the tossed stone lands; it waits for the startup and the flight
+				width = 0.9; height = 2.2; y = 1.1; distance = float(move.get("rockDistance", 3.9)); life = 10
 		var attack := {"id":next_id,"owner":int(f.player),"fighter":f.id,"serial":int(f.attack_serial),
 			"kind":delivery,"move":move,"x":float(f.x)+float(f.facing)*distance,"y":y,
 			"facing":float(f.facing),"speed":speed,"width":width,"height":height,"life":life,
-			"delay":int(move.startupFrames)+(i*8 if delivery=="spikes" else 0),"age":0,
-			"hits":{},"interval":interval,"spawned":false}
+			"delay":int(move.startupFrames)+(i*8 if delivery=="spikes" else 0)+int(move.get("rockFlight",0)),"age":0,
+			"hits":{},"interval":interval,"spawned":false,
+			"flight":int(move.get("rockFlight",0)),"x0":float(f.x)+float(f.facing)*0.5}
 		items.append(attack)
 		next_id += 1
 
@@ -64,7 +70,8 @@ func update(sim: GaleCombat, inputs: Array) -> void:
 		var defender: Dictionary = sim.p2 if e.owner == 0 else sim.p1
 		if e.delay > 0:
 			# An interrupted wind-up does not leave an invisible attack scheduled.
-			if not e.spawned and (owner.attack_serial != e.serial or owner.action not in ["startup","active"]):
+			# (a stone already thrown, delay <= flight, keeps flying after she recovers)
+			if not e.spawned and int(e.delay) > int(e.get("flight",0)) and (owner.attack_serial != e.serial or owner.action not in ["startup","active"]):
 				items.remove_at(index)
 				continue
 			e.delay -= 1
@@ -93,7 +100,7 @@ func update(sim: GaleCombat, inputs: Array) -> void:
 					owner.connected = true
 				if e.speed > 0 or result == "parry":
 					e.life = 0
-		if e.kind in ["wave","pulse","stomp","spikes","vortex","beam","fist"]:
+		if e.kind in ["wave","pulse","stomp","spikes","vortex","beam","fist","rock_spike","stone"]:
 			for hazard: Dictionary in sim.hazards:
 				if hazard.hp > 0 and absf(float(hazard.x)-float(e.x)) < float(e.width)*0.5+0.3:
 					hazard.vx = float(e.facing) * float(e.move.get("gustForce",10.0))

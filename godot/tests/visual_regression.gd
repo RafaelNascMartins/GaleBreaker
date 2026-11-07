@@ -29,7 +29,11 @@ func run() -> void:
 			view.play_clip(low, 0.1)
 			check(view.socket_position("socket_chest").y < chest_idle - 0.25, id + " " + low + " visibly lowers the body")
 		view.play_clip("light_1", GaleAnimTiming.contact_sec(id, "light_1"))
-		var hand_contact := view.socket_position("socket_hand_r")
+		# The striking hand is the one in front (Babuin's J1 is the lead left; the other hand pulls
+		# back for the counterweight).
+		var hand_r := view.socket_position("socket_hand_r")
+		var hand_l := view.socket_position("socket_hand_l")
+		var hand_contact := hand_r if hand_r.z < hand_l.z else hand_l
 		check(hand_contact.z < -0.2, id + " striking hand points in the fighting direction")
 		check(hand_contact.distance_to(hand_idle) > 0.01, id + " hand socket follows the animated skeleton")
 		# No bone may turn 150 degrees or more between two 60 fps frames: that reads as a
@@ -96,6 +100,19 @@ func run() -> void:
 		var frozen_hand := view.socket_position("socket_hand_r")
 		view.sync(state, 1.0 / 60.0)
 		check(is_equal_approx(view.current_anim_time, frozen_time) and view.socket_position("socket_hand_r").is_equal_approx(frozen_hand), id + " hitstop freezes both time and the blended pose")
+		# The victim vibrates during the freeze (side to side on the ground), visually only.
+		var victim: Dictionary = state.duplicate(true)
+		victim.action = "hitstun"
+		victim.move = {}
+		victim.grounded = true
+		victim.hitstop_left = 10
+		victim.hitstop_total = 12
+		view.sync(victim, 2.0 / 60.0)
+		var shake_a: Vector3 = view.model_pivot.transform.origin
+		await process_frame
+		view.sync(victim, 2.0 / 60.0)
+		var shake_b: Vector3 = view.model_pivot.transform.origin
+		check(absf(shake_a.z - shake_b.z) > 0.02 and is_equal_approx(shake_a.y, shake_b.y), id + " victim shakes side to side during the hitstop")
 		state.action = "idle"
 		state.move = {}
 		view.sync(state, 2.0 / 60.0)

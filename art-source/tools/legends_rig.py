@@ -66,11 +66,27 @@ def append_rig(m, col):
         ad.action = None
         for t in ad.nla_tracks:
             t.mute = False
+        name_clips(rig)
     rig.location, rig.rotation_euler, rig.scale = (0, 0, 0), (0, 0, 0), (1, 1, 1)
     col.objects.link(rig)
     for pb in rig.pose.bones:
         pb.location, pb.rotation_quaternion, pb.rotation_euler, pb.scale = (0, 0, 0), (1, 0, 0, 0), (0, 0, 0), (1, 1, 1)
     return rig
+
+
+def name_clips(rig):
+    """Each NLA track's action takes the track's name (an append brings 'idle.003'); copies of
+    the clips no strip uses (earlier appends) are deleted."""
+    used = {s.action for t in rig.animation_data.nla_tracks for s in t.strips if s.action}
+    names = {t.name for t in rig.animation_data.nla_tracks}
+    for act in list(bpy.data.actions):
+        base = act.name.split('.')[0]
+        if act not in used and base in names and not act.name.endswith(('_generated', '_old')):
+            bpy.data.actions.remove(act)
+    for t in rig.animation_data.nla_tracks:
+        for st in t.strips:
+            if st.action and st.action.name != t.name:
+                st.action.name = t.name
 
 
 def prune(rig, names):
@@ -194,6 +210,19 @@ def export_godot(module_name):
     return path
 
 
+def rest_ok(m, rig, tol=0.02):
+    """The rest pose's leg and spine joints are where JOINTS put them (the arms were brought
+    down on purpose): a clip baked into the rest would move them."""
+    j = joints(m)
+    check_pairs = {'thigh_l': 'hip_l', 'shin_l': 'knee_l', 'foot_l': 'ankle_l', 'thigh_r': 'hip_r',
+                   'shin_r': 'knee_r', 'foot_r': 'ankle_r', 'head': 'neck_head'}
+    bad = {b: round((rig.data.bones[b].head_local - j[k]).length, 3) for b, k in check_pairs.items()
+           if b in rig.data.bones and (rig.data.bones[b].head_local - j[k]).length > tol}
+    if bad:
+        print('rest pose off its joints (m):', bad)
+    return not bad
+
+
 def build(module_name):
     m = importlib.import_module(module_name)
     col = _collection(BODY_COLLECTION.format(m.NAME.upper()))
@@ -207,6 +236,21 @@ def build(module_name):
     ob.parent = rig
     mod = ob.modifiers.new(name='Armature', type='ARMATURE')
     mod.object = rig
+    # the fighter's clips must not play while the rest pose is baked (they would become the rest)
+    ad = rig.animation_data
+    mutes = {t.name: t.mute for t in ad.nla_tracks} if ad else {}
+    if ad:
+        ad.action = None
+        for t in ad.nla_tracks:
+            t.mute = True
+    for pb in rig.pose.bones:
+        pb.location, pb.rotation_quaternion, pb.rotation_euler, pb.scale = (0, 0, 0), (1, 0, 0, 0), (0, 0, 0), (1, 1, 1)
+    bpy.context.view_layer.update()
     model_rig.arms_to_rest(ob, rig)
-    ok = check(rig, ob)
+    for pb in rig.pose.bones:         # arms_to_rest leaves Euler; the clips are keyed in quaternions
+        pb.rotation_mode = 'QUATERNION'
+    if ad:
+        for t in ad.nla_tracks:
+            t.mute = mutes.get(t.name, False)
+    ok = check(rig, ob) and rest_ok(m, rig)
     return rig, ob, ok

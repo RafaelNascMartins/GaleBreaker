@@ -15,6 +15,8 @@ var boxes: Array[MeshInstance3D] = []
 var show_boxes := false
 var menu_mode := false
 var shake := 0.0
+var last_freeze := 0
+var freeze_total := 1
 var clock := 0.0
 var focused_x := 0.0
 var shake_strength := 0.65
@@ -838,13 +840,19 @@ func render(sim: GaleCombat, delta: float) -> void:
 		if sim.stage_id=="storm_market":
 			stage_effect.scale=Vector3(0.7,0.7,0.7)
 			stage_effect.position.y=0.4+maxf(0.0,float(900-cycle.clock)/90.0)*5.0
-	var step_delta := 0.0 if sim.freeze > 0 else delta
+	var step_delta := 0.0 if sim.freeze > 0 else (delta * 0.45 if sim.slow > 0 else delta)
+	# The length of the current hitstop, for the victim's shake (it decays over the freeze).
+	if sim.freeze > last_freeze:
+		freeze_total = sim.freeze
+	last_freeze = sim.freeze
 	clock += step_delta
 	_animate_living_pieces(step_delta, sim)
 	for i in fighters.size():
 		var state: Dictionary = sim.p1 if i == 0 else sim.p2
 		var visual_state := state.duplicate()
 		visual_state.presentation_victory = sim.winner == i + 1
+		visual_state.hitstop_left = sim.freeze
+		visual_state.hitstop_total = maxi(1, freeze_total)
 		fighters[i].sync(visual_state, clock)
 		var hurt := GaleCombat.hurt_rect(state)
 		var hit := GaleCombat.hit_rect(state)

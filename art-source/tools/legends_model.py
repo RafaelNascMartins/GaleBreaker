@@ -125,8 +125,9 @@ def ball(bm, centre, r, sides=6):
         bm.faces.new((ring[j], ring[i], rear))
 
 
-def part(name, build, colour, collection):
-    """Create one rigid part object from a bmesh builder; returns its triangle count."""
+def part(name, build, colour, collection, triangulate=True):
+    """Create one rigid part object from a bmesh builder; returns its triangle count.
+    triangulate=False keeps the authored polygons (preview of facets against a concept)."""
     me = bpy.data.meshes.get(name)
     if me:
         bpy.data.meshes.remove(me)
@@ -137,8 +138,9 @@ def part(name, build, colour, collection):
     # Flatten every authored polygon, so it reads as one drawn facet after triangulation
     # instead of folding along its diagonals (a fold shows as an extra facet or a groove).
     bmesh.ops.planar_faces(bm, faces=bm.faces, iterations=200, factor=0.5)
-    bmesh.ops.triangulate(bm, faces=bm.faces)
-    tris = len(bm.faces)
+    if triangulate:
+        bmesh.ops.triangulate(bm, faces=bm.faces)
+    tris = sum(len(f.verts) - 2 for f in bm.faces)
     bm.to_mesh(me)
     bm.free()
     ob = bpy.data.objects.get(name) or bpy.data.objects.new(name, me)

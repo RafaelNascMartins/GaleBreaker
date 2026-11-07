@@ -86,7 +86,12 @@ func run() -> void:
 	check(sim.p2.hp==sim.p2.max_hp,"leaving the tornado warning avoids its damage")
 	sim=fresh("tophia")
 	sim.attack(sim.p1,"elemental",false)
-	check(sim.attacks.items.size()==3 and sim.attacks.items[0].delay<sim.attacks.items[1].delay and sim.attacks.items[1].delay<sim.attacks.items[2].delay,"stone spires have separate positions and announced impact times")
+	check(sim.attacks.items.size()==1 and sim.attacks.items[0].kind=="stone" and float(sim.attacks.items[0].speed)>0.0,"X12's stone jab throws one stone straight across the screen")
+	sim=fresh("tophia")
+	sim.p1.x=-3.0;sim.p2.x=2.5
+	sim.attack(sim.p1,"elemental",false)
+	advance(sim,70)
+	check(sim.p2.hp<sim.p2.max_hp,"the stone jab hits from long range")
 	check(data.move("tophia","heavy",[]).armorHits==0,"Tophia armor is visual and does not grant automatic super armor")
 	sim=fresh("ignis")
 	sim.stage_id="molten_forge";sim.arena_cycle.reset(sim.stage_id)

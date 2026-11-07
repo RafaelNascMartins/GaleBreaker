@@ -47,7 +47,11 @@ func toggle_skill(id: String, current: Array, key: String) -> Array:
 	return normalized if normalized.size() == desired.size() else current
 
 func move(id: String, kind: String, skills: Array) -> Dictionary:
-	var result: Dictionary = fighter(id).moves[kind].duplicate(true)
+	# command moves (GaleCombat.COMMANDS) have no entry of their own in the data: they start
+	# from the fighter's elemental and GaleMoveRules gives them their numbers
+	var base_kind := kind if fighter(id).moves.has(kind) else "elemental"
+	var result: Dictionary = fighter(id).moves[base_kind].duplicate(true)
+	result.type = kind
 	GaleMoveRules.apply(id,kind,result)
 	var damage := 1.0
 	var meter := 1.0

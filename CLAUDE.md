@@ -5,4 +5,4 @@
 - Logs ficam em `logs/` (godot/, art-source/). Não criar `.log` em outras pastas.
 - `godot/data/game_data.json` é gerado por `npm run sync-godot-data` (dentro de `web/`).
 - Testes Godot: `./godot/tools/test.ps1 -GodotPath <Godot console exe>`. Testes web: `npm test` em `web/`.
-- Não há repositório git; backups antigos estão em `art-source/revisions/`.
+- Repositório git, branch `main`, remoto https://github.com/RafaelNascMartins/GaleBreaker.git. Commit e push só quando o usuário pedir. Backups antigos (de antes do git) estão em `art-source/revisions/`.

@@ -63,6 +63,24 @@ func build(e: Dictionary) -> Node3D:
 			for i in 8:
 				var swirl := ring(body,soft,0.2+i*0.08)
 				swirl.position.y = -1.4+i*0.37
+		"stone":
+			var chunk := BoxMesh.new()
+			chunk.size = Vector3(e.width, e.height, 0.42)
+			mesh_node(body,chunk,solid)
+			var trail := BoxMesh.new()
+			trail.size = Vector3(e.width*1.2,e.height*0.3,0.08)
+			mesh_node(body,trail,soft,Vector3(-e.facing*e.width*0.7,0,0))
+		"rock_spike":
+			var spike := CylinderMesh.new()
+			spike.top_radius = 0
+			spike.bottom_radius = float(e.width)*0.5
+			spike.height = e.height
+			spike.radial_segments = 5
+			mesh_node(body,spike,solid)
+			var rock := BoxMesh.new()
+			rock.size = Vector3(0.32,0.28,0.3)
+			var flying := mesh_node(node,rock,solid)
+			flying.name = "Rock"
 		"spikes":
 			var stone := CylinderMesh.new()
 			stone.top_radius = 0
@@ -106,6 +124,22 @@ func render(entities: Array) -> void:
 		body.visible = e.delay <= 0
 		if e.kind == "vortex":
 			body.rotation.y = float(e.age)*0.17
+		elif e.kind == "stone":
+			body.rotation.z = -float(e.facing) * float(e.age) * 0.35
+		elif e.kind == "rock_spike":
+			# the stone flies in a half-moon arc from her hand to the landing point, then the spike rises
+			var rock: MeshInstance3D = node.get_node("Rock")
+			var flight := maxi(1, int(e.get("flight", 1)))
+			rock.visible = e.delay > 0 and e.delay <= flight
+			if rock.visible:
+				var t := 1.0 - float(e.delay) / float(flight)
+				var rx := lerpf(float(e.x0), float(e.x), t)
+				var ry := lerpf(1.6, 0.15, t) + 1.8 * 4.0 * t * (1.0 - t)    # peak ~2.7 m, stays on screen
+				rock.position = Vector3(rx - float(e.x), ry - float(e.y), 0)
+				rock.rotation.z = t * TAU * 1.5
+			var rise := clampf(float(e.age+1)/3.0,0.1,1.0)
+			body.scale.y = rise
+			body.position.y = -float(e.height)*0.5*(1.0-rise)
 		elif e.kind == "spikes":
 			var growth := clampf(float(e.age+1)/3.0,0.1,1.0)
 			body.scale.y = growth

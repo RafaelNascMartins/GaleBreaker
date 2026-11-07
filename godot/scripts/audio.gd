@@ -141,7 +141,7 @@ func play(kind: String, fighter: String = "", variant: String = "") -> void:
 	if samples.has(kind) and fighter.is_empty():
 		_play_stream(samples[kind])
 		return
-	var aliases := {"bolt":"elemental","charged_bolt":"heavy","wave":"elemental","pulse":"elemental","stomp":"elemental","spikes":"elemental","vortex":"ultimate","fist":"ultimate","beam":"ultimate"}
+	var aliases := {"bolt":"elemental","charged_bolt":"heavy","wave":"elemental","pulse":"elemental","stomp":"elemental","spikes":"elemental","stone":"elemental","rock_spike":"elemental","vortex":"ultimate","fist":"ultimate","beam":"ultimate"}
 	var category: String = aliases.get(kind,kind)
 	if not fighter.is_empty() and tones.has(fighter+"_"+category):
 		kind = fighter+"_"+category

@@ -4,6 +4,14 @@ extends RefCounted
 
 static func apply(id: String, kind: String, move: Dictionary) -> void:
 	move.delivery = "melee"
+	if id == "tophia" and kind == "rock_spike":
+		# half circle forward + elemental: she tosses a stone up in an arc; where it lands a stone
+		# spike rises from the ground and launches (rock_flight frames in the air, its shadow shows
+		# where it will fall)
+		move.merge({"name": "Espinho de Queda", "delivery": "rock_spike", "startupFrames": 18, "activeFrames": 6,
+			"recoveryFrames": 22, "damage": 90, "meterCost": 15, "range": 4.0, "hitHeight": "mid",
+			"launchY": 4.5, "knockback": 1.5, "armorHits": 0, "rockFlight": 30, "rockDistance": 3.9}, true)
+		return
 	if kind not in ["light", "heavy", "elemental", "ultimate"]:
 		return
 	var names := {
@@ -27,7 +35,8 @@ static func apply(id: String, kind: String, move: Dictionary) -> void:
 	elif id == "kaze" and kind == "ultimate":
 		move.merge({"delivery":"vortex","startupFrames":30,"activeFrames":40,"recoveryFrames":25,"damage":300,"range":2.5,"launchY":6.0,"armorHits":0}, true)
 	elif id == "tophia" and kind == "elemental":
-		move.merge({"delivery":"spikes","startupFrames":24,"activeFrames":24,"recoveryFrames":28,"damage":68,"meterCost":15,"range":3.6,"hitHeight":"mid","launchY":0.0,"armorHits":0}, true)
+		# the stone jab: a punch that throws a stone straight across the screen
+		move.merge({"delivery":"stone","startupFrames":12,"activeFrames":4,"recoveryFrames":18,"damage":70,"meterCost":15,"range":6.5,"hitHeight":"mid","launchY":0.0,"armorHits":0}, true)
 	elif id == "tophia" and kind == "ultimate":
 		move.merge({"delivery":"fist","startupFrames":36,"activeFrames":8,"recoveryFrames":34,"damage":330,"range":5.5,"launchY":4.0,"armorHits":0}, true)
 	elif id == "ignis" and kind == "elemental":

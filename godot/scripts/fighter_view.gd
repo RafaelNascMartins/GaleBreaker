@@ -36,6 +36,7 @@ var pivot_base := Transform3D.IDENTITY
 var fx_squash := 0.0
 var fx_lean := 0.0
 var fx_shake := 0.0
+var shake_flip := false
 var land_timer := 0.0
 var was_grounded := true
 var trail: MeshInstance3D
@@ -81,6 +82,8 @@ var anim_fps := 0.0
 # profile and the head a little more, so the face (and its expressions) reads. Visual only.
 const BODY_CHEAT_DEG := 22.0
 const HEAD_CHEAT_DEG := 34.0
+# Per fighter (degrees body, head): X12 the boxer keeps her eyes on the opponent, nearly in profile.
+const CHEAT_BY_FIGHTER := {"tophia": [14.0, 10.0]}
 var head_turn: GaleHeadTurn
 # Clips authored as limited animation (art-source/tools/legends_anim.py): stepped keys, each
 # pose held for its own frames; they play as authored instead of on the 15 fps grid.
@@ -88,7 +91,9 @@ const AUTHORED_STEPPED := {"kaze": ["idle", "walk_forward", "walk_back", "dash",
 	"knockdown", "ko", "get_up", "down_punch", "air_punch", "sweep", "elemental", "ultimate", "breaker", "select"],
 	# Dale (legends_dale_anim.py): every clip re-authored.
 	"ignis": ["idle", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "light_1", "light_2", "light_3", "heavy", "heavy_2", "elemental", "ultimate", "hit", "knockdown", "ko", "get_up", "dash", "jump_start", "jump_air", "jump_land", "parry",
-		"down_punch", "air_punch", "sweep", "breaker", "select", "victory"]}
+		"down_punch", "air_punch", "sweep", "breaker", "select", "victory"],
+	# X12 (legends_x12_anim.py): every clip re-authored.
+	"tophia": ["idle", "select", "light_1", "light_2", "light_3", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "parry", "heavy", "down_punch", "sweep", "air_punch", "dash", "elemental", "ultimate", "rock_spike", "breaker", "jump_start", "jump_air", "jump_land", "hit", "knockdown", "ko", "get_up", "victory"]}
 const KEYED_ATTACKS := ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "sweep", "down_punch", "air_punch"]
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
@@ -420,6 +425,8 @@ func sync(f: Dictionary, time: float) -> void:
 			clip = "sweep"
 		elif mtype == "heavy" and int(f.move.get("chain_step", 1)) > 1 and anim_player != null and anim_player.has_animation("heavy_%d" % int(f.move.chain_step)):
 			clip = "heavy_%d" % int(f.move.chain_step)
+		elif anim_player != null and not anim_player.has_animation(clip):
+			clip = "elemental"      # a command move without its own clip yet
 
 		var total_frames := maxi(1, int(f.get("phase_total", f.frames)))
 		var progress := clampf(1.0 - float(maxi(0, int(f.frames))) / float(total_frames), 0.0, 1.0)
@@ -478,10 +485,11 @@ func apply_facing(facing: float) -> void:
 		# Legends fighters are mirrored, not turned, like 2.5D anime fighters: the player-2 side
 		# is the player-1 pose flipped across the screen, so both show the same silhouette, the
 		# same lead hand and the face cheated toward the camera.
-		var turned := Basis(Vector3.UP, -(PI / 2.0 + deg_to_rad(BODY_CHEAT_DEG)))
+		var cheat: Array = CHEAT_BY_FIGHTER.get(fighter_id, [BODY_CHEAT_DEG, HEAD_CHEAT_DEG])
+		var turned := Basis(Vector3.UP, -(PI / 2.0 + deg_to_rad(float(cheat[0]))))
 		basis = Basis.from_scale(Vector3(side, 1, 1)) * turned
 		if head_turn != null:
-			head_turn.degrees = -HEAD_CHEAT_DEG
+			head_turn.degrees = -float(cheat[1])
 	else:
 		basis = Basis(Vector3.UP, -PI / 2.0 if side > 0 else PI / 2.0)
 
@@ -584,10 +592,28 @@ func _update_motion_fx(f: Dictionary, attack_clip: String) -> void:
 	fx_squash = lerpf(fx_squash, squash, blend)
 	fx_lean = lerpf(fx_lean, lean, blend)
 	fx_shake = shake if presentation_delta > 0.0 else fx_shake
+	# Hitstop shake (Sakurai): during the freeze the victim vibrates - side to side on the ground,
+	# up and down in the air - decaying to nothing by the end; the attacker shakes a little on
+	# heavy blows. Visual only: the simulation (and the hurtbox) stays still.
+	var freeze_offset := Vector3.ZERO
+	var left := int(f.get("hitstop_left", 0))
+	if left > 0:
+		var total := float(maxi(left, int(f.get("hitstop_total", left))))
+		var amp := clampf(0.004 * total, 0.025, 0.075) * (float(left) / total) * shake_strength / 0.65
+		if action in ["hitstun", "knockdown", "blockstun"]:
+			amp *= 0.5 if action == "blockstun" else 1.0
+		elif attack_clip != "" and total >= 10.0:
+			amp *= 0.25
+		else:
+			amp = 0.0
+		shake_flip = not shake_flip   # flips on every presentation update (once per frame)
+		var side := 1.0 if shake_flip else -1.0
+		# In view space the fighter faces -Z, so the screen's horizontal is Z (X is depth).
+		freeze_offset = Vector3(0, amp * side, 0) if not grounded else Vector3(0, 0, amp * side)
 	if model_pivot != null:
 		var stretch := Basis.from_scale(Vector3(1.0 + fx_squash * 0.6, 1.0 - fx_squash, 1.0 + fx_squash * 0.6))
 		# Forward is -Z in view space, so a forward lean tips the top toward -Z.
-		model_pivot.transform = Transform3D(Basis(Vector3.RIGHT, -fx_lean) * stretch, Vector3(fx_shake, 0, 0)) * pivot_base
+		model_pivot.transform = Transform3D(Basis(Vector3.RIGHT, -fx_lean) * stretch, Vector3(0, 0, fx_shake) + freeze_offset) * pivot_base
 		# Sockets drive VFX origins, so they must match the pose actually drawn.
 		_update_sockets()
 	_update_trail(f, attack_clip)

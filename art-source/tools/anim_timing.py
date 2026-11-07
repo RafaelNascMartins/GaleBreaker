@@ -18,7 +18,8 @@ LEGACY_STATES = {"idle": 40, "walk": 24, "dash": 10, "guard_high": 10, "parry": 
 # plays at most ~1.3x its authored speed at full walk speed.
 STRIDE = {"kaze": 1.8, "ignis": 1.8, "tophia": 1.55, "volt": 1.9}
 
-ATTACK_CLIPS = ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "down_punch", "air_punch", "sweep"]
+ATTACK_CLIPS = ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "down_punch", "air_punch", "sweep",
+                "rock_spike"]
 
 
 def _attack(wind, contact, hold, follow, recover, end):
@@ -59,6 +60,22 @@ TIMING = {
         },
         "states": {"idle": 52, "walk": 34, "dash": 14, "guard_high": 14, "parry": 18, "hit": 22,
                    "knockdown": 32, "ko": 44, "victory": 56},
+    },
+    # X12 (legends_x12_anim.py), boxer: the jab with no wind-up (smear at 2, hit 3-8), the cross
+    # with a short load and pull (3-5), smear 7, hit 8-12. Clips not listed keep the legacy layout.
+    "tophia": {
+        "attacks": {
+            "light_1": _attack(1, 3, 8, 10, 16, 22),
+            "light_2": _attack(5, 8, 12, 14, 20, 26),
+            "light_3": _attack(4, 7, 11, 13, 19, 24),
+            "heavy": _attack(8, 12, 17, 20, 28, 34),
+            "down_punch": _attack(3, 6, 10, 12, 18, 24),
+            "sweep": _attack(5, 8, 12, 15, 22, 28),
+            "air_punch": _attack(3, 5, 9, 11, 17, 24),
+            "elemental": _attack(3, 6, 10, 12, 18, 22),
+            "ultimate": _attack(26, 30, 36, 40, 50, 58),
+            "rock_spike": _attack(6, 10, 13, 16, 24, 30),
+        },
     },
 }
 
