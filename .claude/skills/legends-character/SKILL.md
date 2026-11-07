@@ -9,15 +9,114 @@ O piloto foi o Babuin (`kaze`), aprovado pelo usuário em 2026-11-04. A modelage
 
 Referência real: `concept-art/referencias/Megaman.obj` e `Megaman.png`. São 486 triângulos em 18 peças, duas páginas de 256 com 15 cores cada, nenhuma luz (toda sombra é pintada) e um rosto com 24 expressões de cerca de 43×51 px.
 
+## Construção: os modelos de referência mandam
+
+Antes de modelar, leia o estudo `docs/estudos/legends-modelagem.md`. Ele foi aprovado pelo usuário em 2026-11-07, depois de muitas tentativas automáticas fracassadas na X12.
+
+Os modelos de referência são `concept-art/referencias/`:
+- `Megaman.obj`, `Roll_(Cutscene).obj`, `Old_Man.obj` e `Wily_the_Boatshop_Owner.obj`;
+- os vídeos e anúncios do SuitNTie, em especial a Tifa (`tifa.mp4`) para lutadoras adultas.
+
+Os modelos definem **como cada peça é construída**: quantas faces, onde ficam os cortes e o formato. A concept do personagem define **só tamanho e forma**.
+
+1. **Molde primeiro.** Antes de cada peça, abra a peça equivalente da referência e conte faces e lados de seção. A peça nova fica nessa faixa.
+2. **Cada triângulo tem um motivo:** silhueta, volume ou uma dobra que a textura precisa. O detalhe vai para a textura pixelada.
+3. **Simetria exata.** Modele a metade esquerda e espelhe; os vértices do centro ficam em x = 0. Só as pontas do cabelo podem variar.
+4. **Nenhum vértice com mais de ~8 triângulos em volta.** Nada de leque fechando uma peça num ponto só.
+5. **Cabeça e cabelo numa peça só,** dividida pela pintura. O cabelo é a casca, com lâminas ou placas apoiadas no rosto. **Sem textura, o modelo já tem que ler** o que é cabelo, rosto, nariz e orelha.
+6. **Rosto:**
+   - linha do centro com ~7 vértices;
+   - faixa dos olhos com 1 a 2 faces por lado, para a textura do olho não distorcer;
+   - nariz saindo ~2 cm, com uma pontinha;
+   - boca recuando, queixo em V;
+   - orelha em placa.
+7. **Corpo:**
+   - ombro esférico de ~6 lados;
+   - braço fino de 4 lados;
+   - antebraço em cilindro de 6 lados (o braço afina e cresce de novo);
+   - punho e luva como caixas grandes;
+   - pernas retas, quase dois retângulos;
+   - pés e botas em bloco.
+8. **Juntas se sobrepõem** (ombro sobre o tronco, coxa dentro do quadril, pescoço dentro da cabeça), sem costura.
+9. **Sombreamento suave,** com normais por vértice, como o Gouraud dos `.obj`. Aresta dura só onde a forma pede. O sombreamento chapado deixa cada corte aparecendo.
+10. **Antes de mostrar ao usuário:**
+    - meça a simetria;
+    - meça o máximo de triângulos por vértice;
+    - compare as faces de cada peça com o molde;
+    - renderize sem textura, lado a lado com o Mega Man e a Tifa (a coleção `Ref_Legends` no Blender).
+
+    Se algo falhar, não mostre.
+11. **Nunca gere topologia automaticamente.** Casco visual, voxels, marching cubes, redução de malha, triangulação de cantos e "calota com espetos" geraram sopa de triângulos todas as vezes.
+12. **Uma peça por vez,** cada uma aprovada pelo usuário: cabeça e cabelo, depois tronco, braço, perna.
+13. **Nível de detalhe de herói para todos os lutadores.** É jogo de luta, então nenhum lutador fica no nível dos NPCs Old Man e Wily, que têm metade dos triângulos.
+
+## Fluxo de modelagem (repetível, validado na X12 em 2026-11-07)
+
+As ferramentas ficam em `art-source/tools/`:
+
+| Arquivo | Para quê |
+|---|---|
+| `legends_kit.py` | Formas sem Blender: `named` (malha por vértices nomeados, metade esquerda espelhada; cabeça), `loft_sym` (peças centrais por seções de 5 pontos; peito, saia, gola), `loft` + `along`/`tilted`/`ring` (membros), `prism` (pescoço), `part`/`with_mirrors`. Tampas sempre em faixa, nunca leque; tudo orientado para fora. |
+| `<nome>_<peça>.py` | Uma por grupo de peças (ex.: `x12_cabeca`, `x12_tronco`, `x12_braco`, `x12_perna`). **Só dados medidos e comentários dizendo de onde cada número saiu** (coluna/linha do recorte da concept) e qual peça da referência foi o molde. Cada um tem `parts()`. Assimetria proposital (franja) vai em `ASYMMETRIC = {peça: [coordenadas]}`. |
+| `<nome>_modelo.py` | O personagem: `NAME`, `ID`, `SRC`, `HEIGHT`, `PREFIX`, `COLLECTION`, `PIECES`. |
+| `legends_build.py <nome>_modelo` | Junta as peças, espelha as `_l`, **falha** se uma peça não for fechada, se um vértice tiver mais de 9 faces ou se uma peça central não for simétrica. Grava `<nome>_pecas.json` e imprime faces e triângulos por peça. |
+| `legends_blender.py` (no Blender) | `load_refs()` (coleção `Ref_Legends`), `load_parts(json, coleção, prefixo)`, `compare(prefixo, pasta, região)` (cinza liso + arame, 4 vistas, personagem e Mega Man). |
+| `legends_compare.py <nome>_modelo <pasta> <região>` | A folha: concept, modelo, arame do modelo, arame do Mega Man. |
+
+Regiões: `corpo`, `cabeca`, `tronco`, `braco`, `perna`.
+
+Ordem de trabalho, **uma peça por vez, aprovada pelo usuário antes da próxima**:
+1. Medir: grade sobre os recortes da concept (frente e perfil) na região da peça. Abrir a peça equivalente do Mega Man ou da Tifa e anotar faces e lados de seção.
+2. Escrever os dados no arquivo da peça, citando a medida.
+3. `legends_build.py` até passar sem erro.
+4. No Blender: `load_parts` e `compare` da região, depois `legends_compare.py`.
+5. Olhar a folha: silhueta contra a concept, construção contra o Mega Man. Só então mostrar ao usuário, dizendo o que ainda difere.
+
+**UV e página do corpo**, seguindo a seção 10 do estudo:
+
+1. `legends_uv.py <nome>_modelo` gera a UV, sem smart project do Blender, a partir de três dados no módulo do personagem:
+   - **`UV_METHOD`** diz como cada peça abre: `cyl` é o membro como cilindro aberto, com a costura atrás; `front_back` é o tronco, com frente e costas; `box` é a cabeça, o punho e a bota, por direção.
+   - **`UV_OWN`** lista as peças da direita com detalhe próprio. As outras repetem a UV da esquerda.
+   - **`UV_HIDDEN`** lista as faces escondidas, que recebem quase nenhum pixel.
+   
+   A página é de 256, com densidade de cerca de 1 px/cm (`UV_DENSITY`).
+2. `legends_paint.py <nome>_modelo` pinta a página a partir de outros quatro dados:
+   - **`PAINT`** diz, para cada (peça, ilha), se ela vem de um painel, de uma projeção da concept ou de um tom chapado. O rosto fica em pele lisa, porque os olhos vêm do atlas.
+   - **`PANEL_CROP`** recorta cada painel na área da peça, deixando de fora o fundo escuro dele. O recorte automático errou, então os recortes são feitos à mão.
+   - **`PANELS`** é a folha de painéis do personagem.
+   - **`TONE_PANEL`** diz de onde vêm os tons chapados.
+   
+   Gera `<nome>_pagina_256_gerada.png` com 15 cores, mais uma prévia em 4×. A página que o modelo usa e que o usuário pinta no Blender, `<nome>_pagina_256.png`, só é criada se não existir e **nunca é sobrescrita**. Para aplicar uma página gerada nova, copie por cima de propósito, e só com o ok do usuário. O `load_parts` não recarrega uma imagem com pintura não salva.
+3. `legends_face.py <nome>_modelo` faz o rosto:
+   - a `FaceUV` da cabeça, com o quadrado do rosto em `FACE_BOX` no módulo;
+   - o atlas `<nome>_rosto_atlas.png` (6×4 quadros de 42 px, 15 cores próprias), a partir de `EXPRESSIONS`. A pele do atlas é levada ao tom da pele da página pintada, para não aparecer emenda.
+
+**Ordem dos comandos:** `legends_build` (recria o JSON sem UV) → `legends_uv` (transfere a página pintada para a UV nova e guarda cópia) → `legends_face` → `legends_paint` (só a página gerada; `legends_paint.py merge <módulo> peça:ilha` copia ilhas escolhidas para a página do usuário).
+
+**UV deste projeto:** nunca há sobreposição. Cada peça, incluindo o lado direito, tem área própria, e as faces que cairiam umas sobre as outras viram ilhas separadas. A página é arrumada como o corpo visto de frente. É uma diferença em relação ao Mega Man, pedida pelo usuário para que pintar uma peça nunca pinte outra.
+
+**Nunca chame `image.reload()` direto** sobre a página do usuário. Se `is_dirty` estiver ligado, salve a imagem antes. Num script avulso eu recarreguei a página e perdi pintura não salva.
+5. **Esqueleto**, no Blender: `legends_rig.build('<nome>_modelo')`. Usa três dados do módulo:
+   - `RIG_SOURCE`, o rig do lutador no jogo;
+   - `JOINTS`, as juntas lidas nas peças;
+   - `UNUSED_BONES`, os ossos que esse lutador não usa.
+
+   Ele gera `<NAME>_Rig` e `<NAME>_Body` (uma malha com UVMap e FaceUV, cada vértice com peso 1 no osso da sua peça) e baixa os braços para a pose de descanso. Termina com a conferência: todo vértice em exatamente um osso.
+   A X12 ficou com 20 ossos, e a saia acompanha o osso `hips`, rígida.
+4. No Blender, `legends_blender.load_parts(json, coleção, prefixo, page=..., atlas=...)`. A cabeça ganha a propriedade `expressao`, de 0 a 23. O rosto só aparece no modo Rendered com EEVEE: o Workbench mostra apenas a página. A prévia usa luz `FLAT`, porque a sombra é pintada.
+
+Ordem das peças: cabeça com cabelo, tronco (peito, gola, pescoço), braço (ombreira, braço, antebraço, faixa, punho), saia, pernas e botas.
+
+**Orçamento:** os lutadores ficam com o detalhe de herói. A X12 tem 914 triângulos e o usuário não quer reduzir; o teto de 724 do Babuin não vale para personagens novos. O Babuin ainda é do fluxo antigo e será refeito neste fluxo depois.
+
 ## Regras do estilo
 
-- **Proporção:** não é chibi. O corpo tem cerca de 6 cabeças, com a cabeça em torno de 17% da altura. Cabeça, mãos e pés são grandes, e os membros são retos e finos. O estilo vem desse contraste.
+- **Proporção:** não é chibi. **Adultos seguem a Tifa: cabeça com ~18% da altura**, pernas longas, peso visual nas luvas e nas botas. O corpo tem cerca de 6 cabeças, com a cabeça em torno de 17% da altura. Cabeça, mãos e pés são grandes, e os membros são retos e finos. O estilo vem desse contraste.
   - "4,5 cabeças" saiu chibi e foi recusado.
   - "6,5 cabeças, esguio" saiu com 7,2 e também foi recusado.
   - A cabeça do Mega Man ocupa 25% da altura por causa do cabelo e da idade. Não use esse número como regra.
 - **Peças:** cada peça é rígida e segue um único osso. As peças são fechadas, sem pontas abertas aparecendo. A peça de baixo entra de 1 a 3 cm dentro da de cima, para a junta dobrada não mostrar o interior.
-- **Orçamento:** o Babuin ficou com 724 triângulos, e esse é o teto de referência.
-  - O número de faces de cada peça vem da concept, não de uma meta fixa.
+- **Orçamento:** nível de herói; cada peça na faixa da peça equivalente da referência. O Babuin (724, fluxo antigo) não é mais o teto; a X12 ficou com 914.
   - Detalhes pintados, como olhos, vinco dos dedos e lapela, vão para a textura, não para a geometria.
 - **Textura:** uma página de 256×256 com 15 cores, NEAREST, sem mapa de normais e com a sombra pintada.
   - No Blender, o material de prévia é emissão pura. Com luz de estúdio o modelo "parece plástico", e o usuário notou isso.
@@ -91,10 +190,10 @@ São três imagens por roupa, salvas em `concept-art/characters/<nome>/`:
 ### 3. Modelar, peça por peça, nas três vistas
 
 - O código fica em `legends_model.py` (`stack`, `tilted`, `poly`, `part`) e em `legends_<id>.py` (as medidas, com comentários dizendo de onde cada uma saiu).
-- **Cada vértice vem de um canto de face da concept**, conferido na frente, no perfil e nas costas.
+- **A construção de cada peça vem do molde** (veja **Construção**, acima). As medidas vêm dos contornos da concept na frente, no perfil e nas costas.
   - Não monte anéis por fatias da silhueta. O usuário recusou duas vezes: a silhueta encostava, mas as faces e as linhas internas não batiam e sobravam polígonos.
 - Membros inclinados levam anéis perpendiculares ao membro (`tilted`), não horizontais.
-- Formas complexas, como deltoide, pé, mão, cabeça e avental, viram malha explícita (`poly`), com os vértices nomeados.
+- Formas complexas, como a cabeça, viram malha explícita com os vértices nomeados (`legends_kit.named`).
 - `part()` achata cada polígono (`planar_faces`) antes de triangular. Uma face não plana vira duas faces visíveis ou um sulco.
 - Para o vértice de uma dobra ficar no plano da face grande, use `_onto_plane`.
 - **Conferência:**

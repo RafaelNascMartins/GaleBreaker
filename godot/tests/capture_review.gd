@@ -52,8 +52,11 @@ func capture() -> void:
 	for i in 5:
 		await frame()
 	app.mode = "training"
-	app.fighter1 = "kaze"
-	app.fighter2 = "kaze"
+	var fighter := "kaze"
+	if "--fighter" in args:
+		fighter = args[args.find("--fighter") + 1]
+	app.fighter1 = fighter
+	app.fighter2 = fighter
 	app.start_match()
 	if "--outfit" in args:
 		var outfit := int(args[args.find("--outfit") + 1])
@@ -71,7 +74,7 @@ func capture() -> void:
 
 	var top: Array = []
 	var bottom: Array = []
-	var idle_frames := int(GaleAnimTiming.state_sec("kaze", "idle") * 60.0)
+	var idle_frames := int(GaleAnimTiming.state_sec(fighter, "idle") * 60.0)
 	for f in idle_frames:
 		await step()
 		if f % 4 == 0:

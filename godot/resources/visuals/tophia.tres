@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_7mvpy")
 fighter_id = "tophia"
-display_name = "Tophia"
+display_name = "X12"
 subtitle = "Cavaleira de Arenito"
 element_label = "TERRA"
 accent_color = Color(0.59607846, 0.3254902, 0.12156863, 1)

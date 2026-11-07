@@ -94,7 +94,7 @@ static func build_default(id: String) -> GaleVisualCatalog:
 				"ultimate": {"name": "Fúria do Meio-Dia", "sequence": "Ajusta o chapéu e agacha; avança com o ombro em explosão solar.", "behavior": "Investida frontal comprometida com impacto explosivo de calor.", "counter": "Saltar sobre a investida ou evitar a linha sinalizada."},
 			}
 		"tophia":
-			cat.display_name = "Tophia"
+			cat.display_name = "X12"
 			cat.subtitle = "Cavaleira de Arenito"
 			cat.element_label = "TERRA"
 			cat.accent_color = Color("98531F")
