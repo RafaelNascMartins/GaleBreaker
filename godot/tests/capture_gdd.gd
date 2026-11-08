@@ -4,11 +4,13 @@ extends SceneTree
 ## frozen on the contact frame with the matching face.
 ## godot --path godot --script res://tests/capture_gdd.gd -- <out_dir>
 
-const FIGHTERS := ["kaze", "ignis"]
+const FIGHTERS := ["kaze", "ignis", "tophia", "volt"]
 # clip, frame (60 fps, the contact / pose key), face
 const POSES := {
 	"kaze": [["light_3", 10, 6], ["heavy_2", 11, 2], ["elemental", 14, 7], ["ultimate", 24, 10], ["victory", 32, 5]],
 	"ignis": [["light_3", 17, 2], ["heavy", 9, 6], ["elemental", 19, 2], ["ultimate", 28, 10], ["victory", 12, 5]],
+	"tophia": [["light_2", 9, 6], ["heavy", 13, 10], ["elemental", 7, 7], ["ultimate", 31, 2], ["victory", 30, 5]],
+	"volt": [["light_2", 14, 7], ["heavy", 22, 7], ["down_punch", 15, 11], ["ultimate", 46, 2], ["victory", 30, 11]],
 }
 
 var vp: SubViewport

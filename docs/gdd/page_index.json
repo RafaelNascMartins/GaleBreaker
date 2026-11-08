@@ -37,34 +37,46 @@
   },
   {
     "page": 10,
-    "title": "X12 e Orsted"
+    "title": "X12"
   },
   {
     "page": 11,
-    "title": "Entender a pancada"
+    "title": "X12 · Golpes"
   },
   {
     "page": 12,
-    "title": "Animação limitada"
+    "title": "Orsted"
   },
   {
     "page": 13,
-    "title": "Modos de jogo"
+    "title": "Orsted · Golpes"
   },
   {
     "page": 14,
-    "title": "Interface"
+    "title": "Entender a pancada"
   },
   {
     "page": 15,
-    "title": "Três arenas"
+    "title": "Animação limitada"
   },
   {
     "page": 16,
-    "title": "Da concept ao jogo"
+    "title": "Modos de jogo"
   },
   {
     "page": 17,
+    "title": "Interface"
+  },
+  {
+    "page": 18,
+    "title": "Três arenas"
+  },
+  {
+    "page": 19,
+    "title": "Da concept ao jogo"
+  },
+  {
+    "page": 20,
     "title": "Rumo à Alpha 0.1"
   }
 ]

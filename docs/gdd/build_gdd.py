@@ -4,7 +4,7 @@ One source: this script writes index.html (pages of 1080 x 675 px, HTML + CSS) a
 it to Gale_Breaker_GDD_Visual_v0_10.pdf. Images come from the real game where they exist:
   docs/gdd/assets/renders/  fighter renders (godot/tests/capture_gdd.gd)
   docs/readme/              screens of the game (godot/tests/capture_readme.gd)
-X12 and Orsted (ex-Tophia, ex-Volt) still show their old concepts, marked as in revitalization.
+All four fighters (Babuin, Dale, X12 ex-Tophia, Orsted ex-Volt) are in the Legends style, with their outfits and moves.
 
 python docs/gdd/build_gdd.py
 """
@@ -84,15 +84,28 @@ FIGHTERS = [
                 ('elemental', 'Pisada da Fornalha', 'ELEMENTAL', 'Joelho alto, punhos recolhidos e uma pisada que derruba todo o peso no chão.'),
                 ('ultimate', 'Fúria do Meio-Dia', 'ULTIMATE · 50 DE ENERGIA', 'Ajeita o chapéu, se abaixa atrás do ombro e explode numa ombrada quase horizontal.'),
                 ('victory', 'Duplo Bíceps', 'VITÓRIA', 'Planta os pés e flexiona os dois braços, cabeça para trás, rindo.')]),
+    dict(id='tophia', name='X12', sub='O experimento de arenito', color=STONE, element='TERRA', hp=1160,
+         style='Boxeadora com alguns golpes de longe: guarda saltitante, jab, direto e gancho, pedras arremessadas e um espinho que brota do chão.',
+         bio='Ela é um experimento: armadura de pedra laranja com marcas de laboratório, X12 gravado, algemas de contenção e veias de energia âmbar. Luta como boxeadora, de punhos fechados e queixo baixo.',
+         stats=[('VELOCIDADE', 4), ('FORÇA', 4), ('ALCANCE', 3), ('DEFESA', 4)],
+         outfits=['Arenito Laranja', 'Obsidiana', 'Boxeadora', 'Cobaia'],
+         moves=[('light_2', 'Punho de Arenito', 'BÁSICO · J1 J2 J3', 'Jab rápido, direto com o corpo inteiro e um terceiro golpe que empurra.'),
+                ('heavy', 'Martelo de Pedra', 'FORTE · K', 'Recolhe o punho no ombro, gira o tronco e desce o golpe em arco pesado.'),
+                ('elemental', 'Erupção Rochosa', 'ELEMENTAL', 'Um soco que arremessa uma pedra reta pela tela. Meia-lua + elemental: a pedra cai e um espinho brota do chão.'),
+                ('ultimate', 'Colosso de Terra', 'ULTIMATE · 50 DE ENERGIA', 'Carrega o punho de pedra e dispara um soco gigante de terra.'),
+                ('victory', 'Vitória', 'VITÓRIA', 'Ergue os punhos acima da cabeça, ainda na base de boxe.')]),
+    dict(id='volt', name='Orsted', sub='Inventor da sucata elétrica', color=CYAN, element='RAIO', hp=920,
+         style='Zoner calmo e tático: tiros de canhão à queima-roupa que acertam como golpes de perto, um tiro carregado de longe e uma bomba que lança o adversário.',
+         bio='Mesmo nome do cientista. Inventor loiro de cabelo espetado, colete de sucata, núcleo de energia no peito e tanque nas costas, sempre com o canhão de mão erguido ao lado do ombro.',
+         stats=[('VELOCIDADE', 3), ('FORÇA', 3), ('ALCANCE', 5), ('DEFESA', 2)],
+         outfits=['Sucata Ciano', 'Invertido', 'Pistoleiro', 'Cientista Maluco'],
+         moves=[('light_2', 'Tiro de Sucata', 'BÁSICO · J1 J2 J3', 'Três tiros à queima-roupa que só acertam de perto: no quadril, com o braço esticado e girando o corpo.'),
+                ('heavy', 'Disparo Carregado', 'FORTE · K', 'Firma o canhão, carrega a esfera ciano e dispara o projétil de longe.'),
+                ('down_punch', 'Bomba Hi-Tech', 'BAIXO + J', 'Larga a bomba logo à frente; a explosão lança o adversário para cima. O Pistoleiro joga dinamite.'),
+                ('ultimate', 'Sobrecarga Total', 'ULTIMATE · 50 DE ENERGIA', 'Ajoelha, liga a bateria ao canhão e dispara um feixe horizontal enorme.'),
+                ('victory', 'Fumaça no Cano', 'VITÓRIA', 'Gira o canhão ao lado do corpo e sopra a fumaça do cano.')]),
 ]
-REVAMP = [
-    dict(name='X12', was='Tophia', color=STONE, element='TERRA', art='concept-art/tophia-retrato-gdd-v1.png',
-         why='O nome vem da origem: ela é um experimento. Armadura de pedra, cavaleira.',
-         moves=['Punho de Arenito', 'Martelo de Pedra', 'Erupção Rochosa', 'Colosso de Terra']),
-    dict(name='Orsted', was='Volt', color=CYAN, element='RAIO', art='concept-art/volt-v5.png',
-         why='Mesmo nome do cientista. Armadura de sucata e canhão de mão.',
-         moves=['Tiro de Sucata', 'Disparo Carregado', 'Curto-Circuito', 'Sobrecarga Total']),
-]
+REVAMP = []     # every fighter is in the Legends style now
 
 
 def stats(f):
@@ -112,8 +125,8 @@ page('', '', JADE, f'''
 
 # 02 contents
 CONTENTS = [('01', 'Visão do jogo'), ('02', 'Estilo de arte'), ('03', 'Elenco'), ('04', 'Babuin'), ('05', 'Dale'),
-            ('06', 'X12 e Orsted'), ('07', 'Combate'), ('08', 'Animação'), ('09', 'Modos'), ('10', 'Interface'),
-            ('11', 'Arenas'), ('12', 'Produção'), ('13', 'Roadmap')]
+            ('06', 'X12'), ('07', 'Orsted'), ('08', 'Combate'), ('09', 'Animação'), ('10', 'Modos'), ('11', 'Interface'),
+            ('12', 'Arenas'), ('13', 'Produção'), ('14', 'Roadmap')]
 page('00', 'Índice', JADE, '<ol class="toc">' + ''.join(f'<li><b>{n}</b><span>{e(t)}</span></li>' for n, t in CONTENTS) + '</ol>'
      + f'<img class="toc-hero" src="{render("kaze_frente")}" alt="">')
 
@@ -156,7 +169,7 @@ cast += ''.join(f'''<div class="fighter wip" style="--c:{r['color']}"><img src="
 page('03', 'Quatro lutadores', SUN, f'<div class="cast">{cast}</div>')
 
 # fighter spreads
-for n, f in zip(('04', '05'), FIGHTERS):
+for n, f in zip(('04', '05', '06', '07'), FIGHTERS):
     outfits = ''.join(f'<figure><img src="{render(f["id"] + "_" + str(i))}"><figcaption>{e(o)}</figcaption></figure>' for i, o in enumerate(f['outfits']))
     page(n, f['name'], f['color'], f'''
 <div class="hero">
@@ -175,19 +188,12 @@ for n, f in zip(('04', '05'), FIGHTERS):
     moves = ''.join(f'''<div class="move"><div class="mimg"><img src="{render(f['id'] + '_' + clip)}" alt=""></div><em>{e(kind)}</em><h3>{e(name)}</h3><p>{e(desc)}</p></div>''' for clip, name, kind, desc in f['moves'])
     page(n, f'{f["name"]} · Golpes', f['color'], f'<div class="moves">{moves}</div><p class="note">Poses capturadas no quadro de contato de cada animação, no próprio jogo.</p>')
 
-# X12 / Orsted
-wip = ''.join(f'''<div class="wipcard" style="--c:{r['color']}"><img src="{asset(r['art'], 'concepts')}" alt="">
-<div><h3>{r['name']}</h3><small>ex-{r['was']}</small>{tag(r['element'], r['color'])}<p>{e(r['why'])}</p>
-<ul>{''.join(f'<li>{e(m)}</li>' for m in r['moves'])}</ul>
-<div class="stamp">EM REVITALIZAÇÃO</div></div></div>''' for r in REVAMP)
-page('06', 'X12 e Orsted', STONE, f'<div class="wipgrid">{wip}</div><p class="note">Próximos na revitalização Legends: turnaround, expressões, painéis de textura, modelo, rig e animações. Concepts antigas apenas como referência.</p>')
-
 # combat
 cmds = [('BÁSICO', JADE, 'J1 J2 J3', 'Corrente de três golpes. Variantes agachado e no ar.'),
         ('FORTE', SUN, 'K1 K2', 'Impacto maior, abertura mais evidente.'),
         ('ELEMENTAL', GOLD, 'ENERGIA', 'Poder do lutador e interação com a arena.'),
         ('ULTIMATE', CYAN, '50 / 100', 'Golpe de grande impacto ligado ao medidor.')]
-page('07', 'Entender a pancada', JADE, f'''
+page('08', 'Entender a pancada', JADE, f'''
 <div class="grid4">{''.join(f'<div class="card cmd" style="--c:{c}"><h3>{t}</h3><em>{k}</em><p>{d}</p></div>' for t, c, k, d in cmds)}</div>
 <h4 class="sec">RITMO DE UM GOLPE</h4>
 <div class="timeline"><span class="s">PREPARAÇÃO</span><span class="a">CONTATO + HITSTOP</span><span class="r">RECUPERAÇÃO</span></div>
@@ -200,17 +206,23 @@ page('07', 'Entender a pancada', JADE, f'''
 
 # animation
 f = FIGHTERS[1]
-page('08', 'Animação limitada', SUN, f'''
+page('09', 'Animação limitada', SUN, f'''
 <p class="lead">Poses fortes seguradas por quadros, como desenho animado: nada de interpolação mole. A cada golpe, três ideias.</p>
 <div class="beats">
  <figure><img src="{render('ignis_0')}"><figcaption><b>1 · GUARDA</b>Base larga, braços abertos para agarrar.</figcaption></figure>
  <figure><img src="{render('ignis_heavy')}"><figcaption><b>2 · CORTE PARA O CONTATO</b>Antecipação curta e salto direto para a pose do impacto.</figcaption></figure>
  <figure><img src="{render('ignis_victory')}"><figcaption><b>3 · SEGURA A POSE</b>O hitstop congela o acerto; o corpo exagera a forma.</figcaption></figure>
 </div>
-<p class="note">Próximo passo do roadmap: poses ainda mais exageradas e dinâmicas, irrealistas mas com anatomia humana básica, e vitórias com cutscene.</p>''')
+<h4 class="sec" style="margin-top:14px">TEMPO DE CADA FASE · 60 QUADROS POR SEGUNDO</h4>
+<div class="grid3 small" style="margin-top:0">
+ <div><h3>LEVE · 32 A 40</h3><p>Antecipação até o golpe em 8 a 10 quadros, pose segurada 8 a 10, volta em 10 a 14. O jab real dura uns 15: hitstop e guarda carregada fazem o resto.</p></div>
+ <div><h3>FORTE · 44 A 60</h3><p>Uma ou duas poses de antecipação (até 26 quadros no tiro carregado), contato segurado e recuperação cara, que mostra o peso.</p></div>
+ <div><h3>CONTA A FASE</h3><p>Golpe que parece rápido demais quase sempre segura o contato por menos de 6 quadros. Os quadros de combate casam com as marcas de cada animação.</p></div>
+</div>
+<p class="note">Estudo completo em docs/estudos/poses-de-ataque-e-game-feel.md, seção 11. Próximo passo: vitórias com cutscene.</p>''')
 
 # modes
-page('09', 'Modos de jogo', GOLD, f'''
+page('10', 'Modos de jogo', GOLD, f'''
 <div class="modes">
  <figure><img src="{screen('arcade')}"><figcaption><b>ARCADE</b>Torre de quatro etapas com chefe, três dificuldades, continue salvo e encerramento. Escolha de lutador e roupa no pátio.</figcaption></figure>
  <figure><img src="{screen('treino')}"><figcaption><b>TREINO</b>Garagem com dummy configurável, hitboxes, reposição e avanço de quadro.</figcaption></figure>
@@ -222,7 +234,7 @@ page('09', 'Modos de jogo', GOLD, f'''
 </div>''')
 
 # interface
-page('10', 'Interface', JADE, f'''
+page('11', 'Interface', JADE, f'''
 <div class="ui">
  <figure class="big"><img src="{screen('menu')}"><figcaption><b>MENU NA PRAIA</b>Título e lista de texto sobre a praia ao vivo.</figcaption></figure>
  <figure><img src="{screen('opcoes')}"><figcaption><b>OPÇÕES NO QUADRO</b>Pergaminho no quadro de missões da floresta.</figcaption></figure>
@@ -233,12 +245,12 @@ page('10', 'Interface', JADE, f'''
 arenas = [('luta_zephyr_dojo', 'ZEPHYR PEAK', JADE, 'Santuário entre cerejeiras. Rajada anunciada empurra lutadores e lança objetos.'),
           ('luta_molten_forge', 'CRIMSON ANVIL', SUN, 'Forja de lava e correntes. Erupção marcada no chão: saltar, sair ou bloquear.'),
           ('luta_storm_market', 'GOLDEN BAZAAR', GOLD, 'Arcos, lanternas e especiarias. Queda de carga anunciada sobre a marca.')]
-page('11', 'Três arenas', SUN, '<div class="arenas">' + ''.join(f'<figure style="--c:{c}"><img src="{screen(s)}"><figcaption><b>{t}</b>{d}</figcaption></figure>' for s, t, c, d in arenas) + '</div>')
+page('12', 'Três arenas', SUN, '<div class="arenas">' + ''.join(f'<figure style="--c:{c}"><img src="{screen(s)}"><figcaption><b>{t}</b>{d}</figcaption></figure>' for s, t, c, d in arenas) + '</div>')
 
 # production
 steps = [('CONCEPT', 'Turnaround, expressões e 20 painéis de textura'), ('BLENDER', 'Peças rígidas medidas na concept'),
          ('TEXTURA', 'Página 256, pintura à mão'), ('RIG + ANIM', 'Poses-chave por código e à mão'), ('GODOT', 'GLB, shader toon e combate')]
-page('12', 'Da concept ao jogo', CYAN, f'''
+page('13', 'Da concept ao jogo', CYAN, f'''
 <div class="flow steps">{''.join(f'<span><b>{t}</b><small>{d}</small></span>' for t, d in steps)}</div>
 <div class="pipe">
  <img src="{asset('concept-art/characters/dale/dale-turnaround-psx-v1.png', 'pipeline')}">
@@ -254,14 +266,14 @@ page('12', 'Da concept ao jogo', CYAN, f'''
 </div>''')
 
 # roadmap
-ROADMAP = [('REVITALIZAÇÃO DOS PERSONAGENS', JADE, [(1, 'Babuin'), (1, 'Dale'), (0, 'X12 (ex-Tophia): ela é um experimento'), (0, 'Orsted (ex-Volt): mesmo nome do cientista')]),
+ROADMAP = [('REVITALIZAÇÃO DOS PERSONAGENS', JADE, [(1, 'Babuin'), (1, 'Dale'), (1, 'X12 (ex-Tophia): ela é um experimento'), (1, 'Orsted (ex-Volt): mesmo nome do cientista')]),
            ('REVITALIZAR ANIMAÇÕES', SUN, [(0, 'Mais exageradas e dinâmicas: poses irrealistas, anatomia humana básica'), (0, 'Vitórias com cutscene')]),
            ('REVITALIZAR MENUS', GOLD, [(0, 'Versus com Online e Local (LAN)'), (0, 'Aba "Lutadores" com as habilidades'), (0, 'Retrabalhar habilidades'), (0, 'Tutorial')]),
            ('CUTSCENE INICIAL', STONE, [(0, 'Primeira pessoa num quarto de adolescente: um CD no PS1 antigo e o jogo abre')]),
            ('COMBOS E BALANCEAMENTO', CYAN, [(0, 'Retrabalhar combos e balanceamento'), (0, 'Hitboxes e game feel')]),
            ('TOQUES FINAIS', JADE, [(0, 'Detalhamento de todos os pontos'), (0, 'Preparação para a Alpha 0.1')])]
 road = ''.join(f'''<div class="road" style="--c:{c}"><b>{i + 1}</b><h3>{t}</h3><ul>{''.join(f'<li class="{"done" if d else ""}">{e(x)}</li>' for d, x in items)}</ul></div>''' for i, (t, c, items) in enumerate(ROADMAP))
-page('13', 'Rumo à Alpha 0.1', JADE, f'<div class="roadmap">{road}</div>')
+page('14', 'Rumo à Alpha 0.1', JADE, f'<div class="roadmap">{road}</div>')
 
 # ---------------------------------------------------------------- render
 CSS = ''.join(f"@font-face{{font-family:{k};src:url('assets/fonts/{f}');font-weight:{w};font-style:{st}}}" for k, f, w, st in FONTS) + '''
@@ -330,8 +342,8 @@ figure{margin:0}figcaption{font:600 10px Title;letter-spacing:1.5px;color:var(--
 .timeline{display:flex;height:46px;font:italic 800 16px Title;letter-spacing:1px;color:var(--ink)}
 .timeline span{display:flex;align-items:center;padding-left:16px;transform:skewX(-12deg)}.timeline .s{width:28%;background:var(--muted)}.timeline .a{width:30%;background:var(--a)}.timeline .r{width:42%;background:#e08a3c}
 .beats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
-.beats figure{background:var(--ink2);height:420px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
-.beats img{max-height:310px;max-width:100%;filter:drop-shadow(4px 4px 0 #000a);margin-bottom:auto}
+.beats figure{background:var(--ink2);height:275px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.beats img{max-height:190px;max-width:100%;filter:drop-shadow(4px 4px 0 #000a);margin-bottom:auto}
 .beats figcaption{font:12px Text;color:var(--paper);letter-spacing:0;text-align:center}.beats b{display:block;font:italic 800 18px Title;color:var(--a);letter-spacing:1px;margin-bottom:4px}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .modes img,.ui img,.arenas img{width:100%;display:block;border:3px solid var(--a)}.modes img{height:290px;object-fit:cover}
