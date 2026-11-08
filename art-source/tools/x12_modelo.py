@@ -111,3 +111,16 @@ def VERTEX_BONE(part, v):
     if part == 'skirt' and v[2] < 0.9:
         return 'robe_front' if v[1] < 0 else 'robe_back'
     return None
+
+# palette outfits (legends_recolor.py): a new page from the hand-painted one, only the stone and
+# its amber veins recoloured (skin, hair, metal and face stay)
+RECOLOR = {
+    # Obsidian: black volcanic glass with cold violet highlights; the veins glow violet
+    'obsidiana': [
+        {'hue': (4, 23), 'sat': (.55, 1), 'ramp': [(0, '#07060a'), (.4, '#120f19'), (.75, '#211c2e'), (.92, '#3a3352'), (1, '#8d7fc4')]},
+        {'hue': (30, 48), 'sat': (.8, 1), 'ramp': [(0, '#8c4dff'), (1, '#d9b3ff')]},
+    ],
+}
+
+# outfits with their own pieces (legends_rig.outfit / export_godot): the boxer and the guinea pig
+OUTFITS = {'Boxe': 'x12boxe_modelo', 'Cobaia': 'x12cobaia_modelo'}

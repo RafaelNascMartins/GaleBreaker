@@ -1,20 +1,14 @@
 [gd_resource type="ShaderMaterial" format=3]
 
 [ext_resource type="Shader" path="res://scripts/toon.gdshader" id="1_iwuu3"]
-[ext_resource type="Texture2D" path="res://assets/characters/volt/textures/albedo.png" id="2_p4ilw"]
-[ext_resource type="Texture2D" path="res://assets/characters/volt/textures/mask.png" id="3_t5ysb"]
-[ext_resource type="Texture2D" path="res://assets/characters/volt/textures/normal.png" id="4_mvo1b"]
+[ext_resource type="Texture2D" path="res://assets/characters/volt/textures/page.png" id="2_page"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_iwuu3")
-shader_parameter/base_color = null
-shader_parameter/glow = null
 shader_parameter/use_textures = true
-shader_parameter/albedo_tex = ExtResource("2_p4ilw")
-shader_parameter/mask_tex = ExtResource("3_t5ysb")
-shader_parameter/normal_tex = ExtResource("4_mvo1b")
+shader_parameter/pixelated = true
+shader_parameter/albedo_px = ExtResource("2_page")
 shader_parameter/palette_primary = Color(0.83137256, 0.60784316, 0.21960784, 1)
 shader_parameter/palette_secondary = Color(0.2627451, 0.36078432, 0.43137255, 1)
 shader_parameter/palette_accent = Color(0.13333334, 0.89411765, 1, 1)
-shader_parameter/flash_amount = null

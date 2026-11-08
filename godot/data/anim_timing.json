@@ -298,11 +298,11 @@
         "end": 24
       },
       "air_punch": {
-        "wind": 3,
-        "contact": 5,
-        "hold": 9,
-        "follow": 11,
-        "recover": 17,
+        "wind": 4,
+        "contact": 6,
+        "hold": 12,
+        "follow": 14,
+        "recover": 19,
         "end": 24
       },
       "sweep": {
@@ -338,36 +338,36 @@
   "volt": {
     "attacks": {
       "light_1": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 8,
+        "contact": 12,
+        "hold": 22,
+        "follow": 26,
+        "recover": 34,
+        "end": 42
       },
       "light_2": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 6,
+        "contact": 10,
+        "hold": 19,
+        "follow": 23,
+        "recover": 30,
+        "end": 38
       },
       "light_3": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 12,
+        "contact": 16,
+        "hold": 26,
+        "follow": 31,
+        "recover": 40,
+        "end": 50
       },
       "heavy": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 18,
+        "contact": 26,
+        "hold": 34,
+        "follow": 38,
+        "recover": 48,
+        "end": 60
       },
       "heavy_2": {
         "wind": 4,
@@ -386,44 +386,44 @@
         "end": 24
       },
       "elemental": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 12,
+        "contact": 18,
+        "hold": 24,
+        "follow": 26,
+        "recover": 38,
+        "end": 50
       },
       "ultimate": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 32,
+        "contact": 42,
+        "hold": 50,
+        "follow": 54,
+        "recover": 72,
+        "end": 90
       },
       "down_punch": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 8,
+        "contact": 14,
+        "hold": 22,
+        "follow": 24,
+        "recover": 34,
+        "end": 44
       },
       "air_punch": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
+        "wind": 3,
+        "contact": 5,
+        "hold": 9,
+        "follow": 11,
+        "recover": 17,
         "end": 24
       },
       "sweep": {
-        "wind": 4,
-        "contact": 6,
-        "hold": 10,
-        "follow": 12,
-        "recover": 18,
-        "end": 24
+        "wind": 6,
+        "contact": 10,
+        "hold": 18,
+        "follow": 20,
+        "recover": 30,
+        "end": 40
       },
       "rock_spike": {
         "wind": 4,
@@ -435,15 +435,15 @@
       }
     },
     "states": {
-      "idle": 40,
-      "walk": 24,
-      "dash": 10,
+      "idle": 64,
+      "walk": 22,
+      "dash": 12,
       "guard_high": 10,
-      "parry": 16,
-      "hit": 16,
-      "knockdown": 24,
-      "ko": 30,
-      "victory": 40
+      "parry": 18,
+      "hit": 20,
+      "knockdown": 30,
+      "ko": 40,
+      "victory": 48
     },
     "stride": 1.9
   }

@@ -6,7 +6,8 @@ const DT := 1.0 / 60.0
 const EDGE := 6.5
 const GRAVITY := 28.0
 # Godot-only feel of each light-chain step (J1, J2, J3): metres stepped back before the strike,
-# metres travelled forward with it, extra startup frames and the hitstop on connect (frames).
+# metres travelled forward with it, extra startup / active / recovery frames and the hitstop on
+# connect (frames). The clip is fitted to the move's frames, so these set how fast it plays.
 const LIGHT_FEEL := {
 	"kaze": [
 		{"back": 0.05, "advance": 0.15, "startup": 0, "hitstop": 4},
@@ -18,6 +19,14 @@ const LIGHT_FEEL := {
 		{"back": 0.0, "advance": 0.12, "startup": 0, "hitstop": 10},
 		{"back": 0.0, "advance": 0.15, "startup": 0, "hitstop": 12},
 		{"back": 0.0, "advance": 0.20, "startup": 0, "hitstop": 18},
+	],
+	# Orsted: frames matched to his clips (anim_timing volt light_1-3: contact 12/10/16, follow
+	# 26/23/31, end 42/38/50) so they play at the speed they were animated, and a long freeze on the
+	# shot's pose when it connects. Medium-speed shots for a calm zoner (docs/estudos section 11).
+	"volt": [
+		{"back": 0.0, "advance": 0.20, "startup": 8, "active": 11, "recovery": 10, "hitstop": 8},
+		{"back": 0.0, "advance": 0.28, "startup": 5, "active": 10, "recovery": 7, "hitstop": 10},
+		{"back": 0.0, "advance": 0.40, "startup": 10, "active": 12, "recovery": 7, "hitstop": 14},
 	],
 }
 # Godot-only K chain (K1, K2, K3): each press of K inside the chain window plays the next kick.
@@ -44,6 +53,12 @@ const HEAVY_CHAIN := {
 			"back": 0.0, "advance": 0.15, "hitstop": 10},
 		{"name": "Marreta Caipira", "back": 0.0, "advance": 0.20, "hitstop": 16},
 	],
+}
+# Per fighter, per move: [startup, active, recovery] frames matched to the clip's timing marks
+# (anim_timing: startup -> contact, active -> follow, recovery -> end), set after every other
+# rule. Orsted (docs/estudos section 11): the charged K keeps its 26-frame charge and 60 total.
+const MOVE_FRAMES := {
+	"volt": {"heavy": [26, 12, 22], "down_punch": [14, 10, 20], "sweep": [10, 10, 20], "air_punch": [6, 8, 10]},
 }
 
 ## Speed that covers `metres` within `frames` steps, given the per-frame decay of step().
@@ -210,10 +225,6 @@ func attack(f: Dictionary, requested: String, crouching: bool) -> bool:
 			move.damage = roundi(move.damage * 1.2)
 			move.startupFrames += 1
 			move.recoveryFrames += 2
-			if f.id == "volt":
-				move.hitHeight = "low"
-				move.hitbox = move.hitbox.duplicate()
-				move.hitbox.offsetY = 0.68
 		elif chain == 3:
 			move.damage = roundi(move.damage * 1.45)
 			move.startupFrames += 2
@@ -227,6 +238,8 @@ func attack(f: Dictionary, requested: String, crouching: bool) -> bool:
 		if chain <= feel.size():
 			var step: Dictionary = feel[chain - 1]
 			move.startupFrames += int(step.startup)
+			move.activeFrames += int(step.get("active", 0))
+			move.recoveryFrames += int(step.get("recovery", 0))
 			move["advance"] = float(step.advance)
 			move["back"] = float(step.back)
 			move["hitstopFrames"] = int(step.hitstop)
@@ -256,6 +269,11 @@ func attack(f: Dictionary, requested: String, crouching: bool) -> bool:
 			"startupFrames": 8, "activeFrames": 4, "recoveryFrames": 18, "damage": 95,
 			"launchY": 2.4, "knockback": 3.6, "armorHits": 0,
 			"hitbox": {"offsetX": 1.45, "offsetY": 0.42, "width": 2.55, "height": 0.72}}, true)
+	var frames: Array = MOVE_FRAMES.get(f.id, {}).get("sweep" if move.get("animStyle", "") == "low_sweep" else kind, [])
+	if frames.size() == 3:
+		move.startupFrames = frames[0]
+		move.activeFrames = frames[1]
+		move.recoveryFrames = frames[2]
 	f.vx = f.vx * 0.65 if f.action == "dash" else 0.0
 	if f.grounded and float(move.get("back", 0.0)) > 0.0:
 		f.vx = -f.facing * travel_speed(float(move.back), int(move.startupFrames))

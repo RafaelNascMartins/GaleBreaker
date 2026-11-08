@@ -22,20 +22,27 @@ palettes = [{
 "primary": "#C86428",
 "secondary": "#8C421A"
 }, {
-"accent": "#38BDF8",
-"name": "Geodo Ametista",
-"primary": "#7E22CE",
-"secondary": "#4C1D95"
+"accent": "#A87BFF",
+"name": "Obsidiana",
+"page": "res://assets/characters/tophia/textures/page_obsidiana.png",
+"primary": "#1A1524",
+"secondary": "#0B0910"
 }, {
 "accent": "#FDE047",
-"name": "Rocha Rubi",
-"primary": "#BE123C",
-"secondary": "#4C0519"
+"body": "tophia_BoxeBody",
+"face": "res://assets/characters/tophia/textures/face_boxe.png",
+"name": "Boxeadora",
+"page": "res://assets/characters/tophia/textures/page_boxe.png",
+"primary": "#C8282D",
+"secondary": "#F2F2F2"
 }, {
-"accent": "#10B981",
-"name": "Monólito de Mármore",
-"primary": "#CBD5E1",
-"secondary": "#475569"
+"accent": "#D9302B",
+"body": "tophia_CobaiaBody",
+"face": "res://assets/characters/tophia/textures/face_cobaia.png",
+"name": "Cobaia",
+"page": "res://assets/characters/tophia/textures/page_cobaia.png",
+"primary": "#E6DCCB",
+"secondary": "#2B2A30"
 }]
 attack_icons = {
 "elemental": "res://assets/ui/icons/tophia_elemental.png",

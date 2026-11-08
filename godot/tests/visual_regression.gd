@@ -61,11 +61,15 @@ func run() -> void:
 			view.play_clip("light_3", GaleAnimTiming.contact_sec(id, "light_3"))
 			check(view.socket_position("socket_hand_r").z < -0.6, "Kaze J3 drives the rear palm forward")
 		if id == "volt":
-			for clip: String in ["idle", "light_1", "light_2", "heavy", "ultimate"]:
-				view.play_clip(clip, 0.1)
+			# Orsted holds the cannon up at rest; it points at the opponent on his shots
+			# (the heavy at its aim, just before the shot: the shot itself kicks the barrel up;
+			# the user's J2 aims a little up, so up to 20 deg from level passes)
+			for clip: String in ["light_1", "light_2", "heavy"]:
+				var at := GaleAnimTiming.contact_sec(id, clip) if clip != "heavy" else float(GaleAnimTiming.attack(id, clip).wind) / 60.0
+				view.play_clip(clip, at)
 				var muzzle := view.socket_position("socket_muzzle")
 				var hand := view.socket_position("socket_hand_r")
-				check(muzzle.z < hand.z - 0.25 and absf(muzzle.y - hand.y) < 0.15, "Volt " + clip + " barrel stays forward and level")
+				check(muzzle.z < hand.z - 0.25 and absf(muzzle.y - hand.y) < 0.36 * absf(muzzle.z - hand.z), "Orsted " + clip + " barrel points forward, within 20 deg of level, on the shot")
 		for clip: String in ["light_1", "light_2", "light_3", "heavy", "elemental", "ultimate"]:
 			var marks := GaleAnimTiming.attack(id, clip)
 			var length := view.anim_player.get_animation(view.catalog.clips.get(clip, clip)).length

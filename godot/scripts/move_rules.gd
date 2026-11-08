@@ -12,6 +12,10 @@ static func apply(id: String, kind: String, move: Dictionary) -> void:
 			"recoveryFrames": 22, "damage": 90, "meterCost": 15, "range": 4.0, "hitHeight": "mid",
 			"launchY": 4.5, "knockback": 1.5, "armorHits": 0, "rockFlight": 30, "rockDistance": 3.9}, true)
 		return
+	if id == "volt" and kind == "down_punch":
+		# down + J: a launcher - he drops a bomb right in front of him (where the old uppercut hit)
+		# and it blows the opponent up; the short drop starts at the throw (contact)
+		move.merge({"name": "Bomba Hi-Tech", "delivery": "bomb", "rockFlight": 4, "rockDistance": 1.2}, true)
 	if kind not in ["light", "heavy", "elemental", "ultimate"]:
 		return
 	var names := {
@@ -22,9 +26,9 @@ static func apply(id: String, kind: String, move: Dictionary) -> void:
 	move.name = names[id][["light","heavy","elemental","ultimate"].find(kind)]
 	if kind == "ultimate":
 		move.meterCost = 50
-	if id == "volt" and kind == "light":
-		move.merge({"delivery":"bolt","startupFrames":7,"activeFrames":3,"recoveryFrames":16,"damage":52,"hitHeight":"mid","range":7.0,"armorHits":0}, true)
-	elif id == "volt" and kind == "heavy":
+	# Orsted: his J1-J3 are point-blank shots that hit like melee (the generic melee hitbox below);
+	# his heavy (K) is the projectile.
+	if id == "volt" and kind == "heavy":
 		move.merge({"delivery":"charged_bolt","startupFrames":26,"activeFrames":4,"recoveryFrames":30,"damage":155,"hitHeight":"mid","range":6.0,"armorHits":0}, true)
 	elif id == "volt" and kind == "elemental":
 		move.merge({"delivery":"pulse","startupFrames":18,"activeFrames":8,"recoveryFrames":24,"damage":95,"meterCost":12,"range":1.7,"launchY":0.0,"armorHits":0}, true)

@@ -16,6 +16,8 @@ A pose is written in character space on top of the guard (frame 0 of the generat
   'foot_turn': {side: degrees} pitch of the foot (negative lifts the toes)
   'sole':  {side: ((sole faces), (toes point))} striking foot orientation (see orient_foot)
   'pivot': {side: degrees} a planted foot turning on the ground under a kick
+  'point': {bone: (x, y, z)} a held prop's bone (the gun) points that way; its hand turns, the prop's
+           top stays up
   'robe':  {bone: (lean, side, twist)} apron panel swing (lean > 0 swings it back)
   'spin':  degrees the whole body turns about the vertical through the hips (negative turns
            over the right shoulder); feet and hand targets stay in world space
@@ -742,6 +744,30 @@ def orient_foot(foot, sole=None, pivot=0.0, pitch=0.0):
     foot.matrix = Matrix.Translation(foot.head) @ (rot @ rest).to_4x4()
 
 
+def point_bone(rig, bone, direction):
+    """Turn a held prop's bone (a gun on the hand) so it points along direction, its rest 'up'
+    (world +z at rest) kept as close to world up as it can: the parent (the hand) turns about its
+    head, so the prop stays in the hand."""
+    parent = bone.parent
+    d = direction.normalized()
+    cur = bone.matrix.to_3x3().col[1].normalized()
+    turn = cur.rotation_difference(d).to_matrix().to_4x4()
+    parent.matrix = Matrix.Translation(parent.head) @ turn @ Matrix.Translation(-parent.head) @ parent.matrix
+    bpy.context.view_layer.update()
+    up_local = bone.bone.matrix_local.to_3x3().inverted() @ Vector((0, 0, 1))
+    up_now = (bone.matrix.to_3x3() @ up_local).normalized()
+    want = Vector((0, 0, 1)) - d * d.z
+    if want.length > 1e-3:
+        want.normalize()
+        a = up_now - d * up_now.dot(d)
+        if a.length > 1e-3:
+            a.normalize()
+            ang = math.atan2(d.dot(a.cross(want)), a.dot(want))
+            roll = Matrix.Rotation(ang, 4, d)
+            parent.matrix = Matrix.Translation(parent.head) @ roll @ Matrix.Translation(-parent.head) @ parent.matrix
+            bpy.context.view_layer.update()
+
+
 def place(rig, key, start):
     """Pose the rig for one key: start pose, then hips, turns, legs, arms, hand aim and scale."""
     from character_polish import solve_limb
@@ -818,6 +844,8 @@ def place(rig, key, start):
         turn = m.to_3x3().col[1].normalized().rotation_difference(Vector(direction).normalized())
         hand.matrix = Matrix.Translation(hand.head) @ turn.to_matrix().to_4x4() @ Matrix.Translation(-hand.head) @ m
         bpy.context.view_layer.update()
+    for name, direction in key.get('point', {}).items():
+        point_bone(rig, pb[name], Vector(direction))
     for name, sc in key.get('scale', {}).items():
         pb[name].scale = sc
     bpy.context.view_layer.update()

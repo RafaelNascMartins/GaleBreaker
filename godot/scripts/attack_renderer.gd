@@ -1,6 +1,10 @@
 extends Node3D
 ## Every visible attack is positioned from the combat simulation's entity.
 
+# palettes whose thrown bomb is the dynamite stick (visual_catalog "prop": "Dinamite"): Orsted's
+# gunslinger outfit
+const DYNAMITE_PALETTES := {"volt": [2]}
+
 var views := {}
 
 func reset() -> void:
@@ -81,6 +85,62 @@ func build(e: Dictionary) -> Node3D:
 			rock.size = Vector3(0.32,0.28,0.3)
 			var flying := mesh_node(node,rock,solid)
 			flying.name = "Rock"
+		"bomb":
+			# the blast: a hot core and expanding rings; the flying bomb (slate body, blue gem, copper
+			# collar, like the prop in his hand) is the "Rock" node
+			var core := SphereMesh.new()
+			core.radius = 0.55
+			core.height = 1.1
+			mesh_node(body,core,material(Color("e3fcff"),0.85))
+			var glow := SphereMesh.new()
+			glow.radius = 0.85
+			glow.height = 1.5
+			mesh_node(body,glow,soft)
+			for i in 2:
+				var blast := ring(body,soft,0.75-i*0.2)
+				blast.position.y = -float(e.y)+0.05+i*0.06
+			var bomb := Node3D.new()
+			bomb.name = "Rock"
+			node.add_child(bomb)
+			if int(e.get("palette", 0)) in DYNAMITE_PALETTES.get(String(e.fighter), []):
+				# the gunslinger's dynamite: a red stick, a grey cap, the lit fuse's spark
+				var stick := CylinderMesh.new()
+				stick.top_radius = 0.026
+				stick.bottom_radius = 0.026
+				stick.height = 0.17
+				stick.radial_segments = 8
+				mesh_node(bomb,stick,material(Color("c62f28")))
+				var cap := CylinderMesh.new()
+				cap.top_radius = 0.028
+				cap.bottom_radius = 0.028
+				cap.height = 0.025
+				cap.radial_segments = 8
+				mesh_node(bomb,cap,material(Color("8a7a72")),Vector3(0,0.095,0))
+				var spark := SphereMesh.new()
+				spark.radius = 0.022
+				spark.height = 0.044
+				spark.radial_segments = 5
+				spark.rings = 2
+				mesh_node(bomb,spark,material(Color("ffc23a")),Vector3(0.012,0.13,0))
+				return node
+			var shell := SphereMesh.new()
+			shell.radius = 0.085
+			shell.height = 0.19
+			shell.radial_segments = 8
+			shell.rings = 4
+			mesh_node(bomb,shell,material(Color("3b4250")))
+			var gem := SphereMesh.new()
+			gem.radius = 0.045
+			gem.height = 0.09
+			gem.radial_segments = 6
+			gem.rings = 3
+			mesh_node(bomb,gem,material(Color("2ee0f5")),Vector3(0,0,0.07))
+			var collar := CylinderMesh.new()
+			collar.top_radius = 0.05
+			collar.bottom_radius = 0.05
+			collar.height = 0.03
+			collar.radial_segments = 8
+			mesh_node(bomb,collar,material(Color("b8733a")),Vector3(0,0.09,0))
 		"spikes":
 			var stone := CylinderMesh.new()
 			stone.top_radius = 0
@@ -126,6 +186,20 @@ func render(entities: Array) -> void:
 			body.rotation.y = float(e.age)*0.17
 		elif e.kind == "stone":
 			body.rotation.z = -float(e.facing) * float(e.age) * 0.35
+		elif e.kind == "bomb":
+			# dropped from his hand to the ground in front of him, spinning, then the blast swells
+			var bomb: Node3D = node.get_node("Rock")
+			var flight := maxi(1, int(e.get("flight", 1)))
+			bomb.visible = e.delay > 0 and e.delay <= flight
+			if bomb.visible:
+				var t := 1.0 - float(e.delay) / float(flight)
+				var bx := lerpf(float(e.x0), float(e.x), t)
+				var by := lerpf(0.85, 0.12, t) + 0.2 * 4.0 * t * (1.0 - t)
+				bomb.position = Vector3(bx - float(e.x), by - float(e.y), 0)
+				bomb.rotation.z = -float(e.facing) * t * TAU
+			var swell := clampf(float(e.age+1)/4.0,0.2,1.0)
+			body.scale = Vector3.ONE * swell
+			body.position.y = -float(e.y)*0.4*(1.0-swell)
 		elif e.kind == "rock_spike":
 			# the stone flies in a half-moon arc from her hand to the landing point, then the spike rises
 			var rock: MeshInstance3D = node.get_node("Rock")

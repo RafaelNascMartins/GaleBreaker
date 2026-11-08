@@ -48,12 +48,15 @@ func spawn(f: Dictionary) -> void:
 			"rock_spike":
 				# the spike where the tossed stone lands; it waits for the startup and the flight
 				width = 0.9; height = 2.2; y = 1.1; distance = float(move.get("rockDistance", 3.9)); life = 10
+			"bomb":
+				# Orsted's bomb: the blast where the tossed bomb lands, after the startup and the flight
+				width = 1.5; height = 1.7; y = 0.85; distance = float(move.get("rockDistance", 1.2)); life = 8
 		var attack := {"id":next_id,"owner":int(f.player),"fighter":f.id,"serial":int(f.attack_serial),
 			"kind":delivery,"move":move,"x":float(f.x)+float(f.facing)*distance,"y":y,
 			"facing":float(f.facing),"speed":speed,"width":width,"height":height,"life":life,
 			"delay":int(move.startupFrames)+(i*8 if delivery=="spikes" else 0)+int(move.get("rockFlight",0)),"age":0,
 			"hits":{},"interval":interval,"spawned":false,
-			"flight":int(move.get("rockFlight",0)),"x0":float(f.x)+float(f.facing)*0.5}
+			"flight":int(move.get("rockFlight",0)),"x0":float(f.x)+float(f.facing)*0.5,"palette":int(f.get("palette",0))}
 		items.append(attack)
 		next_id += 1
 
@@ -100,7 +103,7 @@ func update(sim: GaleCombat, inputs: Array) -> void:
 					owner.connected = true
 				if e.speed > 0 or result == "parry":
 					e.life = 0
-		if e.kind in ["wave","pulse","stomp","spikes","vortex","beam","fist","rock_spike","stone"]:
+		if e.kind in ["wave","pulse","stomp","spikes","vortex","beam","fist","rock_spike","stone","bomb"]:
 			for hazard: Dictionary in sim.hazards:
 				if hazard.hp > 0 and absf(float(hazard.x)-float(e.x)) < float(e.width)*0.5+0.3:
 					hazard.vx = float(e.facing) * float(e.move.get("gustForce",10.0))

@@ -100,9 +100,9 @@ static func build_default(id: String) -> GaleVisualCatalog:
 			cat.accent_color = Color("98531F")
 			cat.palettes = [
 				{"name": "Arenito Laranja", "primary": "#C86428", "secondary": "#8C421A", "accent": "#FFA834"},
-				{"name": "Geodo Ametista", "primary": "#7E22CE", "secondary": "#4C1D95", "accent": "#38BDF8"},
-				{"name": "Rocha Rubi", "primary": "#BE123C", "secondary": "#4C0519", "accent": "#FDE047"},
-				{"name": "Monólito de Mármore", "primary": "#CBD5E1", "secondary": "#475569", "accent": "#10B981"},
+				{"name": "Obsidiana", "primary": "#1A1524", "secondary": "#0B0910", "accent": "#A87BFF", "page": "res://assets/characters/tophia/textures/page_obsidiana.png"},
+				{"name": "Boxeadora", "primary": "#C8282D", "secondary": "#F2F2F2", "accent": "#FDE047", "page": "res://assets/characters/tophia/textures/page_boxe.png", "body": "tophia_BoxeBody", "face": "res://assets/characters/tophia/textures/face_boxe.png"},
+				{"name": "Cobaia", "primary": "#E6DCCB", "secondary": "#2B2A30", "accent": "#D9302B", "page": "res://assets/characters/tophia/textures/page_cobaia.png", "body": "tophia_CobaiaBody", "face": "res://assets/characters/tophia/textures/face_cobaia.png"},
 			]
 			cat.gdd_moves = {
 				"light": {"name": "Punho de Arenito", "sequence": "J1 soco reto direito; J2 cruzado esquerdo; J3 pisão frontal com bota de pedra.", "behavior": "Três entradas; pisão final gera poeira e empurrão curto.", "counter": "Bloquear os socos; recuar para fazer o pisão errar."},
@@ -111,15 +111,15 @@ static func build_default(id: String) -> GaleVisualCatalog:
 				"ultimate": {"name": "Colosso de Terra", "sequence": "Finca os pés e cruza os braços; placas flutuam; projeta punho colossal à frente.", "behavior": "Ataque amplo frontal de grande alcance com punho de pedra projetado.", "counter": "Sair da frente durante a formação; punir a recuperação."},
 			}
 		"volt":
-			cat.display_name = "Volt"
+			cat.display_name = "Orsted"
 			cat.subtitle = "Inventor da Sucata Elétrica"
 			cat.element_label = "RAIO"
 			cat.accent_color = Color("206A7C")
 			cat.palettes = [
 				{"name": "Sucata Ciano", "primary": "#D49B38", "secondary": "#435C6E", "accent": "#22E4FF"},
-				{"name": "Sobrecarga Neon", "primary": "#DB2777", "secondary": "#31102F", "accent": "#38BDF8"},
-				{"name": "Curto Carmesim", "primary": "#DC2626", "secondary": "#18181B", "accent": "#FDE047"},
-				{"name": "Bateria Tóxica", "primary": "#16A34A", "secondary": "#14532D", "accent": "#FACC15"},
+				{"name": "Invertido", "primary": "#3A6FB0", "secondary": "#E6DDC8", "accent": "#FF3DCB", "page": "res://assets/characters/volt/textures/page_invertido.png"},
+				{"name": "Pistoleiro", "primary": "#C9A46A", "secondary": "#4A2A22", "accent": "#22E4FF", "page": "res://assets/characters/volt/textures/page_pistoleiro.png", "body": "volt_PistoleiroBody", "face": "res://assets/characters/volt/textures/face_pistoleiro.png", "prop": "Dinamite", "muzzle_back": 0.21},
+				{"name": "Cientista Maluco", "primary": "#E8E4E8", "secondary": "#2E2C30", "accent": "#22E4FF", "page": "res://assets/characters/volt/textures/page_cientista.png", "body": "volt_CientistaBody", "face": "res://assets/characters/volt/textures/face_cientista.png"},
 			]
 			cat.gdd_moves = {
 				"light": {"name": "Tiro de Sucata", "sequence": "J1 tiro em pé; J2 tiro agachado baixo; J3 disparo curto com as duas mãos.", "behavior": "Três tiros visíveis; J2 muda a altura do disparo. Sem munição ou calor.", "counter": "Bloquear ou saltar conforme a altura; aproximar entre disparos."},

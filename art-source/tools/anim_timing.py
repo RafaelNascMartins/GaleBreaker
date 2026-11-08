@@ -5,7 +5,7 @@ impact hold), follow (end of follow-through), recover (back near stance), end.
 Godot maps combat startup -> [0, contact], active -> [contact, follow] and
 recovery -> [follow, end], so the gameplay frame data never changes.
 
-Tophia and Volt still use the original 24-frame layout until their pass.
+Fighters without an entry keep the original 24-frame layout.
 """
 import json
 from pathlib import Path
@@ -71,11 +71,28 @@ TIMING = {
             "heavy": _attack(8, 12, 17, 20, 28, 34),
             "down_punch": _attack(3, 6, 10, 12, 18, 24),
             "sweep": _attack(5, 8, 12, 15, 22, 28),
-            "air_punch": _attack(3, 5, 9, 11, 17, 24),
+            "air_punch": _attack(4, 6, 12, 14, 19, 24),
             "elemental": _attack(3, 6, 10, 12, 18, 22),
             "ultimate": _attack(26, 30, 36, 40, 50, 58),
             "rock_spike": _attack(6, 10, 13, 16, 24, 30),
         },
+    },
+    # Orsted (legends_orsted_anim.py), calm zoner: J1-J3 point-blank shots (J3 a 360 spin into
+    # the shot), K the projectile (a long aim, a big kick), down+J the bomb toss.
+    "volt": {
+        "attacks": {
+            "light_1": _attack(8, 12, 22, 26, 34, 42),   # the user's J1: a visible wind-up, a 10-frame held shot
+            "light_2": _attack(6, 10, 19, 23, 30, 38),   # 2026-11-08 frame budget (study section 11)
+            "light_3": _attack(12, 16, 26, 31, 40, 50),
+            "heavy": _attack(18, 26, 34, 38, 48, 60),       # charged shot: 26-frame charge (move_rules)
+            "down_punch": _attack(8, 14, 22, 24, 34, 44),
+            "sweep": _attack(6, 10, 18, 20, 30, 40),
+            "air_punch": _attack(3, 5, 9, 11, 17, 24),
+            "elemental": _attack(12, 18, 24, 26, 38, 50),    # pulse 18/8/24 (move_rules)
+            "ultimate": _attack(32, 42, 50, 54, 72, 90),     # beam 42/12/36 (move_rules)
+        },
+        "states": {"idle": 64, "walk": 22, "dash": 12, "guard_high": 10, "parry": 18, "hit": 20,
+                   "knockdown": 30, "ko": 40, "victory": 48},
     },
 }
 

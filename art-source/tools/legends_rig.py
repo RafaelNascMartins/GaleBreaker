@@ -9,6 +9,12 @@ The character module gives:
                  neck_base, neck_head, head_top, shoulder, elbow, wrist, hand_tip, hip, knee,
                  ankle, toe (model_rig.fit_skeleton)
     UNUSED_BONES bones of the shared rig this fighter doesn't use (removed)
+    SOCKET_AT    optional {socket bone: part}: the bone's head moved to the front of that part
+                 (the gun's muzzle for `cannon`)
+    PROPS        optional {label: [parts]}: props (a thrown bomb) built as their own objects on their
+                 bone, exported as <ID>_<label>Prop on the body's page
+    OUTFITS      optional {label: outfit module}: outfits with their own pieces, put on the rig by
+                 outfit() and exported as <ID>_<label>Body with textures/page_<label>.png and face_<label>.png
     VERTEX_BONE  optional f(part, (x, y, z)) -> bone name or None: a vertex that follows another
                  bone than its part's (a skirt's hem on the cloth bones), still weight 1
 Steps: append the rig as <NAME>_Rig, fit its bones to JOINTS, remove the unused bones, build
@@ -99,15 +105,24 @@ def prune(rig, names):
     bpy.ops.object.mode_set(mode='OBJECT')
 
 
-def body(m, col, page, atlas):
-    """One mesh from the parts: vertices of each part weight 1 on its bone, attribute 'part'."""
-    name = f'{m.NAME}_Body'
+def prop_parts(m):
+    return {n for names in getattr(m, 'PROPS', {}).values() for n in names}
+
+
+def body(m, col, page, atlas, only=None, name=None):
+    """One mesh from the parts: vertices of each part weight 1 on its bone, attribute 'part'.
+    The body leaves the props out; only= builds just those parts (a prop) under name=."""
+    name = name or f'{m.NAME}_Body'
     old = bpy.data.objects.get(name)
     if old:
         me = old.data
         bpy.data.objects.remove(old)
         bpy.data.meshes.remove(me)
     parts = json.loads((m.SRC / f'{m.NAME}_pecas.json').read_text())
+    if only is not None:
+        parts = {k: v for k, v in parts.items() if k in only}
+    else:
+        parts = {k: v for k, v in parts.items() if k not in prop_parts(m)}
     V, F, UV, FUV, part_of, groups, names = [], [], [], [], [], {}, []
     for pi, (pname, p) in enumerate(parts.items()):
         names.append(pname)
@@ -192,10 +207,56 @@ def export_godot(module_name):
     nt.links.new(bsdf.outputs[0], o.inputs[0])
     exp.data.materials.clear()
     exp.data.materials.append(mat)
+    extra = []
+    for label, om_name in getattr(m, 'OUTFITS', {}).items():   # outfits with their own pieces
+        om = importlib.import_module(om_name)
+        src = bpy.data.objects.get(f'{om.NAME}_Body')
+        if src is None:
+            print('outfit body missing, run legends_rig.outfit first:', om.NAME)
+            continue
+        oimg = bpy.data.images.get(f'{om.NAME}_pagina_256.png')
+        if oimg is not None and oimg.is_dirty:
+            oimg.save()
+        shutil.copyfile(om.SRC / f'{om.NAME}_pagina_256.png', out_dir / f'textures/page_{label.lower()}.png')
+        shutil.copyfile(om.SRC / f'{om.NAME}_rosto_atlas.png', out_dir / f'textures/face_{label.lower()}.png')
+        e = src.copy()
+        e.data = src.data.copy()
+        e.name = e.data.name = f'{m.ID}_{label}Body'
+        bpy.context.scene.collection.objects.link(e)
+        omat = bpy.data.materials.get(f'{om.NAME}_export') or bpy.data.materials.new(f'{om.NAME}_export')
+        omat.use_nodes = True
+        ont = omat.node_tree
+        ont.nodes.clear()
+        o2, b2, t2 = (ont.nodes.new(t) for t in ('ShaderNodeOutputMaterial', 'ShaderNodeBsdfPrincipled', 'ShaderNodeTexImage'))
+        t2.image = bpy.data.images.load(str(om.SRC / f'{om.NAME}_pagina_256.png'), check_existing=True)
+        t2.interpolation = 'Closest'
+        ont.links.new(t2.outputs[0], b2.inputs['Base Color'])
+        ont.links.new(b2.outputs[0], o2.inputs[0])
+        e.data.materials.clear()
+        e.data.materials.append(omat)
+        extra.append(e)
+    for label in getattr(m, 'PROPS', {}):                  # props on the body's page and material
+        src = bpy.data.objects.get(f'{m.NAME}_Prop_{label}')
+        if src is None:
+            continue
+        e = src.copy()
+        e.data = src.data.copy()
+        e.name = e.data.name = f'{m.ID}_{label}Prop'
+        bpy.context.scene.collection.objects.link(e)
+        e.data.materials.clear()
+        e.data.materials.append(mat)
+        extra.append(e)
     for ob in bpy.context.view_layer.objects:
         ob.select_set(False)
+    # the copies may inherit "not selectable / hidden" from a scene set up for animating
+    for e in [rig, exp] + extra:
+        e.hide_select = False
+        e.hide_viewport = False
+        e.hide_set(False)
     rig.select_set(True)
     exp.select_set(True)
+    for e in extra:
+        e.select_set(True)
     path = out_dir / f'{m.ID}.glb'
     try:
         with contextlib.redirect_stdout(io.StringIO()):
@@ -203,11 +264,117 @@ def export_godot(module_name):
                                       export_apply=False, export_animations=True, export_animation_mode='NLA_TRACKS',
                                       export_skins=True, export_materials='EXPORT')
     finally:
-        me = exp.data
-        bpy.data.objects.remove(exp)
-        bpy.data.meshes.remove(me)
+        for e in [exp] + extra:
+            me = e.data
+            bpy.data.objects.remove(e)
+            bpy.data.meshes.remove(me)
     print('exported', path, len(ad.nla_tracks) if ad else 0, 'clips')
     return path
+
+
+def bone_moves(m, base):
+    """Each bone's rigid move from A-pose to rest, measured on the base body: its A-pose parts (the
+    pieces json, props left out) against its rest mesh, a best-fit rotation per bone."""
+    import numpy as np
+    pj = json.loads((m.SRC / f'{m.NAME}_pecas.json').read_text())
+    a_pose = np.array([v for k, p in pj.items() if k not in prop_parts(m) for v in p['v']])
+    rest = np.array([tuple(v.co) for v in base.data.vertices])
+    moves = {}
+    for g in base.vertex_groups:
+        idx = [v.index for v in base.data.vertices if any(e.group == g.index for e in v.groups)]
+        if len(idx) < 3:
+            continue
+        A, B = a_pose[idx], rest[idx]
+        ca, cb = A.mean(0), B.mean(0)
+        U, _, Vt = np.linalg.svd((A - ca).T @ (B - cb))
+        d = np.sign(np.linalg.det(Vt.T @ U.T))
+        R = Vt.T @ np.diag([1, 1, d]) @ U.T
+        moves[g.name] = (R, ca, cb, float(np.abs((A - ca) @ R.T + cb - B).max()))
+    return moves
+
+
+def apply_moves(ob, moves):
+    import numpy as np
+    co = np.array([tuple(v.co) for v in ob.data.vertices])
+    for g in ob.vertex_groups:
+        if g.name not in moves:
+            print('bone not on the base body (left in A-pose):', g.name)
+            continue
+        R, ca, cb, _ = moves[g.name]
+        idx = [v.index for v in ob.data.vertices if any(e.group == g.index for e in v.groups)]
+        co[idx] = (co[idx] - ca) @ R.T + cb
+    ob.data.vertices.foreach_set('co', co.ravel())
+    ob.data.update()
+
+
+def props(m, rig, base, col, page, atlas):
+    """The character's props (PROPS {label: [parts]}) as <NAME>_Prop_<label> objects on the rig,
+    moved to the rest pose like the bones they sit on."""
+    moves = bone_moves(m, base)
+    out = []
+    for label, names in getattr(m, 'PROPS', {}).items():
+        ob = body(m, col, page, atlas, only=set(names), name=f'{m.NAME}_Prop_{label}')
+        apply_moves(ob, moves)
+        ob.parent = rig
+        ob.modifiers.new(name='Armature', type='ARMATURE').object = rig
+        out.append(ob)
+    return out
+
+
+def outfit(module_name, outfit_module):
+    """An outfit with its own pieces (<outfit>_pecas.json, modelled in A-pose on the base's joints)
+    as <OUTFIT NAME>_Body on the base rig. Each bone's rigid move from A-pose to rest is measured
+    on the base body (its A-pose parts vs its rest mesh, a best-fit rotation per bone) and applied
+    to the outfit's vertices on that bone: same skeleton, animations and hitboxes."""
+    import numpy as np
+    m, om = importlib.import_module(module_name), importlib.import_module(outfit_module)
+    rig, base = bpy.data.objects[f'{m.NAME}_Rig'], bpy.data.objects[f'{m.NAME}_Body']
+    if bpy.context.object and bpy.context.object.mode != 'OBJECT':
+        bpy.ops.object.mode_set(mode='OBJECT')
+    moves = bone_moves(m, base)
+    col = base.users_collection[0]
+    page, atlas = om.SRC / f'{om.NAME}_pagina_256.png', om.SRC / f'{om.NAME}_rosto_atlas.png'
+    ob = body(om, col, page, atlas)
+    apply_moves(ob, moves)
+    ob.parent = rig
+    ob.modifiers.new(name='Armature', type='ARMATURE').object = rig
+    worst = max(v[3] for v in moves.values())
+    print(f'{ob.name}: {len(ob.data.polygons)} faces on {rig.name}; worst rigid-fit error on the base {worst * 1000:.1f} mm')
+    return ob, check(rig, ob)
+
+
+def _part_points(ob, part_name):
+    names = list(ob['parts'])
+    pi = names.index(part_name)
+    faces = [p for p in ob.data.polygons if ob.data.attributes['part'].data[p.index].value == pi]
+    return [ob.data.vertices[i].co.copy() for i in {v for p in faces for v in p.vertices}]
+
+
+def socket_at(rig, ob, bone_name, part_name):
+    """Move a socket bone's head (the game reads sockets at bone heads) to the front of a part of
+    the rest body: the gun's muzzle for `cannon`. part_name may be (front part, axis part): the bone
+    then points from the axis part's middle through the front part (down the barrel); otherwise it
+    keeps its direction. Its pose is untouched, so the mesh doesn't move."""
+    from mathutils import Vector
+    axis_part = None
+    if isinstance(part_name, (tuple, list)):
+        part_name, axis_part = part_name
+    pts = _part_points(ob, part_name)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.mode_set(mode='EDIT')
+    eb = rig.data.edit_bones[bone_name]
+    d = (eb.tail - eb.head).normalized()
+    if axis_part:
+        a = _part_points(ob, axis_part)
+        d = (sum(pts, Vector()) / len(pts) - sum(a, Vector()) / len(a)).normalized()
+    length = eb.length
+    far = max(p.dot(d) for p in pts)
+    front = [p for p in pts if p.dot(d) > far - 0.01]
+    head = sum(front, Vector()) / len(front)
+    eb.head = head
+    eb.tail = head + d * length
+    bpy.ops.object.mode_set(mode='OBJECT')
+    print(f'{bone_name} socket at the front of {part_name}:', tuple(round(c, 3) for c in head))
 
 
 def rest_ok(m, rig, tol=0.02):
@@ -252,5 +419,9 @@ def build(module_name):
     if ad:
         for t in ad.nla_tracks:
             t.mute = mutes.get(t.name, False)
+    for bone_name, part_name in getattr(m, 'SOCKET_AT', {}).items():
+        socket_at(rig, ob, bone_name, part_name)
     ok = check(rig, ob) and rest_ok(m, rig)
+    for p in props(m, rig, ob, col, page, atlas):
+        ok = check(rig, p) and ok
     return rig, ob, ok

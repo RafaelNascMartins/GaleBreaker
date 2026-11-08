@@ -27,7 +27,10 @@ def page_skin(m):
     """Most common colour of the head's skin faces on the body page (the page the model uses)."""
     path = m.SRC / f'{m.NAME}_pecas.json'
     p = json.loads(path.read_text())['head']
-    page = np.array(Image.open(m.SRC / f'{m.NAME}_pagina_256.png').convert('RGB'))
+    path = m.SRC / f'{m.NAME}_pagina_256.png'
+    if not path.exists():                                 # a new outfit: its generated page
+        path = m.SRC / f'{m.NAME}_pagina_256_gerada.png'
+    page = np.array(Image.open(path).convert('RGB'))
     px = []
     for fi, uv in enumerate(p['uv']):
         if p['ftone'][fi] == 'skin':
@@ -85,7 +88,9 @@ def face_uv(m, parts):
         n = np.cross(q[1] - q[0], q[2] - q[0])
         n /= np.linalg.norm(n) + 1e-12
         tone = p['ftone'][fi] if 'ftone' in p else 'skin'
-        on = (tone == 'skin' and -n[1] > MIN_FRONT and q[:, 0].min() < x1 and q[:, 0].max() > x0
+        # the jaw shade (Orsted's under-nose and mouth faces) carries the face too: the atlas skin is
+        # transparent, so only the mouth and eyes draw over the shade
+        on = (tone in ('skin', 'shade') and -n[1] > MIN_FRONT and q[:, 0].min() < x1 and q[:, 0].max() > x0
               and q[:, 2].min() < z1 and q[:, 2].max() > z0)
         n_on += on
         fuv.append([[float((v[0] - x0) / (x1 - x0)), float((v[2] - z0) / (z1 - z0))] if on else [-1.0, -1.0]

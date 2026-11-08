@@ -78,6 +78,7 @@ var base_page: Texture2D
 # PS1 look: Legends fighters hold each pose for 1/LEGENDS_ANIM_FPS s while the scene runs at 60.
 const LEGENDS_ANIM_FPS := 15.0
 var anim_fps := 0.0
+var muzzle_back := 0.0
 # Legends fighters cheat toward the camera like 2.5D anime fighters: the body turns a little out of
 # profile and the head a little more, so the face (and its expressions) reads. Visual only.
 const BODY_CHEAT_DEG := 22.0
@@ -93,7 +94,15 @@ const AUTHORED_STEPPED := {"kaze": ["idle", "walk_forward", "walk_back", "dash",
 	"ignis": ["idle", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "light_1", "light_2", "light_3", "heavy", "heavy_2", "elemental", "ultimate", "hit", "knockdown", "ko", "get_up", "dash", "jump_start", "jump_air", "jump_land", "parry",
 		"down_punch", "air_punch", "sweep", "breaker", "select", "victory"],
 	# X12 (legends_x12_anim.py): every clip re-authored.
-	"tophia": ["idle", "select", "light_1", "light_2", "light_3", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "parry", "heavy", "down_punch", "sweep", "air_punch", "dash", "elemental", "ultimate", "rock_spike", "breaker", "jump_start", "jump_air", "jump_land", "hit", "knockdown", "ko", "get_up", "victory"]}
+	"tophia": ["idle", "select", "light_1", "light_2", "light_3", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "parry", "heavy", "down_punch", "sweep", "air_punch", "dash", "elemental", "ultimate", "rock_spike", "breaker", "jump_start", "jump_air", "jump_land", "hit", "knockdown", "ko", "get_up", "victory"],
+	# Orsted (legends_orsted_anim.py): every clip re-authored.
+	"volt": ["idle", "select", "walk_forward", "walk_back", "crouch", "guard_high", "guard_low", "parry", "light_1", "light_2", "light_3", "heavy", "down_punch", "sweep", "air_punch", "dash", "elemental", "ultimate", "breaker", "jump_start", "jump_air", "jump_land", "hit", "knockdown", "ko", "get_up", "victory"]}
+# Props held only through part of a clip (exported as <id>_<label>Prop): fighter -> clip -> the
+# timing mark where the prop leaves the hand (Orsted's bomb is thrown at the down_punch contact).
+# The outfit's palette may name another prop ("prop": "Dinamite").
+const PROP_CLIPS := {"volt": {"down_punch": "contact"}}
+const DEFAULT_PROP := {"volt": "Bomba"}
+var prop_label := ""
 const KEYED_ATTACKS := ["light_1", "light_2", "light_3", "heavy", "heavy_2", "heavy_3", "elemental", "ultimate", "sweep", "down_punch", "air_punch"]
 
 static func mat(color: Color, glow: bool = false) -> ShaderMaterial:
@@ -286,6 +295,8 @@ func apply_palette(palette: int, data: GaleData = null) -> void:
 			base_page = material.get_shader_parameter("albedo_px")
 		material.set_shader_parameter("albedo_px", load(page_path) if page_path != "" and ResourceLoader.exists(page_path) else base_page)
 		show_outfit_body(String(v2_pal.get("body", "")))
+		prop_label = String(v2_pal.get("prop", ""))
+		muzzle_back = float(v2_pal.get("muzzle_back", 0.0))
 		# An outfit can bring its own expression atlas (Dale's clean-shaven Physique).
 		var face_path := String(v2_pal.get("face", "res://assets/characters/%s/textures/face.png" % fighter_id))
 		if ResourceLoader.exists(face_path) and material.get_shader_parameter("use_face") == true:
@@ -355,6 +366,7 @@ func play_clip(logical_name: String, seek_sec: float = 0.0) -> void:
 	current_clip = clip_name
 	current_anim_time = seek_sec
 	set_open_hands(OPEN_HAND_CLIPS.get(fighter_id, {}).get(logical_name, ""))
+	show_props(logical_name, seek_sec)
 	if changed:
 		var blend := 0.045 if logical_name.begins_with("light") or logical_name in ["heavy", "hit", "parry"] else 0.09
 		anim_player.play(clip_name, blend if syncing and not stepped else 0.0, 0.0)
@@ -362,12 +374,28 @@ func play_clip(logical_name: String, seek_sec: float = 0.0) -> void:
 	anim_player.advance(presentation_delta if syncing and not stepped else 0.0)
 	_update_sockets()
 
+## A prop shows in the hand while its clip runs, up to the mark where it is thrown.
+func show_props(logical_name: String, seek_sec: float) -> void:
+	var mark_key: String = PROP_CLIPS.get(fighter_id, {}).get(logical_name, "")
+	var shown := false
+	if mark_key != "":
+		shown = seek_sec < float(GaleAnimTiming.attack(fighter_id, logical_name).get(mark_key, 0)) / 60.0
+	var label := prop_label if prop_label != "" else String(DEFAULT_PROP.get(fighter_id, ""))
+	for m: MeshInstance3D in meshes:
+		var n := String(m.name)
+		if n.contains("Prop"):
+			m.visible = shown and label != "" and n.contains(label)
+
 ## Outfits with their own pieces export a body per outfit (kaze_BodyExport is the default one);
 ## only the chosen outfit's body is shown. Fists and open hands are shared by every outfit.
 func show_outfit_body(body: String) -> void:
 	for m: MeshInstance3D in meshes:
 		var n := String(m.name)
 		if n.contains("Fist") or n.contains("HandOpen"):
+			continue
+		# Props (<id>_<label>Prop: Orsted's bomb) only show while a move uses them.
+		if n.contains("Prop"):
+			m.visible = false
 			continue
 		# Outfit bodies are named <id>_<Outfit>Body (kaze_ExecBody, ignis_CoronelBody); the
 		# default body is <id>_BodyExport.
@@ -393,7 +421,9 @@ func _update_sockets() -> void:
 			continue
 		var pose := skeleton.get_bone_global_pose(index)
 		if sname == "socket_muzzle":
-			pose.origin += pose.basis * Vector3(0, 0.55, -0.055)
+			# the cannon bone's head sits on the muzzle's face (legends_rig SOCKET_AT); an outfit
+			# with a shorter gun moves it back down the barrel (palette "muzzle_back", metres)
+			pose.origin -= pose.basis.y.normalized() * muzzle_back
 		sockets[sname].global_transform = skeleton.global_transform * pose
 
 func socket_position(sname: String) -> Vector3:
@@ -432,7 +462,7 @@ func sync(f: Dictionary, time: float) -> void:
 		var progress := clampf(1.0 - float(maxi(0, int(f.frames))) / float(total_frames), 0.0, 1.0)
 		play_clip(clip, GaleAnimTiming.attack_seek(fighter_id, clip, String(f.action), progress))
 		attack_clip = clip
-		if f.move.get("delivery","melee") == "melee" or (f.id == "volt" and f.action == "startup"):
+		if f.move.get("delivery","melee") == "melee" or (f.id == "volt" and f.action == "startup" and String(f.move.get("type", "")) != "down_punch"):
 			move_effects.present(f, progress, socket_position("socket_muzzle"), socket_position("socket_hand_r"), socket_position("socket_foot_r"))
 	elif f.action == "knockdown":
 		play_clip("knockdown", minf(state_elapsed, GaleAnimTiming.state_sec(fighter_id, "knockdown")))

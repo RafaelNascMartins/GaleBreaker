@@ -392,6 +392,80 @@ A segunda versão do jab e do direto da X12 ainda ficou fraca. As referências m
 - **O pé de trás fica atrás.** A linha reta vai do calcanhar de trás até o punho. Avançar o pé de trás embola as pernas no perfil.
 - **Na X12:** jab com acerto no quadro 3, direto com acerto no 8. Tronco inclinado de 26° a 30° para frente e cabeça baixa (inclinação positiva), sem contra-girar para olhar o oponente.
 
+## 11. Tempo dos golpes em quadros (2026-11-08)
+
+O usuário achou que golpes de cerca de 15 quadros passam rápido demais: antecipação, ação e recuperação não aparecem. Tudo aqui é a 60 quadros por segundo, a mesma taxa do Blender (cena a 60) e do combate.
+
+### 11.1 Os números dos jogos de verdade
+
+| Golpe (SF6, Ryu) | Startup | Ativo | Recuperação | Total aproximado | Hitstop no acerto |
+|---|---|---|---|---|---|
+| Soco fraco em pé | 4 | 3 | cerca de 7 | cerca de 14 | cerca de 9 |
+| Soco médio em pé | 6 | 4 | cerca de 14 | cerca de 24 | cerca de 11 |
+| Soco forte em pé | 10 | 5 | cerca de 20 | cerca de 35 | cerca de 13 |
+
+- O startup, o ativo e o total vêm da tabela da GameSkinny para o SF6 de 2023.
+- O hitstop vem do padrão geral (cerca de 9, 11 e 13 quadros) e das linhas do Terry na SuperCombo: 2MP com 11 e 2HP com 13.
+- Os números do Guilty Gear Xrd são parecidos. O 5P do Sol tem 8 de startup, 4 de ativo e 6 de recuperação.
+
+**Um jab de verdade dura mesmo uns 15 quadros.** Ele lê bem por quatro motivos:
+
+1. **A antecipação já está na guarda.** O jab praticamente não tem preparação. O que mostra a intenção é a pose de guarda carregada.
+2. **O acerto alonga a pose de contato.** Os dois congelam no hitstop, e no acerto a pose fica na tela pelo ativo mais o hitstop, de 12 a 18 quadros.
+3. **O golpe que lê é o médio ou o forte.** Esses têm de 6 a 10 quadros de antecipação e uma recuperação longa, que mostra o follow-through.
+4. **A batida visual vem antes da hitbox.** No 2D clássico, o primeiro quadro ativo cai uns 3 ou 4 quadros depois do quadro em que o desenho já "parece" o golpe (fórum Defold, estudo quadro a quadro). O borrão e a pose de golpe aparecem um pouco antes da marca `contact`.
+
+Para o startup, guias de game feel falam em 2 ou 3 quadros de antecipação para jabs e de 8 a 12 para pesados. Antecipação curta demais parece injusta, e longa demais parece atraso de comando.
+
+### 11.2 Por que o Orsted pode e deve ser mais lento
+
+- O Orsted é um zoner calmo. Os J dele não precisam ser jabs de 4 quadros, porque lutar de perto não é o forte dele.
+- Funcionam como golpes **médios**: antecipação visível, tiro segurado e volta tranquila.
+- O custo de jogo é que um startup maior é mais fácil de interromper e um total maior é mais fácil de punir. Isso se compensa com alcance, dano ou o avanço do golpe (`advance`), nunca encurtando a animação.
+
+### 11.3 Orçamento por fase para animar (60 quadros por segundo)
+
+| Fase | Jab (SF6) | Forte (SF6) | Orsted, J leve e médio | Orsted, J3, K e bomba |
+|---|---|---|---|---|
+| Guarda até a antecipação (pose segura) | 0 a 2 | 4 a 6 | 4 a 6 | 6 a 8, em uma ou duas poses |
+| Antecipação até o contato (borrão no meio) | 2 a 3 | 4 a 5 | 3 a 4 | 4 a 6 |
+| **Startup total** (marca `contact`) | 4 | 10 | **8 a 10** | **12 a 16** |
+| Pose de contato segurada (`contact` até `hold`) | 3 | 5 | **8 a 10** | 8 a 12 |
+| No acerto, mais o hitstop parado | +9 | +13 | +8 a 10 | +12 a 14 |
+| Follow-through (`hold` até `follow`) | — | 3 a 5 | 4 a 6 | 6 a 8 |
+| Volta à guarda (`follow` até `end`) | cerca de 7 | cerca de 15 | 10 a 14 | 16 a 20 |
+| **Total sem hitstop** | cerca de 14 | cerca de 35 | **32 a 40** | **44 a 54** |
+
+Regras práticas no Blender:
+- **Conte a fase, não o total.** Golpe que parece rápido demais quase sempre tem a pose de contato segurada por menos de 6 quadros.
+- **O hitstop não aparece no Blender.** Para ver como fica o acerto, some temporariamente os quadros de hitstop ao `hold` e assista em velocidade 1×.
+- **Corte seco entre poses**, com chaves em degrau. A pose de borrão fica 1 ou 2 quadros, e as poses fortes ficam paradas.
+- **A recuperação é onde o golpe mostra peso.** Volte em duas poses (follow-through e assentando), não numa interpolação só.
+
+### 11.4 O Orsted hoje
+
+| Golpe | `wind` | `contact` | `hold` | `follow` | `end` | Pose segura | Diagnóstico |
+|---|---|---|---|---|---|---|---|
+| J1 | 8 | 12 | 22 | 26 | 42 | 10 | Dentro do orçamento (retimado em 2026-11-07) |
+| J2 | 4 | 7 | 11 | 13 | 26 | 4 | Curto em tudo: antecipação de 4, contato de 4 e volta de 13 |
+| J3 | 10 | 14 | 18 | 21 | 36 | 4 | Contato curto para o giro de 360° |
+| K | 12 | 16 | 20 | 24 | 40 | 4 | Contato curto |
+
+**Aplicado em 2026-11-08.** As chaves do usuário foram reescaladas sem mudar as poses, e os quadros de combate acompanham (`LIGHT_FEEL` e `MOVE_FRAMES` volt em `combat.gd`):
+
+| Golpe | `wind` | `contact` | `hold` | `follow` | `recover` | `end` |
+|---|---|---|---|---|---|---|
+| J2 | 6 | 10 | 19 | 23 | 30 | 38 |
+| J3 | 12 | 16 | 26 | 31 | 40 | 50 |
+| K (tiro carregado) | 18 | 26 | 34 | 38 | 48 | 60 |
+| Bomba (baixo + J) | 8 | 14 | 22 | 24 | 34 | 44 |
+| Rasteira (baixo + K) | 6 | 10 | 18 | 20 | 30 | 40 |
+| Aéreo | 4 | 6 | 12 | 14 | 19 | 24 |
+| Pulso (especial) | 12 | 18 | 24 | 26 | 38 | 50 |
+| Raio (ultimate) | 32 | 42 | 50 | 54 | 72 | 90 |
+
+O K, o pulso e o raio mantêm a antecipação e a duração total que `move_rules.gd` já dava a eles (26/60, 18/50 e 42/90). Só os clipes foram esticados para caber nelas, porque antes tocavam até 2× mais rápido que o animado. A bomba, a rasteira e o aéreo ganharam quadros próprios em `MOVE_FRAMES` (`combat.gd`).
+
 ## Fontes
 
 **Street Fighter**
@@ -443,3 +517,11 @@ Os detalhes de escala, ritmo e frame a frame dessas fontes podem ser conferidos 
 - Artemisia College, "Fighting Game Animation": https://www.artemisiacollege.com/feeds/blog/fighting-game-animation
 - Raymond Schlitter (SLYNYRD), "Pixelblog 53 - Punches and Kicks": https://www.slynyrd.com/blog/2024/11/25/pixelblog-53-punches-and-kicks
 - 80.lv, "Street Fighter: Making Fight Moves That Feel Right": https://80.lv/articles/street-fighter-making-fight-moves-that-feel-right
+
+**Tempo em quadros (seção 11)**
+- [Street Fighter 6, frame data do Ryu (GameSkinny)](https://www.gameskinny.com/tips/street-fighter-6-ryu-frame-data-analysis-guide/)
+- [Street Fighter 6, dados do Terry com hitstop (SuperCombo)](https://srk.shib.live/w/Street_Fighter_6/Terry/Data)
+- [Guilty Gear Xrd Rev 2, frame data do Sol (Dustloop)](https://www.dustloop.com/w/GGXRD-R2/Sol_Badguy/Frame_Data)
+- [Active frames in a sprite-based 2D fighting game (fórum Defold)](https://forum.defold.com/t/active-frames-in-a-sprite-based-2d-fighting-game-in-defold/68685)
+- [Animation polish & game feel guide (MCO)](https://mocaponline.com/blogs/mocap-news/animation-polish-game-feel-guide)
+- [Frame data patterns that game designers should know (critpoints)](https://critpoints.net/2023/02/20/frame-data-patterns-that-game-designers-should-know)

@@ -27,29 +27,30 @@ func advance(sim: GaleCombat, count: int, a: Dictionary = {}, b: Dictionary = {}
 		sim.step(GaleCombat.idle_input() if a.is_empty() else a,GaleCombat.idle_input() if b.is_empty() else b)
 
 func run() -> void:
+	# Orsted's projectile is his heavy (K): a charged ball, slower than the old J1 bolt
 	var sim := fresh("volt")
 	sim.p1.x=-3.0;sim.p2.x=3.0
-	sim.attack(sim.p1,"light",false)
-	advance(sim,10)
-	check(sim.p2.hp==sim.p2.max_hp and sim.attacks.items.size()==1,"Volt bolt travels before hitting a distant target")
-	advance(sim,28)
+	sim.attack(sim.p1,"heavy",false)
+	advance(sim,30)
+	check(sim.p2.hp==sim.p2.max_hp and sim.attacks.items.size()==1,"Orsted's charged shot travels before hitting a distant target")
+	advance(sim,60)
 	check(sim.p2.hp<sim.p2.max_hp,"projectile can hit after its owner leaves active animation")
 	sim=fresh("volt")
 	sim.p1.x=-3;sim.p2.x=3
-	sim.attack(sim.p1,"light",false)
+	sim.attack(sim.p1,"heavy",false)
 	var guard:=GaleCombat.idle_input();guard.guard=true
-	advance(sim,55,{},guard)
+	advance(sim,100,{},guard)
 	check(sim.p2.blocks==1 and sim.p2.hp>sim.p2.max_hp-20,"blocking a traveling projectile applies chip once")
 	sim=fresh("volt")
-	sim.attack(sim.p1,"light",false)
+	sim.attack(sim.p1,"heavy",false)
 	var jump:=GaleCombat.idle_input();jump.jump=true
 	advance(sim,1,{},jump)
 	advance(sim,34)
 	check(sim.p2.hp==sim.p2.max_hp,"a jumped projectile does not damage through its visual trail")
 	sim=fresh("volt")
 	sim.p1.x=-3;sim.p2.x=3
-	sim.attack(sim.p1,"light",false)
-	for i in 60:
+	sim.attack(sim.p1,"heavy",false)
+	for i in 110:
 		var input:=GaleCombat.idle_input()
 		for e:Dictionary in sim.attacks.items:
 			if e.delay<=0 and absf(float(e.x)-float(sim.p2.x))<1.1: input.parry=true
@@ -57,11 +58,25 @@ func run() -> void:
 	check(sim.p2.parries==1 and sim.p2.hp==sim.p2.max_hp,"a correctly timed parry consumes the projectile")
 	sim=fresh("volt","volt")
 	sim.p1.x=-3;sim.p2.x=3
-	sim.attack(sim.p1,"light",false);sim.attack(sim.p2,"light",false)
-	advance(sim,55)
+	sim.attack(sim.p1,"heavy",false);sim.attack(sim.p2,"heavy",false)
+	advance(sim,90)
 	check(sim.p1.hp==sim.p1.max_hp and sim.p2.hp==sim.p2.max_hp and sim.attacks.items.is_empty(),"opposed projectiles clash and disappear before hitting players")
+	# Orsted's down + J: a launcher - a bomb dropped right in front of him blows up and launches
 	sim=fresh("volt")
-	sim.attack(sim.p1,"light",false)
+	sim.p1.x=-0.6;sim.p2.x=0.6
+	sim.attack(sim.p1,"light",true)
+	check(sim.attacks.items.size()==1 and sim.attacks.items[0].kind=="bomb","Orsted's down + J throws a bomb")
+	advance(sim,12)
+	check(sim.p2.hp==sim.p2.max_hp,"the bomb has not blown up during the wind-up")
+	advance(sim,12)
+	check(sim.p2.hp<sim.p2.max_hp and not sim.p2.grounded,"the bomb blows up right in front of him and launches the opponent")
+	sim=fresh("volt")
+	sim.p1.x=-1.5;sim.p2.x=1.5
+	sim.attack(sim.p1,"light",true)
+	advance(sim,50)
+	check(sim.p2.hp==sim.p2.max_hp,"the bomb lands short of a far opponent")
+	sim=fresh("volt")
+	sim.attack(sim.p1,"heavy",false)
 	var original:int=sim.attacks.items[0].move.damage
 	sim.p1.move.damage=9999
 	check(sim.attacks.items[0].move.damage==original,"fired attacks retain an independent move snapshot")
@@ -283,6 +298,18 @@ func run() -> void:
 	var fish_shown := gold_view.meshes.filter(func(m): return m.visible and not String(m.name).contains("Fist") and not String(m.name).contains("HandOpen"))
 	check(fish_shown.size() == 1 and String(fish_shown[0].name).contains("PeixeBody") and String(gold_view.hand_material.get_shader_parameter("albedo_px").resource_path).ends_with("hand_peixao.png"), "Babuin's Peixão outfit shows the fish costume and gloved open hands")
 	gold_view.queue_free()
+	# Orsted's outfits: Invertido is a page swap; Pistoleiro and Cientista Maluco have their own
+	# bodies (revolver and hat; lab coat and goggles), the gunslinger throws the dynamite
+	var orsted := GaleFighterView.new()
+	root.add_child(orsted)
+	orsted.build(data, "volt", 1)
+	check(String(orsted.material.get_shader_parameter("albedo_px").resource_path).ends_with("page_invertido.png"), "Orsted's Invertido outfit uses its recoloured page")
+	for pal: Array in [[2, "PistoleiroBody", "page_pistoleiro.png"], [3, "CientistaBody", "page_cientista.png"]]:
+		orsted.apply_palette(int(pal[0]), data)
+		var shown := orsted.meshes.filter(func(m): return m.visible and not String(m.name).contains("Fist") and not String(m.name).contains("HandOpen"))
+		check(shown.size() == 1 and String(shown[0].name).contains(String(pal[1])) and String(orsted.material.get_shader_parameter("albedo_px").resource_path).ends_with(String(pal[2])), "Orsted's outfit %d shows %s and its page" % [int(pal[0]), String(pal[1])])
+	check(String(GaleVisualCatalog.load_for("volt").palettes[2].get("prop", "")) == "Dinamite", "the gunslinger outfit throws the dynamite")
+	orsted.queue_free()
 	var blinks := 0
 	for step in 80:
 		face_view.present("select", step * 0.05)

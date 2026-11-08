@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_umqw4")
 fighter_id = "volt"
-display_name = "Volt"
+display_name = "Orsted"
 subtitle = "Inventor da Sucata Elétrica"
 element_label = "RAIO"
 accent_color = Color(0.1254902, 0.41568628, 0.4862745, 1)
@@ -22,20 +22,29 @@ palettes = [{
 "primary": "#D49B38",
 "secondary": "#435C6E"
 }, {
-"accent": "#38BDF8",
-"name": "Sobrecarga Neon",
-"primary": "#DB2777",
-"secondary": "#31102F"
+"accent": "#FF3DCB",
+"name": "Invertido",
+"page": "res://assets/characters/volt/textures/page_invertido.png",
+"primary": "#3A6FB0",
+"secondary": "#E6DDC8"
 }, {
-"accent": "#FDE047",
-"name": "Curto Carmesim",
-"primary": "#DC2626",
-"secondary": "#18181B"
+"accent": "#22E4FF",
+"body": "volt_PistoleiroBody",
+"face": "res://assets/characters/volt/textures/face_pistoleiro.png",
+"name": "Pistoleiro",
+"page": "res://assets/characters/volt/textures/page_pistoleiro.png",
+"primary": "#C9A46A",
+"muzzle_back": 0.21,
+"prop": "Dinamite",
+"secondary": "#4A2A22"
 }, {
-"accent": "#FACC15",
-"name": "Bateria Tóxica",
-"primary": "#16A34A",
-"secondary": "#14532D"
+"accent": "#22E4FF",
+"body": "volt_CientistaBody",
+"face": "res://assets/characters/volt/textures/face_cientista.png",
+"name": "Cientista Maluco",
+"page": "res://assets/characters/volt/textures/page_cientista.png",
+"primary": "#E8E4E8",
+"secondary": "#2E2C30"
 }]
 attack_icons = {
 "elemental": "res://assets/ui/icons/volt_elemental.png",

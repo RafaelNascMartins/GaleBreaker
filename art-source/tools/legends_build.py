@@ -3,7 +3,8 @@
     python art-source/tools/legends_build.py x12_modelo
 
 The character module (e.g. x12_modelo) gives NAME, SRC and PIECES (modules with parts();
-optional ASYMMETRIC {part: [(x, y, z) of vertices drawn asymmetric on purpose]}). Left parts `_l` get
+optional ASYMMETRIC {part: [(x, y, z) of vertices drawn asymmetric on purpose]}; the character module may
+give PART_TRANSFORMS {part: 4x4 matrix}, placements adjusted by hand in Blender). Left parts `_l` get
 their mirrored `_r` copy. The build fails (exit 1) when a rule of the method is broken:
     - a part is not closed (an edge not shared by exactly two faces)
     - a vertex has more than legends_kit.MAX_VALENCE faces around it (fan poles)
@@ -42,6 +43,9 @@ def build(module_name, write=True):
             if name in asym:      # leave out the vertices drawn asymmetric on purpose
                 drop = {tuple(np.round(v, 4)) for v in asym[name]}
                 keep = np.array([tuple(np.round(v, 4)) not in drop for v in P])
+            if not keep.any():    # a part drawn on one side only (a pouch), declared whole
+                print(line + '  one-sided')
+                continue
             err = lk.symmetry_error(P[keep])
             line += f'  symmetry {err * 1000:.1f} mm'
             if err > 0.001:
@@ -51,6 +55,13 @@ def build(module_name, write=True):
     if errors:
         print('FAILED:\n  ' + '\n  '.join(errors))
         return None
+    # placements adjusted by hand in Blender (object moved or turned, its shape untouched): applied
+    # after the checks, so a tilted centred piece (a tank hung at an angle) is not called asymmetric
+    for name, M in getattr(m, 'PART_TRANSFORMS', {}).items():
+        if name in parts:
+            M = np.array(M, float)
+            P = np.array(parts[name]['v'])
+            parts[name]['v'] = np.round(P @ M[:3, :3].T + M[:3, 3], 4).tolist()
     if write:
         out = m.SRC / f'{m.NAME}_pecas.json'
         out.write_text(json.dumps(parts))
